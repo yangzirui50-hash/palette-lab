@@ -16,6 +16,8 @@ Phase 1 in progress. The deterministic palette engine is implemented; image impo
 - HEX output is normalized to six digits
 - 8 automated tests pass locally, including 5 palette-engine tests
 - ESLint passes
+- Runtime dependencies reduced from 48 to 7
+- `npm audit` reports 0 known vulnerabilities after compatible updates and reviewed overrides
 - Previous GitHub Actions CI runs pass on `main`
 
 ## Repository

@@ -48,3 +48,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Use weighted sampling and deterministic OKLCH clustering for palette extraction, with six-digit HEX output and normalized shares.
 - **Reason:** Reproducible results, perceptually meaningful grouping, portable tests and consistent exports without requiring an AI call.
+
+## ADR-008 — Current-use dependencies with audited overrides
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Keep only dependencies required by current code or the active phase, remove template leftovers, enforce `npm audit` in CI, and use narrow compatible overrides for upstream security fixes.
+- **Reason:** Reduce supply-chain exposure and maintenance cost without hiding vulnerabilities through unreviewed breaking downgrades.

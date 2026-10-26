@@ -29,6 +29,12 @@ The following changes require documentation updates:
 
 Never commit API keys, tokens, real `.env` files or `.dev.vars`. Use the provided example files. Test fixtures must not contain private user images or unlicensed reference assets.
 
+## Dependency policy
+
+Add a dependency only for a current, explicit requirement. Record why it is needed and why an existing platform API or dependency is insufficient. Remove dependencies when their use disappears. Do not keep speculative packages for distant roadmap items.
+
+Run `npm audit` during dependency changes and before release. Prefer compatible security updates. Do not use `npm audit fix --force` merely to hide a report; breaking changes require an explicit compatibility review. Review targeted `overrides` during routine upgrades and remove them when upstream fixes land.
+
 ## Commits and backups
 
 Keep commits scoped to understandable milestones. Do not mix unrelated feature work with documentation-only changes. A task is not considered backed up until the remote push succeeds.

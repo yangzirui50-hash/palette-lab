@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Dependency and security cleanup
+
+- Reduced direct runtime dependencies from 48 to 7; npm removed 138 unused packages.
+- Applied compatible security updates and narrow overrides for remaining upstream advisories.
+- Reached 0 known vulnerabilities in `npm audit` without forced breaking downgrades.
+- Added dependency policy and CI security auditing.
+- Reverified 8 tests, ESLint and production builds.
+
 ## 2026-10-26 — Deterministic palette engine
 
 - Added weighted OKLCH palette clustering with normalized color shares.
