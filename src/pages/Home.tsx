@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import '../App.css'
+import '../themes.css'
 import { domainProfiles } from '../domain/profiles'
 import type { DomainId } from '../domain/profiles'
 import { extractPalette } from '../lib/color/extract'
 import type { PaletteSwatch, RGBPixel } from '../lib/color/extract'
 import { imageFileToPixels } from '../lib/color/image'
+import { useTheme } from '../hooks/useTheme'
 
 type SourceState = {
   url: string
@@ -16,6 +18,7 @@ type SourceState = {
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const pixelsRef = useRef<RGBPixel[]>([])
+  const { theme, toggleTheme } = useTheme()
   const [domain, setDomain] = useState<DomainId>('web-ui')
   const [colorCount, setColorCount] = useState(6)
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
@@ -24,6 +27,10 @@ export default function Home() {
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState('')
+
+  useEffect(() => {
+    document.documentElement.dataset.domain = domain
+  }, [domain])
 
   useEffect(() => {
     if (!source?.url) return
@@ -76,7 +83,12 @@ export default function Home() {
           <span className="brand-mark" aria-hidden="true" />
           <span>PALETTE LAB</span>
         </a>
-        <p>LOCAL COLOR ENGINE <span>/ V1 PREVIEW</span></p>
+        <div className="topbar-actions">
+          <p>LOCAL COLOR ENGINE <span>/ V1 PREVIEW</span></p>
+          <button className="theme-toggle" onClick={toggleTheme} aria-label={`切换为${theme === 'light' ? '深色' : '浅色'}模式`}>
+            <span aria-hidden="true">{theme === 'light' ? '◐' : '○'}</span>{theme === 'light' ? '深色模式' : '浅色模式'}
+          </button>
+        </div>
       </header>
 
       <main>

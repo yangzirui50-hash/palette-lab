@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Theme and domain token system
+
+- Added the theme/domain design-system contract and ADR.
+- Added Light/Dark switching with local persistence and theme-color metadata.
+- Added independent Web/UI and Art/Poster accent, surface and display-font tokens.
+- Verified all four combinations preserve palette data and never reset the current image.
+- Added a third browser workflow test and final-state visual reviews for Light Web and Dark Art.
+
 ## 2026-10-26 — Interactive local workspace
 
 - Added PNG/JPEG/WebP validation, local Canvas preprocessing and transparent-pixel handling.

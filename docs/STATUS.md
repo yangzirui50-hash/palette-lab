@@ -14,8 +14,10 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 8 unit tests and 2 real-browser workflow tests pass locally
+- 8 unit tests and 3 real-browser workflow tests pass locally
 - Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
+- Light/dark themes and all four Web/Art combinations preserve palette data
+- Theme preference persists after reload; extracted HEX values remain unchanged
 - Desktop and 390px mobile layouts pass without horizontal overflow
 - ESLint passes
 - Runtime dependencies reduced from 48 to 7

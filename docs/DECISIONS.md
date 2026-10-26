@@ -55,3 +55,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Keep only dependencies required by current code or the active phase, remove template leftovers, enforce `npm audit` in CI, and use narrow compatible overrides for upstream security fixes.
 - **Reason:** Reduce supply-chain exposure and maintenance cost without hiding vulnerabilities through unreviewed breaking downgrades.
+
+## ADR-009 — Independent theme and domain tokens
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Treat Light/Dark and Web/Art as independent token axes with separate text, fill and on-fill accents, while preserving workflow, component structure and palette state.
+- **Reason:** Support distinct modern and editorial visual directions without maintaining four separate applications or sacrificing usability.

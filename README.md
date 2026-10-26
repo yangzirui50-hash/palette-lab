@@ -29,6 +29,7 @@ React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Wo
 - `docs/STATUS.md`: current implementation and verification state
 - `docs/CHANGELOG.md`: dated project changes
 - `docs/DECISIONS.md`: architecture decision records
+- `docs/DESIGN_SYSTEM.md`: theme/domain tokens and visual invariants
 - `CONTRIBUTING.md`: delivery and documentation synchronization rules
 
 ## Development

@@ -10,6 +10,7 @@ test('imports an image, extracts colors and changes domain and count', async ({ 
   await expect(page.locator('.swatch-row')).toHaveCount(3)
   await expect(page.locator('.swatch-info strong').first()).toHaveText(/^#[0-9a-f]{6}$/i)
   await expect(page.locator('.swatch-row').first()).toContainText('50.0%')
+  await page.screenshot({ path: 'test-results/web-light.png', fullPage: true })
 
   await page.getByRole('button', { name: 'Art / Poster' }).click()
   await expect(page.getByRole('button', { name: 'Art / Poster' })).toHaveClass('active')
@@ -27,4 +28,31 @@ test('keeps the workspace usable at a phone viewport', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
   expect(overflow).toBe(false)
   await page.screenshot({ path: 'test-results/palette-mobile.png', fullPage: true })
+})
+
+test('preserves palette data across theme and domain combinations', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  const originalHex = await page.locator('.swatch-info strong').first().textContent()
+
+  for (const theme of ['light', 'dark']) {
+    for (const domain of ['web-ui', 'art-poster']) {
+      await page.getByRole('button', { name: domain === 'web-ui' ? 'Web / UI' : 'Art / Poster' }).click()
+      const currentTheme = await page.locator('html').getAttribute('data-theme')
+      if (currentTheme !== theme) await page.locator('.theme-toggle').click()
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
+      await expect(page.locator('html')).toHaveAttribute('data-domain', domain)
+      await expect(page.locator('.swatch-info strong').first()).toHaveText(originalHex ?? '')
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
+      expect(overflow).toBe(false)
+      if (domain === 'art-poster') {
+        await page.waitForTimeout(250)
+        await page.screenshot({ path: `test-results/art-${theme}.png`, fullPage: true })
+      }
+    }
+  }
+
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('.theme-toggle')).toContainText('浅色模式')
 })
