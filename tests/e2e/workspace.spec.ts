@@ -5,7 +5,7 @@ const fixture = path.resolve('tests/fixtures/palette-test.png')
 
 test('imports an image, extracts colors and changes domain and count', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: '从图像，提取可用的色彩。' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '色彩工作台' })).toBeVisible()
   await page.locator('input[type=file]').setInputFiles(fixture)
   await expect(page.locator('.swatch-row')).toHaveCount(3)
   await expect(page.locator('.swatch-info strong').first()).toHaveText(/^#[0-9a-f]{6}$/i)

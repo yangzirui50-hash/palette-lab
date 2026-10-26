@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Content-first workspace refinement
+
+- Reduced marketing space and prioritized the actual workspace.
+- Replaced small palette rows with large color fields and a proportional color strip.
+- Removed fluorescent yellow-green from Web themes; introduced muted indigo actions.
+- Reduced Art vermilion saturation for more comfortable Light and Dark modes.
+- Added responsive two-column mobile swatches and final-state screenshot reviews.
+- Reverified 8 unit tests, 3 browser tests, builds and 0 known vulnerabilities.
+
 ## 2026-10-26 — Theme and domain token system
 
 - Added the theme/domain design-system contract and ADR.

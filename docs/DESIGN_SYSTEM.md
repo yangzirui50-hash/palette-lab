@@ -24,6 +24,10 @@ Shared spacing, control sizes, focus behavior, semantic status, responsive layou
 
 `--accent` is for text and fine details. `--accent-fill` is for filled controls. `--accent-ink` is text on filled controls. Light and dark themes may use different values to preserve contrast.
 
+### Current accent direction
+
+Web Light uses muted indigo (`#4653B8` text, `#5364D8` filled controls) instead of fluorescent yellow-green. Web Dark uses soft periwinkle (`#A5B4FC` text, `#6574E8` fills). Art Light uses restrained vermilion (`#9B3D30` text, `#B55442` fills); Art Dark uses `#D88B77` and `#B96450`. Accent colors belong to application chrome and never modify extracted palette values.
+
 ### Domain direction
 
 #### Web / UI

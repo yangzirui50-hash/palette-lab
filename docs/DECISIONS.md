@@ -62,3 +62,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Treat Light/Dark and Web/Art as independent token axes with separate text, fill and on-fill accents, while preserving workflow, component structure and palette state.
 - **Reason:** Support distinct modern and editorial visual directions without maintaining four separate applications or sacrificing usability.
+
+## ADR-010 — Content-first creative workspace
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Prioritize canvas and large color fields over marketing copy, add a proportional palette strip, and replace fluorescent light-theme accents with muted indigo while lowering Art vermilion saturation.
+- **Reason:** Improve repeated-task ergonomics and color judgment by applying patterns common to professional palette and canvas tools without copying a specific product.

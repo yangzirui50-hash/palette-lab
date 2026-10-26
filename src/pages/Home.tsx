@@ -93,9 +93,11 @@ export default function Home() {
 
       <main>
         <section className="intro">
-          <p className="kicker">IMAGE → COLOR SYSTEM</p>
-          <h1>从图像，提取可用的色彩。</h1>
-          <p>本地取色、角色编辑与场景预览。图片仅在你的设备上处理，不会自动上传。</p>
+          <div>
+            <p className="kicker">IMAGE → COLOR SYSTEM</p>
+            <h1>色彩工作台</h1>
+          </div>
+          <p>从图像提取色彩关系，而不仅是色值。所有图片仅在你的设备上处理。</p>
         </section>
 
         <section className="domain-bar" aria-label="设计领域">
@@ -157,16 +159,26 @@ export default function Home() {
             </div>
 
             {palette.length > 0 ? (
-              <div className="swatch-list" aria-live="polite">
-                {palette.map((color, index) => (
-                  <button className="swatch-row" key={`${color.hex}-${index}`} onClick={() => void copyColor(color.hex)} title="点击复制 HEX">
-                    <span className="swatch-color" style={{ backgroundColor: color.hex }} />
-                    <span className="swatch-info"><strong>{color.hex}</strong><small>OKLCH {color.oklch[0].toFixed(2)}</small></span>
-                    <span className="swatch-share">{(color.share * 100).toFixed(1)}%</span>
-                    <span className="copy-label">{copied === color.hex ? '已复制' : '复制'}</span>
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="palette-proportion" aria-label="颜色占比图">
+                  {palette.map((color, index) => <i key={`${color.hex}-share-${index}`} style={{ backgroundColor: color.hex, flexGrow: color.share }} />)}
+                </div>
+                <div className="swatch-list" aria-live="polite">
+                  {palette.map((color, index) => (
+                    <button className="swatch-row" key={`${color.hex}-${index}`} onClick={() => void copyColor(color.hex)} title="点击复制 HEX">
+                      <span className="swatch-color" style={{ backgroundColor: color.hex, color: color.oklch[0] > 0.65 ? '#111111' : '#ffffff' }}>
+                        <span className="swatch-share">{(color.share * 100).toFixed(1)}%</span>
+                        <span className="swatch-on-color">{copied === color.hex ? '已复制 ✓' : '点击复制'}</span>
+                      </span>
+                      <span className="swatch-info">
+                        <strong>{color.hex}</strong>
+                        <small>OKLCH {color.oklch[0].toFixed(2)}</small>
+                      </span>
+                      <span className="copy-label">{copied === color.hex ? '已复制' : '复制'}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : (
               <div className="empty-palette">
                 <div className="empty-colors" aria-hidden="true"><i /><i /><i /><i /></div>
@@ -177,12 +189,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="next-step">
-          <span>当前版本</span>
-          <p>本地图片处理与色组提取</p>
-          <span>下一阶段</span>
-          <p>颜色角色编辑、领域预览与导出</p>
-        </section>
+        <footer className="studio-footer">
+          <span><i /> LOCAL ENGINE READY</span>
+          <p>颜色角色编辑与场景预览将在下一阶段开放</p>
+        </footer>
       </main>
     </div>
   )
