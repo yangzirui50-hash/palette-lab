@@ -14,8 +14,8 @@ Phase 0 complete. Phase 1 has not started.
 - Web/UI and Art/Poster profiles defined
 - 3 domain-profile tests pass locally
 - GitHub Actions CI passes on `main`
-- Phase 0 baseline is synchronized with remote `main`
-- Documentation workflow commit `eb479ee` is committed locally; remote backup is pending after two network TLS failures
+- Phase 0 baseline and documentation workflow commits are synchronized with remote `main`
+- Documentation backup recovered after two network TLS failures; the retry succeeded
 
 ## Repository
 
@@ -35,4 +35,4 @@ Phase 0 complete. Phase 1 has not started.
 
 ## Next action
 
-Retry the remote documentation backup when the network recovers, then implement local image import, deterministic palette extraction and automated tests before connecting the workspace UI.
+Implement local image import, deterministic palette extraction and automated tests before connecting the workspace UI.
