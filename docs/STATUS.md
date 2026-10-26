@@ -32,6 +32,8 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 
 - Baseline commit: `7373a48 chore: establish Palette Lab project foundation`
 - Documentation commit: `eb479ee docs: establish synchronized project documentation`
+- Ambient specification commit: `4b254e1 docs: specify ambient background customization`
+- Remote backup for `4b254e1` is pending after connection reset and connection timeout
 - Remote: https://github.com/yangzirui50-hash/palette-lab
 
 ## Not implemented yet
