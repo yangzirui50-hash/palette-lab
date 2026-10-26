@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local server development. Never commit real secrets.
+AI_API_KEY=
+AI_MODEL=
+UNSPLASH_ACCESS_KEY=

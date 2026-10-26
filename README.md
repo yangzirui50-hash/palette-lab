@@ -1,0 +1,48 @@
+# Palette Lab
+
+AI-assisted color-system workspace for turning image inspiration into editable, testable and exportable design decisions.
+
+## Status
+
+Phase 0 — professional project foundation.
+
+## V1 direction
+
+- Local image palette extraction
+- Web/UI and Art/Poster domain profiles
+- Editable color roles and palette variants
+- Scenario previews and usage checks
+- CSS, JSON and PNG export
+- Offline-capable core workflow
+
+Later phases add multimodal analysis, Unsplash inspiration, palette audits and multi-image consistency.
+
+## Stack
+
+React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Workers
+
+## Documentation
+
+- `docs/PRODUCT.md`: product promise, scope and acceptance criteria
+- `docs/ARCHITECTURE.md`: system boundaries, records and provider contracts
+- `docs/ROADMAP.md`: phased delivery plan
+
+## Development
+
+Requires Node.js 20 or later.
+
+```bash
+npm install
+npm run dev
+```
+
+## Quality checks
+
+```bash
+npm run lint
+npm run build
+```
+
+## Publishing discipline
+
+Each completed phase is reviewed, committed and pushed to `main`. Secrets and local environment files must never be committed.
