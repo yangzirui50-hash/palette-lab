@@ -4,7 +4,7 @@ _Last updated: 2026-10-26_
 
 ## Current phase
 
-Phase 1 in progress. The deterministic palette engine is implemented; image import and the workspace UI are next.
+Phase 1 in progress. The first interactive local workspace is verified; role editing, domain previews and exports are next.
 
 ## Verified
 
@@ -14,7 +14,9 @@ Phase 1 in progress. The deterministic palette engine is implemented; image impo
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 8 automated tests pass locally, including 5 palette-engine tests
+- 8 unit tests and 2 real-browser workflow tests pass locally
+- Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
+- Desktop and 390px mobile layouts pass without horizontal overflow
 - ESLint passes
 - Runtime dependencies reduced from 48 to 7
 - `npm audit` reports 0 known vulnerabilities after compatible updates and reviewed overrides
@@ -28,8 +30,7 @@ Phase 1 in progress. The deterministic palette engine is implemented; image impo
 
 ## Not implemented yet
 
-- Browser image import and Canvas pixel extraction
-- Workspace UI and scenario previews
+- Color-role editing and domain scenario previews
 - Export adapters
 - AI providers and multimodal analysis
 - Stock-image search
@@ -38,4 +39,4 @@ Phase 1 in progress. The deterministic palette engine is implemented; image impo
 
 ## Next action
 
-Connect browser image import and Canvas preprocessing to the palette engine, then build and verify the responsive workspace workflow.
+Implement color-role editing, domain-specific previews and the first export adapters while preserving the verified local import workflow.

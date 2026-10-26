@@ -1,0 +1,30 @@
+import { expect, test } from '@playwright/test'
+import path from 'node:path'
+
+const fixture = path.resolve('tests/fixtures/palette-test.png')
+
+test('imports an image, extracts colors and changes domain and count', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: '从图像，提取可用的色彩。' })).toBeVisible()
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await expect(page.locator('.swatch-row')).toHaveCount(3)
+  await expect(page.locator('.swatch-info strong').first()).toHaveText(/^#[0-9a-f]{6}$/i)
+  await expect(page.locator('.swatch-row').first()).toContainText('50.0%')
+
+  await page.getByRole('button', { name: 'Art / Poster' }).click()
+  await expect(page.getByRole('button', { name: 'Art / Poster' })).toHaveClass('active')
+  await page.getByRole('button', { name: '增加颜色数量' }).click()
+  await expect(page.locator('.count-control output')).toHaveText('7')
+  await expect(page.locator('.swatch-row')).toHaveCount(3)
+  await page.screenshot({ path: 'test-results/palette-desktop.png', fullPage: true })
+})
+
+test('keeps the workspace usable at a phone viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await expect(page.locator('.swatch-row')).toHaveCount(3)
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
+  expect(overflow).toBe(false)
+  await page.screenshot({ path: 'test-results/palette-mobile.png', fullPage: true })
+})

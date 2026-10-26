@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Interactive local workspace
+
+- Added PNG/JPEG/WebP validation, local Canvas preprocessing and transparent-pixel handling.
+- Added responsive image import, preview, palette shares, count controls, domain switching and HEX copying.
+- Added self-generated test imagery and 2 real-browser workflow tests for desktop and mobile.
+- Verified 8 unit tests, 2 browser tests, ESLint, production builds and 0 known vulnerabilities.
+
 ## 2026-10-26 — Dependency and security cleanup
 
 - Reduced direct runtime dependencies from 48 to 7; npm removed 138 unused packages.

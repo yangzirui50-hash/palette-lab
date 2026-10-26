@@ -1,20 +1,177 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import '../App.css'
+import { domainProfiles } from '../domain/profiles'
+import type { DomainId } from '../domain/profiles'
+import { extractPalette } from '../lib/color/extract'
+import type { PaletteSwatch, RGBPixel } from '../lib/color/extract'
+import { imageFileToPixels } from '../lib/color/image'
+
+type SourceState = {
+  url: string
+  name: string
+  width: number
+  height: number
+}
 
 export default function Home() {
-  const [count, setCount] = useState(0)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const pixelsRef = useRef<RGBPixel[]>([])
+  const [domain, setDomain] = useState<DomainId>('web-ui')
+  const [colorCount, setColorCount] = useState(6)
+  const [palette, setPalette] = useState<PaletteSwatch[]>([])
+  const [source, setSource] = useState<SourceState | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [dragging, setDragging] = useState(false)
+  const [error, setError] = useState('')
+  const [copied, setCopied] = useState('')
+
+  useEffect(() => {
+    if (!source?.url) return
+    return () => URL.revokeObjectURL(source.url)
+  }, [source?.url])
+
+  useEffect(() => {
+    if (!copied) return
+    const timer = window.setTimeout(() => setCopied(''), 1600)
+    return () => window.clearTimeout(timer)
+  }, [copied])
+
+  const processFile = async (file?: File) => {
+    if (!file) return
+    setBusy(true)
+    setError('')
+    setCopied('')
+    try {
+      const processed = await imageFileToPixels(file)
+      pixelsRef.current = processed.pixels
+      setPalette(extractPalette(processed.pixels, colorCount))
+      setSource({ url: processed.previewUrl, name: file.name, width: processed.width, height: processed.height })
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : '图片处理失败，请重试')
+    } finally {
+      setBusy(false)
+      setDragging(false)
+      if (inputRef.current) inputRef.current.value = ''
+    }
+  }
+
+  const changeColorCount = (nextCount: number) => {
+    setColorCount(nextCount)
+    if (pixelsRef.current.length > 0) setPalette(extractPalette(pixelsRef.current, nextCount))
+  }
+
+  const copyColor = async (hex: string) => {
+    try {
+      await navigator.clipboard.writeText(hex)
+      setCopied(hex)
+    } catch {
+      setError(`无法自动复制，请手动复制 ${hex}`)
+    }
+  }
 
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-    </>
+    <div className="app-shell">
+      <header className="topbar">
+        <a className="brand" href="/" aria-label="Palette Lab 首页">
+          <span className="brand-mark" aria-hidden="true" />
+          <span>PALETTE LAB</span>
+        </a>
+        <p>LOCAL COLOR ENGINE <span>/ V1 PREVIEW</span></p>
+      </header>
+
+      <main>
+        <section className="intro">
+          <p className="kicker">IMAGE → COLOR SYSTEM</p>
+          <h1>从图像，提取可用的色彩。</h1>
+          <p>本地取色、角色编辑与场景预览。图片仅在你的设备上处理，不会自动上传。</p>
+        </section>
+
+        <section className="domain-bar" aria-label="设计领域">
+          <span>设计领域</span>
+          <div>
+            {Object.values(domainProfiles).map((profile) => (
+              <button key={profile.id} className={domain === profile.id ? 'active' : ''} onClick={() => setDomain(profile.id)}>
+                {profile.label}
+              </button>
+            ))}
+          </div>
+          <small>{domainProfiles[domain].colorRoles.length} 个颜色角色</small>
+        </section>
+
+        <section className="workspace">
+          <div className="source-panel">
+            <div className="panel-heading">
+              <span>01</span><h2>图像输入</h2><small>LOCAL ONLY</small>
+            </div>
+            <div
+              className={`drop-zone ${dragging ? 'dragging' : ''} ${source ? 'has-image' : ''}`}
+              onDragOver={(event) => { event.preventDefault(); setDragging(true) }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={(event) => { event.preventDefault(); void processFile(event.dataTransfer.files[0]) }}
+            >
+              {source ? (
+                <>
+                  <img src={source.url} alt={`待分析图片：${source.name}`} />
+                  <div className="source-meta">
+                    <div><strong>{source.name}</strong><span>{source.width} × {source.height}</span></div>
+                    <button onClick={() => inputRef.current?.click()} disabled={busy}>更换图片</button>
+                  </div>
+                </>
+              ) : (
+                <div className="drop-content">
+                  <span className="upload-symbol" aria-hidden="true">＋</span>
+                  <h3>{busy ? '正在分析图片…' : '拖入一张图片'}</h3>
+                  <p>PNG、JPG 或 WebP，最大 15 MB</p>
+                  <button onClick={() => inputRef.current?.click()} disabled={busy}>选择图片</button>
+                </div>
+              )}
+              <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => void processFile(event.target.files?.[0])} hidden />
+            </div>
+            {error && <p className="error-message" role="alert">{error}</p>}
+            <div className="privacy-note"><span aria-hidden="true">●</span> 原始图片不会离开此设备</div>
+          </div>
+
+          <div className="palette-panel">
+            <div className="panel-heading">
+              <span>02</span><h2>色彩结果</h2><small>{palette.length} COLORS</small>
+            </div>
+            <div className="palette-toolbar">
+              <label htmlFor="color-count">提取数量</label>
+              <div className="count-control">
+                <button aria-label="减少颜色数量" onClick={() => changeColorCount(Math.max(2, colorCount - 1))} disabled={colorCount <= 2}>−</button>
+                <output>{colorCount}</output>
+                <button aria-label="增加颜色数量" onClick={() => changeColorCount(Math.min(8, colorCount + 1))} disabled={colorCount >= 8}>＋</button>
+              </div>
+            </div>
+
+            {palette.length > 0 ? (
+              <div className="swatch-list" aria-live="polite">
+                {palette.map((color, index) => (
+                  <button className="swatch-row" key={`${color.hex}-${index}`} onClick={() => void copyColor(color.hex)} title="点击复制 HEX">
+                    <span className="swatch-color" style={{ backgroundColor: color.hex }} />
+                    <span className="swatch-info"><strong>{color.hex}</strong><small>OKLCH {color.oklch[0].toFixed(2)}</small></span>
+                    <span className="swatch-share">{(color.share * 100).toFixed(1)}%</span>
+                    <span className="copy-label">{copied === color.hex ? '已复制' : '复制'}</span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-palette">
+                <div className="empty-colors" aria-hidden="true"><i /><i /><i /><i /></div>
+                <h3>{busy ? '正在生成色组' : '等待图像输入'}</h3>
+                <p>色值、占比和颜色空间信息将在这里显示。</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="next-step">
+          <span>当前版本</span>
+          <p>本地图片处理与色组提取</p>
+          <span>下一阶段</span>
+          <p>颜色角色编辑、领域预览与导出</p>
+        </section>
+      </main>
+    </div>
   )
 }
