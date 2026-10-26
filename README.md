@@ -26,6 +26,10 @@ React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Wo
 - `docs/PRODUCT.md`: product promise, scope and acceptance criteria
 - `docs/ARCHITECTURE.md`: system boundaries, records and provider contracts
 - `docs/ROADMAP.md`: phased delivery plan
+- `docs/STATUS.md`: current implementation and verification state
+- `docs/CHANGELOG.md`: dated project changes
+- `docs/DECISIONS.md`: architecture decision records
+- `CONTRIBUTING.md`: delivery and documentation synchronization rules
 
 ## Development
 
