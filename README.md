@@ -41,6 +41,8 @@ npm install
 npm run dev
 ```
 
+`npm run dev` starts the lightweight frontend preview. Use `npm run dev:full` when developing the Cloudflare Worker and online APIs.
+
 ## Quality checks
 
 ```bash

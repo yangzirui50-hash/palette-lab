@@ -4,7 +4,8 @@
   "version": "0.1.0-preview.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.frontend.config.ts",
+    "dev:full": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",

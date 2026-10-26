@@ -56,6 +56,10 @@ Optional later stages:
 - `InspirationProvider`: reference search and attribution; Unsplash first
 - `ExportAdapter`: CSS, JSON, PNG and later design-tool formats
 
+## Development modes
+
+`npm run dev` uses `vite.frontend.config.ts` for fast local UI work without starting the Worker. `npm run dev:full` uses the complete Cloudflare Vite integration for API development. Production builds always use the full `vite.config.ts` and Worker output.
+
 ## Privacy and secrets
 
 Palette extraction runs locally. Images are sent to an AI provider only after an explicit user action and clear notice. API keys live only in server-side secrets and never in frontend source.

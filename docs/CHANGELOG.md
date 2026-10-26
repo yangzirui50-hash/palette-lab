@@ -2,6 +2,12 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Preview startup reliability
+
+- Split lightweight frontend preview from full Cloudflare development.
+- `npm run dev` now avoids unnecessary Worker startup; `npm run dev:full` preserves integrated API development.
+- Kept production Worker builds unchanged.
+
 ## 2026-10-26 — User-directed theme correction
 
 - Restored the unified neutral charcoal and yellow-green accent system across all dark domains.
