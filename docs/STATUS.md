@@ -4,18 +4,19 @@ _Last updated: 2026-10-26_
 
 ## Current phase
 
-Phase 0 complete. Phase 1 has not started.
+Phase 1 in progress. The deterministic palette engine is implemented; image import and the workspace UI are next.
 
 ## Verified
 
-- Product, architecture and roadmap documents established
-- React + TypeScript + Vite project builds successfully
-- Hono + Cloudflare Workers foundation configured
-- Web/UI and Art/Poster profiles defined
-- 3 domain-profile tests pass locally
-- GitHub Actions CI passes on `main`
-- Phase 0 baseline and documentation workflow commits are synchronized with remote `main`
-- Documentation backup recovered after two network TLS failures; the retry succeeded
+- Product, architecture, roadmap and multi-platform documents are established
+- React + TypeScript + Vite production build passes
+- Hono + Cloudflare Workers foundation is configured
+- Web/UI and Art/Poster profiles are defined
+- OKLCH palette clustering returns deterministic colors and normalized shares
+- HEX output is normalized to six digits
+- 8 automated tests pass locally, including 5 palette-engine tests
+- ESLint passes
+- Previous GitHub Actions CI runs pass on `main`
 
 ## Repository
 
@@ -25,7 +26,7 @@ Phase 0 complete. Phase 1 has not started.
 
 ## Not implemented yet
 
-- Image import and palette extraction
+- Browser image import and Canvas pixel extraction
 - Workspace UI and scenario previews
 - Export adapters
 - AI providers and multimodal analysis
@@ -35,4 +36,4 @@ Phase 0 complete. Phase 1 has not started.
 
 ## Next action
 
-Implement local image import, deterministic palette extraction and automated tests before connecting the workspace UI.
+Connect browser image import and Canvas preprocessing to the palette engine, then build and verify the responsive workspace workflow.

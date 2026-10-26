@@ -41,3 +41,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Build desktop and mobile responsive web experiences first, then support PWA installation, Tauri desktop packaging and Capacitor mobile packaging without forking product logic.
 - **Reason:** Preserve development speed and local-first portability while leaving practical software-distribution paths open.
+
+## ADR-007 — Deterministic OKLCH palette clustering
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Use weighted sampling and deterministic OKLCH clustering for palette extraction, with six-digit HEX output and normalized shares.
+- **Reason:** Reproducible results, perceptually meaningful grouping, portable tests and consistent exports without requiring an AI call.

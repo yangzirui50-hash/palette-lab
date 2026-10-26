@@ -26,6 +26,10 @@ Optional later stages:
 - IndexedDB for local project history
 - Vitest for deterministic logic and Playwright for workflows
 
+## Implemented color engine
+
+`src/lib/color/extract.ts` accepts typed RGB pixels and returns deterministic palette swatches. It samples large inputs, builds a quantized histogram, clusters weighted samples in OKLCH space, and returns original-RGB cluster means with normalized shares, OKLCH coordinates and six-digit HEX values. The implementation is independent of the DOM and AI providers so it can run in browsers, workers, tests and future native wrappers.
+
 ## Planned source boundaries
 
 - `src/domain/`: typed domain profiles, rules and data contracts
