@@ -30,6 +30,7 @@ React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Wo
 - `docs/CHANGELOG.md`: dated project changes
 - `docs/DECISIONS.md`: architecture decision records
 - `docs/DESIGN_SYSTEM.md`: theme/domain tokens and visual invariants
+- `docs/AMBIENT_MODE.md`: future image-driven ambient customization contract
 - `CONTRIBUTING.md`: delivery and documentation synchronization rules
 
 ## Development

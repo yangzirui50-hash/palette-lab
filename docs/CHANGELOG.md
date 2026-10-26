@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Ambient mode specification
+
+- Documented a future Standard/Ambient customization mode.
+- Defined blurred-image rendering, neutral scrims, contrast-checked accents and neutral-dominant surfaces.
+- Added default/current/local image choices, auto/standard/custom accents and reduced-transparency requirements.
+- Kept the current Standard interface unchanged.
+
 ## 2026-10-26 — Light surface hierarchy
 
 - Increased separation between page background, workspace and adjacent panels.

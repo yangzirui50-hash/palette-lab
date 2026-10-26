@@ -41,6 +41,7 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 - AI providers and multimodal analysis
 - Stock-image search
 - Multi-image consistency
+- Ambient background mode and adaptive accent generation
 - Public deployment
 
 ## Next action

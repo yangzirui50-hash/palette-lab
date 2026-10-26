@@ -55,6 +55,7 @@ Optional later stages:
 - `AIAnalysisProvider`: structured multimodal analysis; vendor replaceable
 - `InspirationProvider`: reference search and attribution; Unsplash first
 - `ExportAdapter`: CSS, JSON, PNG and later design-tool formats
+- `AmbientTokenGenerator`: future deterministic image-to-theme candidate filtering, contrast checks and standard-theme fallback
 
 ## Development modes
 

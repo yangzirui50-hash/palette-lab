@@ -83,3 +83,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Separate light backgrounds, alternate panels, primary panels, inputs and swatches with measured tonal contrast, structural borders and two-level shadows; keep the dark theme unchanged.
 - **Reason:** Improve scanability and perceived structure without returning to harsh grid-like borders or flat white expanses.
+
+## ADR-013 — Constrained ambient theming
+
+- **Status:** Accepted for a future phase
+- **Date:** 2026-10-26
+- **Decision:** Offer Standard and Ambient modes. Ambient mode combines a blurred image, neutral scrim and one contrast-checked accent with mostly neutral surfaces; users may override or disable it.
+- **Reason:** Add image-driven personalization without compromising readability, palette accuracy or the standard workspace.

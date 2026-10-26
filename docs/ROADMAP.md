@@ -39,6 +39,7 @@
 - Multi-image consistency
 - Worldbuilding domain profile
 - Character, faction and regional palette roles
+- Ambient background mode with constrained image-derived tokens
 - Shareable visual-system documentation
 
 ## Phase 5 — Installable platforms
