@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — User-directed theme correction
+
+- Restored the unified neutral charcoal and yellow-green accent system across all dark domains.
+- Replaced the rejected Light Web indigo experiment with a new porcelain, ink and deep teal palette.
+- Kept Light Art independent with warm paper and restrained vermilion.
+- Reverified all four theme/domain combinations and final-state screenshots.
+
 ## 2026-10-26 — Content-first workspace refinement
 
 - Reduced marketing space and prioritized the actual workspace.

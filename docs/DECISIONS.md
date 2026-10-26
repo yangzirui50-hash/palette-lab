@@ -69,3 +69,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Prioritize canvas and large color fields over marketing copy, add a proportional palette strip, and replace fluorescent light-theme accents with muted indigo while lowering Art vermilion saturation.
 - **Reason:** Improve repeated-task ergonomics and color judgment by applying patterns common to professional palette and canvas tools without copying a specific product.
+
+## ADR-011 — Unified dark accents with independent light domains
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Use the owner's neutral charcoal and yellow-green accent system across all dark domains; design Light Web independently with porcelain and deep teal, and Light Art with warm paper and restrained vermilion.
+- **Reason:** Preserve a familiar dark identity while avoiding fluorescent accents in the light workspace. This supersedes the indigo accent experiment from ADR-010.

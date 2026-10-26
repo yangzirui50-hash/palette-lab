@@ -26,7 +26,7 @@ Shared spacing, control sizes, focus behavior, semantic status, responsive layou
 
 ### Current accent direction
 
-Web Light uses muted indigo (`#4653B8` text, `#5364D8` filled controls) instead of fluorescent yellow-green. Web Dark uses soft periwinkle (`#A5B4FC` text, `#6574E8` fills). Art Light uses restrained vermilion (`#9B3D30` text, `#B55442` fills); Art Dark uses `#D88B77` and `#B96450`. Accent colors belong to application chrome and never modify extracted palette values.
+All dark combinations use the owner's unified neutral charcoal and yellow-green system (`#DFFF4F` with dark text on fills). Web Light uses a separate porcelain, ink and deep teal direction (`#155E54` text, `#176F62` fills). Art Light uses warm paper, ink and restrained vermilion (`#9B3D30` text, `#B84E38` fills). Accent colors belong to application chrome and never modify extracted palette values.
 
 ### Domain direction
 
