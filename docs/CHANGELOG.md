@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Light surface hierarchy
+
+- Increased separation between page background, workspace and adjacent panels.
+- Added distinct panel heading, input, control and swatch surfaces.
+- Added structural borders and restrained two-level shadows without changing the dark theme.
+- Gave Art Light an independent warm-paper elevation system.
+- Reverified all browser workflows, mobile layout, builds and security audit.
+
 ## 2026-10-26 — Preview startup reliability
 
 - Split lightweight frontend preview from full Cloudflare development.

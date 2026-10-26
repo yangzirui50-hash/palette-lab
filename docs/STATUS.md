@@ -19,6 +19,7 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 - Large color fields, palette proportion visualization and responsive mobile swatches are verified
 - All dark domains use the unified charcoal and yellow-green accent system
 - Light Web uses porcelain and deep teal; Light Art uses warm paper and restrained vermilion
+- Light surfaces separate page, workspace, adjacent panels, headings, inputs and swatches with measured contrast and elevation
 - Light/dark themes and all four Web/Art combinations preserve palette data
 - Theme preference persists after reload; extracted HEX values remain unchanged
 - Desktop and 390px mobile layouts pass without horizontal overflow

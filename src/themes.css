@@ -1,22 +1,25 @@
 :root {
   color-scheme: light;
-  --bg: #f6f7f6;
-  --panel: #ffffff;
-  --soft: #f0f2ef;
-  --image-bg: #eceeeb;
+  --bg: #e9ede8;
+  --panel: #fbfcfa;
+  --panel-alt: #f1f4ef;
+  --soft: #e5eae3;
+  --image-bg: #dfe5dd;
   --text: #171917;
-  --muted: #656a66;
-  --line: #17191714;
-  --dashed: #17191730;
-  --swatch: #eff1ed;
-  --swatch-hover: #e5e8e2;
-  --control: #e7eae5;
-  --disabled: #a0a0a0;
+  --muted: #5d645f;
+  --line: #26312724;
+  --line-strong: #c5cec2;
+  --dashed: #7e8c7a;
+  --swatch: #f0f3ee;
+  --swatch-hover: #e5eae2;
+  --control: #e1e6de;
+  --disabled: #929a90;
   --accent: #155e54;
   --accent-fill: #176f62;
   --accent-ink: #ffffff;
   --display-font: Inter, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --shadow: 0 24px 70px #17231a10;
+  --shadow: 0 2px 4px #1b281d08, 0 22px 55px #1b281d16;
+  --card-shadow: 0 2px 8px #1b281d08;
 }
 
 :root[data-theme='dark'] {
@@ -47,13 +50,19 @@
 }
 
 :root[data-domain='art-poster'][data-theme='light'] {
-  --bg: #f7f3ea;
-  --panel: #fffdf8;
-  --soft: #f4eee3;
-  --image-bg: #eee6d9;
-  --swatch: #f1e9dd;
-  --swatch-hover: #e9dfd1;
-  --control: #ece3d7;
+  --bg: #eee6d8;
+  --panel: #fffaf1;
+  --panel-alt: #f4ebdd;
+  --soft: #e9ddcc;
+  --image-bg: #e2d5c1;
+  --line: #4b342222;
+  --line-strong: #d2c0a7;
+  --dashed: #a48b70;
+  --swatch: #f5ecdf;
+  --swatch-hover: #ebdecd;
+  --control: #e7d9c7;
+  --shadow: 0 2px 4px #4a332008, 0 22px 55px #4a332014;
+  --card-shadow: 0 2px 8px #4a332008;
 }
 
 :root[data-domain='art-poster'][data-theme='dark'] {
@@ -68,6 +77,16 @@
   --accent-fill: #dfff4f;
   --accent-ink: #111111;
 }
+
+:root:not([data-theme='dark']) .workspace { border-color: var(--line-strong); }
+:root:not([data-theme='dark']) .source-panel { background: var(--panel-alt); }
+:root:not([data-theme='dark']) .palette-panel { background: var(--panel); }
+:root:not([data-theme='dark']) .panel-heading { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+:root:not([data-theme='dark']) .domain-bar > div { border-color: var(--line-strong); background: var(--panel-alt); }
+:root:not([data-theme='dark']) .swatch-row { border-color: var(--line-strong); box-shadow: var(--card-shadow); }
+:root:not([data-theme='dark']) .count-control { border-color: var(--line-strong); background: var(--panel); }
+:root:not([data-theme='dark']) .palette-proportion { padding: 2px; outline: 1px solid var(--line); background: var(--panel-alt); }
+:root:not([data-theme='dark']) .theme-toggle { box-shadow: var(--card-shadow); }
 
 body { background: var(--bg); color: var(--text); transition: background-color .2s, color .2s; }
 .workspace { background: var(--panel); box-shadow: var(--shadow); }

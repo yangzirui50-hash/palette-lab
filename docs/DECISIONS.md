@@ -76,3 +76,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Use the owner's neutral charcoal and yellow-green accent system across all dark domains; design Light Web independently with porcelain and deep teal, and Light Art with warm paper and restrained vermilion.
 - **Reason:** Preserve a familiar dark identity while avoiding fluorescent accents in the light workspace. This supersedes the indigo accent experiment from ADR-010.
+
+## ADR-012 — Light hierarchy through surfaces before borders
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Separate light backgrounds, alternate panels, primary panels, inputs and swatches with measured tonal contrast, structural borders and two-level shadows; keep the dark theme unchanged.
+- **Reason:** Improve scanability and perceived structure without returning to harsh grid-like borders or flat white expanses.

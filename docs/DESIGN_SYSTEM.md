@@ -28,6 +28,10 @@ Shared spacing, control sizes, focus behavior, semantic status, responsive layou
 
 All dark combinations use the owner's unified neutral charcoal and yellow-green system (`#DFFF4F` with dark text on fills). Web Light uses a separate porcelain, ink and deep teal direction (`#155E54` text, `#176F62` fills). Art Light uses warm paper, ink and restrained vermilion (`#9B3D30` text, `#B84E38` fills). Accent colors belong to application chrome and never modify extracted palette values.
 
+### Light surface hierarchy
+
+Light mode separates the page background, workspace, alternate panel, primary panel, input surface and swatches. `--panel-alt` distinguishes adjacent panels, `--line-strong` defines structural edges, and `--card-shadow` supplies restrained elevation. Art Light uses an independent warm-paper hierarchy rather than reusing the Web gray scale. These rules affect surfaces only and do not alter the dark theme.
+
 ### Domain direction
 
 #### Web / UI
