@@ -34,3 +34,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Run deterministic tests with a separate Node-oriented Vitest configuration.
 - **Reason:** Avoid starting the Cloudflare development server during unit tests.
+
+## ADR-006 — One core for responsive web and native wrappers
+
+- **Status:** Accepted
+- **Date:** 2026-10-26
+- **Decision:** Build desktop and mobile responsive web experiences first, then support PWA installation, Tauri desktop packaging and Capacitor mobile packaging without forking product logic.
+- **Reason:** Preserve development speed and local-first portability while leaving practical software-distribution paths open.

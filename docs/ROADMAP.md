@@ -14,6 +14,8 @@
 - Web/UI and Art/Poster profiles
 - Variants, locking, previews and checks
 - CSS, JSON and PNG exports
+- Desktop multi-pane and mobile task-based responsive workspaces
+- Touch-friendly image import, previews and exports
 - Unit and workflow tests
 
 ## Phase 2 — Multimodal analysis (V1.5)
@@ -38,6 +40,13 @@
 - Worldbuilding domain profile
 - Character, faction and regional palette roles
 - Shareable visual-system documentation
+
+## Phase 5 — Installable platforms
+
+- PWA installation and offline application shell
+- Tauri desktop packaging for Windows, macOS and Linux
+- Capacitor mobile packaging when native integrations are required
+- Platform-specific signing, store and real-device validation
 
 ## Delivery discipline
 

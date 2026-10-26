@@ -2,6 +2,12 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-26 — Multi-platform direction
+
+- Added desktop and mobile responsive workspace requirements.
+- Added PWA, Tauri desktop and Capacitor mobile delivery paths.
+- Confirmed that native packaging must reuse the same product core.
+
 ## 2026-10-26 — Documentation workflow
 
 - Added current-status tracking.

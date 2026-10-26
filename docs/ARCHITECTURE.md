@@ -56,6 +56,12 @@ Optional later stages:
 
 Palette extraction runs locally. Images are sent to an AI provider only after an explicit user action and clear notice. API keys live only in server-side secrets and never in frontend source.
 
+## Platform strategy
+
+One application core supports multiple delivery targets. V1 provides a desktop multi-pane workspace and a mobile task-based responsive workspace. PWA installation is the first installable target. Tauri is the preferred later desktop wrapper; Capacitor is the later Android/iOS wrapper when native camera, file and sharing integrations are required.
+
+Color processing, domain rules, project records and export adapters remain platform-independent. Native packaging must not fork the core product logic.
+
 ## Reliability
 
 Local palette editing, previews and exports remain available when AI or stock APIs fail. External providers use timeouts, bounded retries, caching and validated fallbacks.
