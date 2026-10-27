@@ -1,4 +1,4 @@
-import { roleLabels } from '../domain/assign'
+import { roleLabels, semanticFallbacks } from '../domain/assign'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { PaletteSwatch } from '../lib/color/extract'
@@ -24,6 +24,9 @@ export default function RoleEditor({ domain, palette, assignments, onChange }: R
             <span className="role-label"><i style={{ backgroundColor: assignments[role] }} />{label}<small>{role}</small></span>
             <select value={assignments[role]} onChange={(event) => onChange(role, event.target.value)} aria-label={`选择${label}颜色`}>
               {palette.map((color, index) => <option key={`${color.hex}-${index}`} value={color.hex}>{color.hex}</option>)}
+              {domain === 'web-ui' && (role === 'success' || role === 'error') && !palette.some((color) => color.hex === semanticFallbacks[role]) && (
+                <option value={semanticFallbacks[role]}>{semanticFallbacks[role]}（语义回退）</option>
+              )}
             </select>
           </label>
         ))}

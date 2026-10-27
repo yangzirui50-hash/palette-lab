@@ -88,3 +88,11 @@ test('edits role colors and updates Web and Poster previews', async ({ page }) =
   await expect(page.locator('.role-field select')).toHaveCount(6)
   await page.screenshot({ path: 'test-results/poster-preview.png', fullPage: true })
 })
+
+test('warns when a role edit makes text unreadable', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.getByLabel('选择主要文字颜色').selectOption({ index: 0 })
+  await expect(page.locator('.contrast-report')).toContainText('对比不足')
+  await expect(page.locator('.contrast-report')).toContainText('背景与主要文字')
+})

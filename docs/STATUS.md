@@ -14,8 +14,10 @@ Phase 1 in progress. Role editing and both domain previews are verified; export 
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 11 unit tests and 6 real-browser workflow tests pass locally
+- 15 unit tests and 7 real-browser workflow tests pass locally
 - Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
+- Single-color inputs receive usable neutral roles and semantic fallbacks
+- WCAG 2.1 contrast checks flag unreadable role edits with pair labels and ratios
 - Eight Web roles and six Art roles are editable and reflected in real previews
 - Stale upload responses are ignored and their object URLs are released
 - Clipboard fallback and unsupported-file feedback have browser coverage

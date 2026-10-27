@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { assignPaletteRoles } from './assign'
+import { assignPaletteRoles, semanticFallbacks } from './assign'
 import { extractPalette } from '../lib/color/extract'
 import type { RGBPixel } from '../lib/color/extract'
 
@@ -30,5 +30,18 @@ describe('assignPaletteRoles', () => {
 
   it('returns an empty record for empty input', () => {
     expect(assignPaletteRoles([], 'web-ui')).toEqual({})
+  })
+
+  it('keeps single-color images and semantic states usable', () => {
+    const singleColor = extractPalette(solid([10, 10, 10], 10), 2)
+    const webRoles = assignPaletteRoles(singleColor, 'web-ui')
+    expect(webRoles.background).toBe(semanticFallbacks.background)
+    expect(webRoles.textPrimary).toBe(semanticFallbacks.textPrimary)
+    expect(webRoles.success).toBe(semanticFallbacks.success)
+    expect(webRoles.error).toBe(semanticFallbacks.error)
+
+    const artRoles = assignPaletteRoles(singleColor, 'art-poster')
+    expect(artRoles.canvas).toBe(semanticFallbacks.background)
+    expect(artRoles.displayText).toBe(semanticFallbacks.textPrimary)
   })
 })

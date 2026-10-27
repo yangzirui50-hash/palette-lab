@@ -34,6 +34,10 @@ Optional later stages:
 
 `src/domain/assign.ts` maps extracted swatches into domain-specific role records using OKLCH lightness, chroma and hue. `RoleEditor` lets users override every assignment, while `DomainPreview` renders real Web/UI and Art/Poster outputs from those records. Color.js OKLCH coordinates are interpreted as lightness, chroma and hue; hue is never included in chroma calculations.
 
+## Semantic fallbacks and contrast checks
+
+Single-color inputs receive explicit neutral roles instead of reusing one swatch everywhere. Success and error states use stable semantic fallbacks rather than unreliable hue inference. `src/domain/contrast.ts` evaluates domain-specific role pairs using the WCAG 2.1 algorithm, and the preview reports pair labels, thresholds and measured ratios before export.
+
 ## Planned source boundaries
 
 - `src/domain/`: typed domain profiles, rules and data contracts

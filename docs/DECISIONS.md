@@ -90,3 +90,10 @@
 - **Date:** 2026-10-26
 - **Decision:** Offer Standard and Ambient modes. Ambient mode combines a blurred image, neutral scrim and one contrast-checked accent with mostly neutral surfaces; users may override or disable it.
 - **Reason:** Add image-driven personalization without compromising readability, palette accuracy or the standard workspace.
+
+## ADR-014 — Semantic fallbacks and WCAG verification
+
+- **Status:** Accepted
+- **Date:** 2026-10-27
+- **Decision:** Use explicit neutral and semantic fallbacks for degenerate palettes, and validate role pairs with WCAG 2.1 before treating them as export-ready.
+- **Reason:** Prevent invisible status colors, unusable single-color previews and unchecked accessibility regressions during manual editing.

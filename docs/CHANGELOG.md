@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Semantic fallbacks and contrast verification
+
+- Replaced hue-inferred status colors with stable semantic fallbacks.
+- Added neutral role assignments for single-color images.
+- Added WCAG 2.1 role-pair checks with visible pair labels and ratios.
+- Added unit and browser coverage for degenerate palettes and unreadable edits; 15 unit tests and 7 workflows now pass.
+
 ## 2026-10-27 — Role editing and domain previews
 
 - Added deterministic Web/UI and Art/Poster role assignment.

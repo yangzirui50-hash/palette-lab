@@ -35,10 +35,13 @@ const nearestLightness = (palette: PaletteSwatch[], target: number) =>
 
 const at = (items: PaletteSwatch[], index: number) => items[Math.min(index, items.length - 1)].hex
 
-function hueScore(color: PaletteSwatch, targetHue: number) {
-  const hue = color.oklch[2]
-  const distance = Math.min(Math.abs(hue - targetHue), 360 - Math.abs(hue - targetHue))
-  return color.oklch[1] * Math.max(0.15, 1 - distance / 180)
+export const semanticFallbacks = {
+  success: '#2e7d5b',
+  error: '#c64b45',
+  background: '#101010',
+  surface: '#1b1b1b',
+  textPrimary: '#f2f2f2',
+  textMuted: '#a3a3a3',
 }
 
 export function assignPaletteRoles(palette: PaletteSwatch[], domain: DomainId): RoleAssignments {
@@ -47,6 +50,29 @@ export function assignPaletteRoles(palette: PaletteSwatch[], domain: DomainId): 
   const dark = byLightness(palette)
   const chroma = byChroma(palette)
   const accent = chroma[0].hex
+
+  if (palette.length === 1) {
+    if (domain === 'art-poster') {
+      return {
+        canvas: semanticFallbacks.background,
+        primaryVisual: palette[0].hex,
+        secondaryVisual: palette[0].hex,
+        accent,
+        displayText: semanticFallbacks.textPrimary,
+        bodyText: semanticFallbacks.textMuted,
+      }
+    }
+    return {
+      background: semanticFallbacks.background,
+      surface: semanticFallbacks.surface,
+      textPrimary: semanticFallbacks.textPrimary,
+      textMuted: semanticFallbacks.textMuted,
+      accent,
+      focus: accent,
+      success: semanticFallbacks.success,
+      error: semanticFallbacks.error,
+    }
+  }
 
   if (domain === 'art-poster') {
     return {
@@ -59,8 +85,6 @@ export function assignPaletteRoles(palette: PaletteSwatch[], domain: DomainId): 
     }
   }
 
-  const success = [...palette].sort((a, b) => hueScore(b, 145) - hueScore(a, 145))[0].hex
-  const error = [...palette].sort((a, b) => hueScore(b, 30) - hueScore(a, 30))[0].hex
   return {
     background: dark[0].hex,
     surface: at(dark, 1),
@@ -68,7 +92,7 @@ export function assignPaletteRoles(palette: PaletteSwatch[], domain: DomainId): 
     textMuted: nearestLightness(palette, 0.58).hex,
     accent,
     focus: accent,
-    success,
-    error,
+    success: semanticFallbacks.success,
+    error: semanticFallbacks.error,
   }
 }
