@@ -56,6 +56,8 @@ Use Cloudflare secrets for `AI_API_KEY` and `AI_MODEL`; configure `AI_BASE_URL` 
 
 `npm run test:e2e` uses `scripts/run-e2e.mjs` to restore the real local environment immediately after Playwright exits, whether tests succeed or fail. Mock configuration must never overwrite the owner's working configuration after a test run.
 
+A previous restore implementation removed `.dev.vars` when no backup existed. This was corrected: restoration now requires a backup, and only files containing the explicit `PALETTE_LAB_TEST_ENV=1` marker may be deleted. `npm run test:env` covers preservation, restoration and safe mock cleanup in CI.
+
 ## Failure behavior
 
 - Missing configuration: HTTP 501 with an explicit offline-safe message

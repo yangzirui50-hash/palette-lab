@@ -118,3 +118,10 @@
 - **Date:** 2026-10-27
 - **Decision:** Register provider protocol, default model, endpoint, vision and structured-output capabilities; mark custom providers as unimplemented instead of pretending compatibility.
 - **Reason:** Enable fast provider switching while preserving model-specific validation, honest capability reporting and credential safety.
+
+## ADR-018 — Attributed references with bounded AI comparison
+
+- **Status:** Accepted
+- **Date:** 2026-10-27
+- **Decision:** Derive Unsplash searches from validated analysis, preserve source/photographer attribution, hotlink official image URLs, and compare at most four candidates with fit and actionable guidance rather than fake aesthetic scores.
+- **Reason:** Provide useful inspiration without copying assets, hiding provenance or making unbounded AI calls.

@@ -152,3 +152,16 @@ test('generates a structured AI analysis through the mock provider', async ({ pa
   await expect(page.locator('.analysis-uncertainty')).toContainText('测试图没有真实语义主体')
   await page.screenshot({ path: 'test-results/ai-analysis.png', fullPage: true })
 })
+
+test('returns attributed references and comparison after analysis', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.getByRole('button', { name: '生成 AI 美学分析' }).click()
+  await expect(page.locator('.analysis-summary')).toBeVisible()
+  await page.getByRole('button', { name: '生成参考图与对比' }).click()
+  await expect(page.locator('.reference-card')).toHaveCount(3)
+  await expect(page.locator('.inspiration-query')).toContainText('Mock / 测试素材')
+  await expect(page.locator('.comparison-summary')).toBeVisible()
+  await expect(page.locator('.reference-card').first()).toContainText('借鉴')
+  await page.screenshot({ path: 'test-results/inspiration.png', fullPage: true })
+})

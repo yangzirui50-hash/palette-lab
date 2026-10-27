@@ -9,4 +9,6 @@ export type WorkerEnv = {
   AI_MODEL?: string
   AI_BASE_URL?: string
   AI_PROVIDER?: string
+  UNSPLASH_ACCESS_KEY?: string
+  UNSPLASH_PROVIDER?: string
 }

@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "node scripts/run-e2e.mjs",
+    "test:env": "node scripts/test-env-safety.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -14,7 +14,9 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 20 unit tests and 10 real-browser workflow tests pass locally
+- 27 unit tests and 11 real-browser workflow tests pass locally
+- Online inspiration and AI comparison are verified with attributed mock fixtures
+- Real Unsplash access-key verification is pending owner registration
 - Mock multimodal analysis returns structured reports through the real Worker API
 - Real DeepSeek Flash analysis completed successfully with HTTP 200 on 2026-10-27
 - The real model correctly identified the test image's three color fields and composition; mock output was not reused
@@ -50,16 +52,17 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 - Ambient specification commit: `4b254e1 docs: specify ambient background customization`
 - Ambient specification and backup-status commits are synchronized with remote `main`; the retry succeeded on 2026-10-26
 - AI foundation commit `c9d20ca` is committed locally; remote backup is pending after two connection resets
-- DeepSeek provider registration and real API credentials are configured locally; secrets remain excluded from version control
+- DeepSeek Flash real analysis succeeded before a local environment-restore defect removed the owner's configuration file
+- The file has been rebuilt with non-secret defaults; the owner must re-enter the API key locally
+- `test:env` now proves real configs are preserved and mock files are removed only when explicitly marked
 - Remote: https://github.com/yangzirui50-hash/palette-lab
 
 ## Not implemented yet
 
-- Stock-image search
 - Multi-image consistency
 - Ambient background mode and adaptive accent generation
 - Public deployment
 
 ## Next action
 
-Implement attributed online inspiration and AI-assisted reference comparison using the verified DeepSeek provider chain.
+Configure the owner's Unsplash access key, verify real attributed search and DeepSeek comparison, then complete production deployment.

@@ -3,7 +3,7 @@ import app from './index'
 
 const requestBody = {
   image: 'data:image/png;base64,AA==',
-  domain: 'web-ui',
+  domain: 'web-ui' as const,
   palette: [{ hex: '#080808', share: 1 }],
   assignments: { background: '#080808' },
 }
@@ -47,5 +47,20 @@ describe('analysis API', () => {
     const payload = await response.json()
     expect(payload.providers.some((provider: { id: string }) => provider.id === 'deepseek')).toBe(true)
     expect(JSON.stringify(payload)).not.toContain('AI_API_KEY')
+  })
+
+  it('returns attributed mock references and AI comparison', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const analysis = await mockAnalysisProvider.analyze(requestBody)
+    const response = await app.request('/api/inspiration', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...requestBody, analysis }),
+    }, { AI_PROVIDER: 'mock', UNSPLASH_PROVIDER: 'mock' })
+    expect(response.status).toBe(200)
+    const payload = await response.json()
+    expect(payload.photos).toHaveLength(3)
+    expect(payload.photos[0].photographer).toBeTruthy()
+    expect(payload.comparison.rankings.length).toBeGreaterThan(0)
   })
 })

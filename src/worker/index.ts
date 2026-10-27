@@ -4,6 +4,9 @@ import { mockAnalysisProvider } from './providers/mock'
 import { createOpenAIProvider } from './providers/openai'
 import type { WorkerEnv } from './providers/types'
 import { providerRegistry } from './providers/registry'
+import { inspirationRequestSchema, nearestUnsplashColor, buildInspirationQuery } from '../domain/inspiration'
+import { createUnsplashProvider, mockInspirationProvider } from './providers/unsplash'
+import { compareReferences } from './providers/referenceAnalysis'
 
 const app = new Hono<{ Bindings: WorkerEnv }>()
 
@@ -39,6 +42,37 @@ app.post('/api/analysis', async (c) => {
     }
     console.error('Analysis provider failed', error)
     return c.json({ error: 'AI_ANALYSIS_FAILED', message: '分析服务暂时不可用，请稍后重试。' }, 502)
+  }
+})
+
+app.post('/api/inspiration', async (c) => {
+  let body: unknown
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ error: 'INVALID_JSON' }, 400)
+  }
+  const parsed = inspirationRequestSchema.safeParse(body)
+  if (!parsed.success) return c.json({ error: 'INVALID_INSPIRATION_REQUEST' }, 400)
+
+  try {
+    const source = c.env.UNSPLASH_PROVIDER === 'mock' ? mockInspirationProvider : createUnsplashProvider(c.env)
+    const query = buildInspirationQuery(parsed.data.analysis, parsed.data.domain)
+    const photos = await source.search(query, nearestUnsplashColor(parsed.data.palette))
+    let comparison = null
+    let comparisonError: string | null = null
+    try {
+      comparison = await compareReferences(c.env, parsed.data, photos)
+    } catch {
+      comparisonError = 'AI_COMPARISON_FAILED'
+    }
+    return c.json({ query, source: c.env.UNSPLASH_PROVIDER === 'mock' ? 'mock-unsplash' : 'unsplash', photos, comparison, comparisonError })
+  } catch (error) {
+    if (error instanceof Error && error.message === 'UNSPLASH_NOT_CONFIGURED') {
+      return c.json({ error: 'UNSPLASH_NOT_CONFIGURED', message: 'Unsplash 尚未配置，离线功能不受影响。' }, 501)
+    }
+    console.error('Inspiration provider failed', error)
+    return c.json({ error: 'INSPIRATION_FAILED', message: '参考图服务暂时不可用，请稍后重试。' }, 502)
   }
 })
 

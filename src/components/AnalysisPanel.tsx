@@ -11,17 +11,18 @@ type AnalysisPanelProps = {
   sourceFile: File
   palette: PaletteSwatch[]
   assignments: RoleAssignments
+  report: AnalysisReport | null
+  onReportChange: (report: AnalysisReport | null) => void
 }
 
-export default function AnalysisPanel({ domain, sourceFile, palette, assignments }: AnalysisPanelProps) {
-  const [report, setReport] = useState<AnalysisReport | null>(null)
+export default function AnalysisPanel({ domain, sourceFile, palette, assignments, report, onReportChange }: AnalysisPanelProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    setReport(null)
+    onReportChange(null)
     setError('')
-  }, [domain, assignments, sourceFile])
+  }, [domain, assignments, sourceFile, onReportChange])
 
   const analyze = async () => {
     setLoading(true)
@@ -35,7 +36,7 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.message ?? payload.error ?? '分析失败，请重试')
-      setReport(payload as AnalysisReport)
+      onReportChange(payload as AnalysisReport)
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : '分析服务暂时不可用')
     } finally {

@@ -2,6 +2,20 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Environment restoration correction
+
+- Identified and documented a local configuration-loss defect in test restoration.
+- Added explicit test markers and backup-only restoration so real `.dev.vars` files are never deleted without a backup.
+- Added environment safety tests to CI and rebuilt non-secret local defaults for owner re-entry.
+
+## 2026-10-27 — Online inspiration and comparison foundation
+
+- Added content-aware Unsplash query planning and supported color filters.
+- Added attributed reference photos and up-to-four-candidate AI comparison.
+- Added real/mock provider boundaries, timeouts and comparison-failure fallback.
+- Added a complete browser workflow with self-generated mock fixtures; 27 unit tests and 11 workflows pass.
+- Real Unsplash verification awaits the owner's access key.
+
 ## 2026-10-27 — Real DeepSeek verification
 
 - Completed a real DeepSeek Flash multimodal request through the local Worker with HTTP 200.

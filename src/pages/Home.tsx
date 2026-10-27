@@ -14,6 +14,8 @@ import RoleEditor from '../components/RoleEditor'
 import DomainPreview from '../components/DomainPreview'
 import ExportPanel from '../components/ExportPanel'
 import AnalysisPanel from '../components/AnalysisPanel'
+import InspirationPanel from '../components/InspirationPanel'
+import type { AnalysisReport } from '../domain/analysis'
 
 type SourceState = {
   url: string
@@ -35,6 +37,7 @@ export default function Home() {
   const assignments = assignmentsByDomain[domain]
   const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
   const [source, setSource] = useState<SourceState | null>(null)
+  const [analysisReport, setAnalysisReport] = useState<AnalysisReport | null>(null)
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
@@ -231,7 +234,8 @@ export default function Home() {
               }))}
             />
             <DomainPreview domain={domain} assignments={assignments} renderRef={setPreviewTarget} />
-            <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
+            <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} report={analysisReport} onReportChange={setAnalysisReport} />
+            <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
           </>
         )}

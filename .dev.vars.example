@@ -3,4 +3,5 @@ AI_PROVIDER=mock
 AI_API_KEY=
 AI_MODEL=
 AI_BASE_URL=https://api.openai.com/v1/chat/completions
+UNSPLASH_PROVIDER=unsplash
 UNSPLASH_ACCESS_KEY=
