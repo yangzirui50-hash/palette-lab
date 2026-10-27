@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Provider registry and DeepSeek setup
+
+- Added provider capability registry for Kimi, DeepSeek, OpenAI, OpenRouter and future Cloudflare support.
+- Configured DeepSeek Flash locally without storing a real key.
+- Added credential-safe provider metadata and health checks.
+- Added registry/API tests; 24 unit tests and 10 browser workflows pass.
+
 ## 2026-10-27 — Multimodal analysis foundation
 
 - Added protected analysis API with request limits and Zod validation.

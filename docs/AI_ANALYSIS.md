@@ -38,6 +38,12 @@ Used by unit and browser tests. Deterministic and clearly labeled `provider: moc
 
 Uses `AI_API_KEY`, `AI_MODEL` and optional `AI_BASE_URL`. The key is read only by the Worker. Responses must contain valid JSON and pass the same schema validation.
 
+## Provider registry
+
+`src/worker/providers/registry.ts` records each provider's protocol, default model, endpoint, vision support, structured-output support and implementation status. `GET /api/providers` exposes capability metadata without credentials. `GET /api/health` reports only the active provider and whether configuration is complete.
+
+DeepSeek is configured locally with `AI_PROVIDER=deepseek`, `AI_MODEL=deepseek-flash` and `AI_BASE_URL=https://api.deepseek.com/chat/completions`. The API key remains empty until the owner creates one. Other supported entries include Kimi, OpenAI and OpenRouter; Cloudflare remains an explicit custom-provider option for a later adapter.
+
 ## Local configuration
 
 Copy `.dev.vars.example` to `.dev.vars`. Use `AI_PROVIDER=mock` for development tests. For a real provider, remove the mock setting and supply the real key and model. Never commit real secrets.

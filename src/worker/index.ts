@@ -3,10 +3,17 @@ import { analysisRequestSchema } from '../domain/analysis'
 import { mockAnalysisProvider } from './providers/mock'
 import { createOpenAIProvider } from './providers/openai'
 import type { WorkerEnv } from './providers/types'
+import { providerRegistry } from './providers/registry'
 
 const app = new Hono<{ Bindings: WorkerEnv }>()
 
-app.get('/api/health', (c) => c.json({ status: 'ok', phase: 'ai-preview' }))
+app.get('/api/providers', (c) => c.json({ providers: Object.values(providerRegistry) }))
+app.get('/api/health', (c) => c.json({
+  status: 'ok',
+  phase: 'ai-preview',
+  provider: c.env.AI_PROVIDER ?? 'unconfigured',
+  configured: Boolean(c.env.AI_API_KEY && c.env.AI_MODEL),
+}))
 
 app.post('/api/analysis', async (c) => {
   const contentLength = Number(c.req.header('content-length') ?? 0)

@@ -111,3 +111,10 @@
 - **Date:** 2026-10-27
 - **Decision:** Validate AI requests and reports with Zod, keep provider secrets in the Worker, use a deterministic mock for tests, and restore pre-test environment before production builds.
 - **Reason:** Add multimodal analysis without leaking keys, trusting malformed output, weakening offline workflows or shipping mock mode.
+
+## ADR-017 — Provider registry with explicit capability boundaries
+
+- **Status:** Accepted
+- **Date:** 2026-10-27
+- **Decision:** Register provider protocol, default model, endpoint, vision and structured-output capabilities; mark custom providers as unimplemented instead of pretending compatibility.
+- **Reason:** Enable fast provider switching while preserving model-specific validation, honest capability reporting and credential safety.
