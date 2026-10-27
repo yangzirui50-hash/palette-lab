@@ -49,6 +49,28 @@ describe('analysis API', () => {
     }
   })
 
+  it('retries an invalid model response once and returns a valid report', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const validReport = await mockAnalysisProvider.analyze(requestBody)
+    const providerResponse = (content: unknown) => new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(content) } }] }), { status: 200 })
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(providerResponse({}))
+      .mockResolvedValueOnce(providerResponse(validReport))
+    vi.stubGlobal('fetch', fetchMock)
+    try {
+      const response = await app.request('/api/analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(200)
+      expect((await response.json()).provider).toBe('deepseek')
+      expect(fetchMock).toHaveBeenCalledTimes(2)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
   it('rate-limits paid provider requests before image processing', async () => {
     const limit = vi.fn().mockResolvedValue({ success: false })
     const response = await app.request('/api/analysis', {
