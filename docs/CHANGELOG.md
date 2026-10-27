@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Multimodal analysis foundation
+
+- Added protected analysis API with request limits and Zod validation.
+- Added mock and OpenAI-compatible providers with structured reports and uncertainty metadata.
+- Added AI analysis panel with compressed-image consent, loading, errors and actionable recommendations.
+- Added API and full-browser mock workflows; 20 unit tests and 10 browser tests now pass.
+- Added test-environment backup/restore to keep mock mode out of production builds.
+
 ## 2026-10-27 — AI-readiness reliability review
 
 - Preserved independent role edits across Web/Art switches.

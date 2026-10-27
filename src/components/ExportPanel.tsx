@@ -50,7 +50,7 @@ export default function ExportPanel({ domain, assignments, palette, renderTarget
   return (
     <section className="export-panel" aria-labelledby="export-title">
       <div className="panel-heading">
-        <span>05</span><h2 id="export-title">导出成果</h2><small>PRODUCTION OUTPUT</small>
+        <span>06</span><h2 id="export-title">导出成果</h2><small>PRODUCTION OUTPUT</small>
       </div>
       <div className={`export-audit ${report.issues.length > 0 ? 'has-issues' : ''}`}>
         {report.issues.length === 0

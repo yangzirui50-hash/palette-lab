@@ -66,7 +66,7 @@ Role assignments are stored independently per domain so switching Web/Art does n
 
 ## Provider boundaries
 
-- `AIAnalysisProvider`: structured multimodal analysis; vendor replaceable
+- `AIAnalysisProvider`: structured multimodal analysis; vendor replaceable. Mock and OpenAI-compatible implementations validate reports through `analysisReportSchema`; see `docs/AI_ANALYSIS.md`
 - `InspirationProvider`: reference search and attribution; Unsplash first
 - `ExportAdapter`: CSS, JSON, PNG and later design-tool formats
 - `AmbientTokenGenerator`: future deterministic image-to-theme candidate filtering, contrast checks and standard-theme fallback

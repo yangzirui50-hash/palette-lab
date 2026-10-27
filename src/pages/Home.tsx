@@ -13,12 +13,14 @@ import type { RoleAssignments } from '../domain/assign'
 import RoleEditor from '../components/RoleEditor'
 import DomainPreview from '../components/DomainPreview'
 import ExportPanel from '../components/ExportPanel'
+import AnalysisPanel from '../components/AnalysisPanel'
 
 type SourceState = {
   url: string
   name: string
   width: number
   height: number
+  file: File
 }
 
 export default function Home() {
@@ -79,7 +81,7 @@ export default function Home() {
       }
       pixelsRef.current = processed.pixels
       applyPalette(extractPalette(processed.pixels, colorCount))
-      setSource({ url: processed.previewUrl, name: file.name, width: processed.width, height: processed.height })
+      setSource({ url: processed.previewUrl, name: file.name, width: processed.width, height: processed.height, file })
     } catch (reason) {
       if (requestId === uploadRequestRef.current) {
         setError(reason instanceof Error ? reason.message : '图片处理失败，请重试')
@@ -217,7 +219,7 @@ export default function Home() {
           </div>
         </section>
 
-        {palette.length > 0 && (
+        {source && palette.length > 0 && (
           <>
             <RoleEditor
               domain={domain}
@@ -229,6 +231,7 @@ export default function Home() {
               }))}
             />
             <DomainPreview domain={domain} assignments={assignments} renderRef={setPreviewTarget} />
+            <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
           </>
         )}

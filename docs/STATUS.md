@@ -14,7 +14,10 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 17 unit tests and 9 real-browser workflow tests pass locally
+- 20 unit tests and 10 real-browser workflow tests pass locally
+- Mock multimodal analysis returns structured reports through the real Worker API
+- Real model credentials are not configured yet; HTTP 501 fallback is explicit and offline-safe
+- Test environment is restored before production builds to prevent mock deployment
 - CSS variables, versioned JSON tokens and 2× PNG previews pass real download verification
 - Web and Art role edits are preserved independently across domain switches
 - JSON exports reference a real versioned schema in `public/schemas/`
@@ -48,7 +51,7 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 
 ## Not implemented yet
 
-- AI providers and multimodal analysis
+- Real model credential configuration
 - Stock-image search
 - Multi-image consistency
 - Ambient background mode and adaptive accent generation
@@ -56,4 +59,4 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 
 ## Next action
 
-Implement protected multimodal analysis with structured visual evidence, uncertainty handling and domain-aware actionable recommendations.
+Configure real model credentials after provider selection, then implement attributed online inspiration and AI-assisted reference comparison.

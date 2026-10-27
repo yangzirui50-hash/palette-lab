@@ -31,6 +31,7 @@ React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Wo
 - `docs/DECISIONS.md`: architecture decision records
 - `docs/DESIGN_SYSTEM.md`: theme/domain tokens and visual invariants
 - `docs/AMBIENT_MODE.md`: future image-driven ambient customization contract
+- `docs/AI_ANALYSIS.md`: AI provider, request, report and secret-management contracts
 - `CONTRIBUTING.md`: delivery and documentation synchronization rules
 
 ## Development

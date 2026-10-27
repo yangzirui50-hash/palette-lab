@@ -1,0 +1,29 @@
+.analysis-panel { margin-top: 24px; padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); box-shadow: var(--shadow); }
+.analysis-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.analysis-intro p { max-width: 720px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.8; }
+.analysis-intro button { flex: 0 0 auto; padding: 10px 16px; border: 0; border-radius: 9px; color: var(--accent-ink); background: var(--accent-fill); font-size: 11px; cursor: pointer; }
+.analysis-intro button:disabled { opacity: .55; cursor: wait; }
+.analysis-error { margin: 16px 0 0; padding: 12px; border-radius: 8px; color: #c64b45; background: #c64b4510; font-size: 11px; }
+.analysis-report { margin-top: 22px; border-top: 1px solid var(--line); }
+.analysis-summary { padding: 24px 0; }
+.analysis-summary small, .analysis-recommendations > small, .analysis-facts small { color: var(--accent); font-size: 9px; letter-spacing: .08em; }
+.analysis-summary h3 { max-width: 900px; margin: 12px 0; font-size: clamp(18px, 2.4vw, 26px); font-weight: 450; line-height: 1.5; }
+.analysis-summary p { margin: 0; color: var(--muted); font-size: 11px; }
+.analysis-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.analysis-facts > div { padding: 14px; border-radius: 10px; background: var(--swatch); }
+.analysis-facts p { margin: 8px 0 0; font-size: 11px; line-height: 1.7; }
+.analysis-recommendations { margin-top: 22px; }
+.analysis-recommendations article { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.analysis-recommendations strong { font-size: 13px; font-weight: 550; }
+.analysis-recommendations article p { margin: 6px 0; color: var(--muted); font-size: 11px; }
+.analysis-recommendations article span { color: var(--accent); font-size: 11px; }
+.analysis-uncertainty { padding: 12px; border-radius: 8px; color: var(--muted); background: var(--swatch); font-size: 10px; }
+.analysis-model { margin: 14px 0 0; color: var(--muted); font-size: 8px; }
+@media (max-width: 800px) {
+  .analysis-intro { align-items: flex-start; flex-direction: column; }
+  .analysis-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .analysis-panel { padding: 16px; }
+  .analysis-facts { grid-template-columns: 1fr; }
+}

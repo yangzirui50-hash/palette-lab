@@ -141,3 +141,14 @@ test('preserves separate role edits when switching between domains', async ({ pa
   await page.getByRole('button', { name: 'Art / Poster' }).click()
   await expect(page.getByLabel('选择海报底色颜色')).toHaveValue(await posterCanvas.inputValue())
 })
+
+test('generates a structured AI analysis through the mock provider', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.getByRole('button', { name: '生成 AI 美学分析' }).click()
+  await expect(page.locator('.analysis-summary')).toBeVisible()
+  await expect(page.locator('.analysis-summary h3')).toContainText('深色')
+  await expect(page.locator('.analysis-recommendations')).toContainText('限制强调色比例')
+  await expect(page.locator('.analysis-uncertainty')).toContainText('测试图没有真实语义主体')
+  await page.screenshot({ path: 'test-results/ai-analysis.png', fullPage: true })
+})

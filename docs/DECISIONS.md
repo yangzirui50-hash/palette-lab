@@ -104,3 +104,10 @@
 - **Date:** 2026-10-27
 - **Decision:** Store role assignments per domain and preserve each domain's manual edits across switches; back JSON exports with a real versioned schema and inspect actual PNG output.
 - **Reason:** Prevent silent work loss and unverifiable export contracts while maintaining deterministic local workflows.
+
+## ADR-016 — Schema-validated AI with isolated mock verification
+
+- **Status:** Accepted
+- **Date:** 2026-10-27
+- **Decision:** Validate AI requests and reports with Zod, keep provider secrets in the Worker, use a deterministic mock for tests, and restore pre-test environment before production builds.
+- **Reason:** Add multimodal analysis without leaking keys, trusting malformed output, weakening offline workflows or shipping mock mode.
