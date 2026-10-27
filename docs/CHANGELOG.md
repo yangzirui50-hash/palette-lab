@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Deterministic series difference engine
+
+- Added provider-independent series records and one-to-one OKLCH color matching with shared, missing and additional color evidence.
+- Added share deltas, per-role differences, all-member shared colors and stable candidate ordering.
+- Normalized share-delta precision and strict share-record typing after test/build review.
+- Added eight tests covering identical images, near colors, role correction, all-member sharing, reordering, primary changes and invalid definitions; 38 unit tests, ESLint and production build pass.
+
 ## 2026-10-27 — Series consistency product contract
 
 - Defined series mode as explainable color-system diagnosis and unification, not multi-image picking or automatic recoloring.
@@ -106,7 +113,7 @@ All notable project changes are recorded here in reverse chronological order.
 
 - Replaced hue-inferred status colors with stable semantic fallbacks.
 - Added neutral role assignments for single-color images.
-- Added WCAG 2.1 role-pair checks with visible pair labels and ratios.
+- Added WCAG 2.1 contrast checks with visible pair labels and ratios.
 - Added unit and browser coverage for degenerate palettes and unreadable edits; 15 unit tests and 7 workflows now pass.
 
 ## 2026-10-27 — Role editing and domain previews
@@ -159,7 +166,7 @@ All notable project changes are recorded here in reverse chronological order.
 - Replaced small palette rows with large color fields and a proportional color strip.
 - Removed fluorescent yellow-green from Web themes; introduced muted indigo actions.
 - Reduced Art vermilion saturation for more comfortable Light and Dark modes.
-- Added responsive two-column mobile swatches and final-state screenshot reviews.
+- Added responsive two-column mobile swatches and final-state visual reviews.
 - Reverified 8 unit tests, 3 browser tests, builds and 0 known vulnerabilities.
 
 ## 2026-10-26 — Theme and domain token system
