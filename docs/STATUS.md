@@ -1,10 +1,19 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-10-26_
+_Last updated: 2026-10-27_
 
 ## Current phase
 
-Phase 1 local workspace is complete. Multimodal analysis and online inspiration are the next phases.
+The local workspace and first public deployment are complete. Production DeepSeek configuration and real Unsplash verification are the remaining rollout steps.
+
+## Production
+
+- Public URL: https://palette-lab.3476554092.workers.dev/
+- Cloudflare Workers is connected to the dedicated GitHub repository and `main` branch.
+- The first production build and deployment completed successfully on 2026-10-27.
+- Public image import, exact three-color extraction, dark Art rendering and 390 px mobile layout are verified.
+- Public API health returns HTTP 200 with `configured: false`; unconfigured AI shows an offline fallback and never substitutes mock output.
+- No provider secrets are deployed yet; see `docs/DEPLOYMENT.md`.
 
 ## Verified
 
@@ -61,8 +70,9 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 
 - Multi-image consistency
 - Ambient background mode and adaptive accent generation
-- Public deployment
+- Production provider secrets and real provider calls
+- Real Unsplash access while the owner's application is under review
 
 ## Next action
 
-Configure the owner's Unsplash access key, verify real attributed search and DeepSeek comparison, then complete production deployment.
+Configure DeepSeek as a Cloudflare server-side secret and verify production analysis. After Unsplash approval, configure its Access Key and verify real attributed search plus comparison.

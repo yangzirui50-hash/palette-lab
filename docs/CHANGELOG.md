@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — First production deployment
+
+- Connected Cloudflare Workers to the dedicated `palette-lab` GitHub repository with least-privilege repository access.
+- Completed the first production build and deployed to https://palette-lab.3476554092.workers.dev/.
+- Verified public assets, API health, three-color extraction, dark Art rendering and 390 px mobile layout.
+- Confirmed unconfigured AI fails closed with a visible offline fallback; no mock provider or secrets were deployed.
+- Added deployment configuration, verification and remaining secret-rollout documentation.
+
 ## 2026-10-27 — Real inspiration verification tooling
 
 - Added a credential-redacting verification command for the complete Unsplash and DeepSeek comparison chain.
