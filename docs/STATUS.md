@@ -4,7 +4,7 @@ _Last updated: 2026-10-26_
 
 ## Current phase
 
-Phase 1 in progress. Role editing and both domain previews are verified; export adapters are next.
+Phase 1 local workspace is complete. Multimodal analysis and online inspiration are the next phases.
 
 ## Verified
 
@@ -14,7 +14,8 @@ Phase 1 in progress. Role editing and both domain previews are verified; export 
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 15 unit tests and 7 real-browser workflow tests pass locally
+- 17 unit tests and 8 real-browser workflow tests pass locally
+- CSS variables, versioned JSON tokens and 2× PNG previews pass real download verification
 - Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
 - Single-color inputs receive usable neutral roles and semantic fallbacks
 - WCAG 2.1 contrast checks flag unreadable role edits with pair labels and ratios
@@ -43,7 +44,6 @@ Phase 1 in progress. Role editing and both domain previews are verified; export 
 
 ## Not implemented yet
 
-- Export adapters
 - AI providers and multimodal analysis
 - Stock-image search
 - Multi-image consistency
@@ -52,4 +52,4 @@ Phase 1 in progress. Role editing and both domain previews are verified; export 
 
 ## Next action
 
-Implement CSS variables, JSON tokens and PNG exports using the verified role assignments and domain previews.
+Implement protected multimodal analysis with structured visual evidence, uncertainty handling and domain-aware actionable recommendations.

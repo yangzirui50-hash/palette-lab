@@ -38,6 +38,10 @@ Optional later stages:
 
 Single-color inputs receive explicit neutral roles instead of reusing one swatch everywhere. Success and error states use stable semantic fallbacks rather than unreliable hue inference. `src/domain/contrast.ts` evaluates domain-specific role pairs using the WCAG 2.1 algorithm, and the preview reports pair labels, thresholds and measured ratios before export.
 
+## Export adapters
+
+`src/lib/exporters.ts` produces semantic CSS variables and versioned JSON design tokens with domain roles and source palette data. `ExportPanel` renders actual Web/Poster previews to PNG at 2× resolution. Downloads run locally without uploading images. The same WCAG report is shown before export; warnings remain visible without blocking user choice.
+
 ## Planned source boundaries
 
 - `src/domain/`: typed domain profiles, rules and data contracts

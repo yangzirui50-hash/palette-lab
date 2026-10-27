@@ -1,7 +1,7 @@
 {
   "name": "palette-lab",
   "private": true,
-  "version": "0.1.0-preview.0",
+  "version": "0.2.0-preview.0",
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.frontend.config.ts",
@@ -16,6 +16,7 @@
     "clsx": "^2.1.1",
     "colorjs.io": "^0.7.1",
     "hono": "^4.13.14",
+    "html-to-image": "^1.11.13",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router": "^7.6.1",

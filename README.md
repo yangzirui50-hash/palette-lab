@@ -4,7 +4,7 @@ AI-assisted color-system workspace for turning image inspiration into editable, 
 
 ## Status
 
-Phase 0 — professional project foundation.
+V1 local workspace — image import, role editing, domain previews and file exports are verified.
 
 ## V1 direction
 

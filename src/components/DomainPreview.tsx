@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, Ref } from 'react'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import { getContrastReport } from '../domain/contrast'
@@ -7,9 +7,10 @@ import './DomainPreview.css'
 type DomainPreviewProps = {
   domain: DomainId
   assignments: RoleAssignments
+  renderRef?: Ref<HTMLDivElement>
 }
 
-export default function DomainPreview({ domain, assignments }: DomainPreviewProps) {
+export default function DomainPreview({ domain, assignments, renderRef }: DomainPreviewProps) {
   const report = getContrastReport(domain, assignments)
 
   return (
@@ -22,7 +23,9 @@ export default function DomainPreview({ domain, assignments }: DomainPreviewProp
           ? `✓ ${report.checked} 组关键对比检查通过`
           : `⚠ ${report.issues.length} 组对比不足：${report.issues.map((issue) => `${issue.label} ${issue.ratio.toFixed(1)}:1`).join('；')}`}
       </div>
-      {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} />}
+      <div className="preview-render-target" ref={renderRef}>
+        {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} />}
+      </div>
     </section>
   )
 }

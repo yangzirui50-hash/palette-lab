@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import path from 'node:path'
+import fs from 'node:fs'
 
 const fixture = path.resolve('tests/fixtures/palette-test.png')
 
@@ -95,4 +96,30 @@ test('warns when a role edit makes text unreadable', async ({ page }) => {
   await page.getByLabel('选择主要文字颜色').selectOption({ index: 0 })
   await expect(page.locator('.contrast-report')).toContainText('对比不足')
   await expect(page.locator('.contrast-report')).toContainText('背景与主要文字')
+})
+
+test('exports CSS variables, JSON tokens and a real PNG preview', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+
+  const cssEvent = page.waitForEvent('download')
+  await page.locator('.export-actions button').nth(0).click()
+  const cssDownload = await cssEvent
+  expect(cssDownload.suggestedFilename()).toBe('palette-lab-web-ui.css')
+  const css = fs.readFileSync(await cssDownload.path(), 'utf8')
+  expect(css).toContain('--color-background:')
+
+  const jsonEvent = page.waitForEvent('download')
+  await page.locator('.export-actions button').nth(1).click()
+  const jsonDownload = await jsonEvent
+  expect(jsonDownload.suggestedFilename()).toBe('palette-lab-web-ui.json')
+  const tokens = JSON.parse(fs.readFileSync(await jsonDownload.path(), 'utf8'))
+  expect(tokens.domain).toBe('web-ui')
+  expect(tokens.roles.background).toBeDefined()
+
+  const pngEvent = page.waitForEvent('download')
+  await page.locator('.export-actions button').nth(2).click()
+  const pngDownload = await pngEvent
+  expect(pngDownload.suggestedFilename()).toBe('palette-lab-web-ui.png')
+  expect(fs.statSync(await pngDownload.path()).size).toBeGreaterThan(1000)
 })

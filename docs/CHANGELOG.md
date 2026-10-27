@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Production export adapters
+
+- Added semantic CSS variable downloads.
+- Added versioned JSON design tokens with roles and source palette data.
+- Added real 2× Web/Poster PNG exports.
+- Included WCAG status in the export panel without hiding warnings.
+- Verified all three file types through browser downloads; 17 unit tests and 8 workflows now pass.
+
 ## 2026-10-27 — Semantic fallbacks and contrast verification
 
 - Replaced hue-inferred status colors with stable semantic fallbacks.

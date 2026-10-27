@@ -12,6 +12,7 @@ import { assignPaletteRoles } from '../domain/assign'
 import type { RoleAssignments } from '../domain/assign'
 import RoleEditor from '../components/RoleEditor'
 import DomainPreview from '../components/DomainPreview'
+import ExportPanel from '../components/ExportPanel'
 
 type SourceState = {
   url: string
@@ -29,6 +30,7 @@ export default function Home() {
   const [colorCount, setColorCount] = useState(6)
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
   const [assignments, setAssignments] = useState<RoleAssignments>({})
+  const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
   const [source, setSource] = useState<SourceState | null>(null)
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
@@ -220,13 +222,14 @@ export default function Home() {
               assignments={assignments}
               onChange={(role, hex) => setAssignments((current) => ({ ...current, [role]: hex }))}
             />
-            <DomainPreview domain={domain} assignments={assignments} />
+            <DomainPreview domain={domain} assignments={assignments} renderRef={setPreviewTarget} />
+            <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
           </>
         )}
 
         <footer className="studio-footer">
           <span><i /> LOCAL ENGINE READY</span>
-          <p>角色编辑与场景预览已启用，导出功能将在下一阶段开放</p>
+          <p>角色编辑、场景预览与文件导出已启用</p>
         </footer>
       </main>
     </div>
