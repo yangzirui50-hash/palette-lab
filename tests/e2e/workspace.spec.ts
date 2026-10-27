@@ -70,3 +70,21 @@ test('shows a useful error for unsupported files', async ({ page }) => {
   await expect(page.getByRole('alert')).toHaveText('请选择 PNG、JPG 或 WebP 图片')
   await expect(page.locator('.swatch-row')).toHaveCount(0)
 })
+
+test('edits role colors and updates Web and Poster previews', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await expect(page.locator('.role-editor')).toBeVisible()
+  await expect(page.locator('.preview-web')).toBeVisible()
+  await expect(page.locator('.role-field select')).toHaveCount(8)
+
+  const background = page.getByLabel('选择页面背景颜色')
+  await background.selectOption({ index: 1 })
+  const selected = await background.inputValue()
+  await expect(page.locator('.preview-web')).toHaveCSS('--preview-bg', selected)
+
+  await page.getByRole('button', { name: 'Art / Poster' }).click()
+  await expect(page.locator('.preview-poster')).toBeVisible()
+  await expect(page.locator('.role-field select')).toHaveCount(6)
+  await page.screenshot({ path: 'test-results/poster-preview.png', fullPage: true })
+})

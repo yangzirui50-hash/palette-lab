@@ -4,7 +4,7 @@ _Last updated: 2026-10-26_
 
 ## Current phase
 
-Phase 1 in progress. The first interactive local workspace is verified; role editing, domain previews and exports are next.
+Phase 1 in progress. Role editing and both domain previews are verified; export adapters are next.
 
 ## Verified
 
@@ -14,8 +14,9 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 8 unit tests and 5 real-browser workflow tests pass locally
+- 11 unit tests and 6 real-browser workflow tests pass locally
 - Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
+- Eight Web roles and six Art roles are editable and reflected in real previews
 - Stale upload responses are ignored and their object URLs are released
 - Clipboard fallback and unsupported-file feedback have browser coverage
 - Large color fields, palette proportion visualization and responsive mobile swatches are verified
@@ -40,7 +41,6 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 
 ## Not implemented yet
 
-- Color-role editing and domain scenario previews
 - Export adapters
 - AI providers and multimodal analysis
 - Stock-image search
@@ -50,4 +50,4 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 
 ## Next action
 
-Implement color-role editing, domain-specific previews and the first export adapters while preserving the verified local import workflow.
+Implement CSS variables, JSON tokens and PNG exports using the verified role assignments and domain previews.

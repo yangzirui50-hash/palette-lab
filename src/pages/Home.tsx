@@ -8,6 +8,10 @@ import type { PaletteSwatch, RGBPixel } from '../lib/color/extract'
 import { imageFileToPixels } from '../lib/color/image'
 import { useTheme } from '../hooks/useTheme'
 import { copyText } from '../lib/clipboard'
+import { assignPaletteRoles } from '../domain/assign'
+import type { RoleAssignments } from '../domain/assign'
+import RoleEditor from '../components/RoleEditor'
+import DomainPreview from '../components/DomainPreview'
 
 type SourceState = {
   url: string
@@ -24,6 +28,7 @@ export default function Home() {
   const [domain, setDomain] = useState<DomainId>('web-ui')
   const [colorCount, setColorCount] = useState(6)
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
+  const [assignments, setAssignments] = useState<RoleAssignments>({})
   const [source, setSource] = useState<SourceState | null>(null)
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
@@ -45,6 +50,16 @@ export default function Home() {
     return () => window.clearTimeout(timer)
   }, [copied])
 
+  const applyPalette = (nextPalette: PaletteSwatch[]) => {
+    setPalette(nextPalette)
+    setAssignments(assignPaletteRoles(nextPalette, domain))
+  }
+
+  const changeDomain = (nextDomain: DomainId) => {
+    setDomain(nextDomain)
+    setAssignments(assignPaletteRoles(palette, nextDomain))
+  }
+
   const processFile = async (file?: File) => {
     if (!file) return
     const requestId = ++uploadRequestRef.current
@@ -58,7 +73,7 @@ export default function Home() {
         return
       }
       pixelsRef.current = processed.pixels
-      setPalette(extractPalette(processed.pixels, colorCount))
+      applyPalette(extractPalette(processed.pixels, colorCount))
       setSource({ url: processed.previewUrl, name: file.name, width: processed.width, height: processed.height })
     } catch (reason) {
       if (requestId === uploadRequestRef.current) {
@@ -75,7 +90,7 @@ export default function Home() {
 
   const changeColorCount = (nextCount: number) => {
     setColorCount(nextCount)
-    if (pixelsRef.current.length > 0) setPalette(extractPalette(pixelsRef.current, nextCount))
+    if (pixelsRef.current.length > 0) applyPalette(extractPalette(pixelsRef.current, nextCount))
   }
 
   const copyColor = async (hex: string) => {
@@ -112,7 +127,7 @@ export default function Home() {
           <span>设计领域</span>
           <div>
             {Object.values(domainProfiles).map((profile) => (
-              <button key={profile.id} className={domain === profile.id ? 'active' : ''} onClick={() => setDomain(profile.id)}>
+              <button key={profile.id} className={domain === profile.id ? 'active' : ''} onClick={() => changeDomain(profile.id)}>
                 {profile.label}
               </button>
             ))}
@@ -197,9 +212,21 @@ export default function Home() {
           </div>
         </section>
 
+        {palette.length > 0 && (
+          <>
+            <RoleEditor
+              domain={domain}
+              palette={palette}
+              assignments={assignments}
+              onChange={(role, hex) => setAssignments((current) => ({ ...current, [role]: hex }))}
+            />
+            <DomainPreview domain={domain} assignments={assignments} />
+          </>
+        )}
+
         <footer className="studio-footer">
           <span><i /> LOCAL ENGINE READY</span>
-          <p>颜色角色编辑与场景预览将在下一阶段开放</p>
+          <p>角色编辑与场景预览已启用，导出功能将在下一阶段开放</p>
         </footer>
       </main>
     </div>

@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Role editing and domain previews
+
+- Added deterministic Web/UI and Art/Poster role assignment.
+- Added editable role selectors with immediate preview updates.
+- Added real Web interface and Japanese-print-inspired poster previews.
+- Corrected lightness ordering and OKLCH chroma/hue handling through unit tests.
+- Verified 11 unit tests and 6 browser workflows, builds and 0 known vulnerabilities.
+
 ## 2026-10-27 — Stage review and reliability fixes
 
 - Reviewed implementation, UX, tests, security, CI, backup and deployment readiness.
