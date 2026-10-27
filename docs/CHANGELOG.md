@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — AI-readiness reliability review
+
+- Preserved independent role edits across Web/Art switches.
+- Added a real versioned JSON Schema and relative export reference.
+- Visually verified exported Web PNG content, not only file size.
+- Reduced automatic muted-text/surface collisions.
+- Verified 17 unit tests, 9 browser workflows, recent CI and 0 known vulnerabilities.
+
 ## 2026-10-27 — Production export adapters
 
 - Added semantic CSS variable downloads.

@@ -9,7 +9,7 @@ export function createCssVariables(domain: DomainId, assignments: RoleAssignment
 
 export function createDesignTokens(domain: DomainId, assignments: RoleAssignments, palette: PaletteSwatch[]) {
   return JSON.stringify({
-    $schema: 'https://palette-lab.local/schemas/design-tokens/v1.json',
+    $schema: './schemas/design-tokens/v1.json',
     schemaVersion: '1.0.0',
     generatedAt: new Date().toISOString(),
     domain,

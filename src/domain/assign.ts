@@ -85,11 +85,20 @@ export function assignPaletteRoles(palette: PaletteSwatch[], domain: DomainId): 
     }
   }
 
+  const background = dark[0].hex
+  const surface = at(dark, 1)
+  const textPrimary = light[0].hex
+  const usedForMuted = new Set([background, surface, textPrimary, accent])
+  const mutedCandidates = palette.filter((color) => !usedForMuted.has(color.hex))
+  const textMuted = mutedCandidates.length > 0
+    ? nearestLightness(mutedCandidates, 0.58).hex
+    : semanticFallbacks.textMuted
+
   return {
-    background: dark[0].hex,
-    surface: at(dark, 1),
-    textPrimary: light[0].hex,
-    textMuted: nearestLightness(palette, 0.58).hex,
+    background,
+    surface,
+    textPrimary,
+    textMuted,
     accent,
     focus: accent,
     success: semanticFallbacks.success,

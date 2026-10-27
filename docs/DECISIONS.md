@@ -97,3 +97,10 @@
 - **Date:** 2026-10-27
 - **Decision:** Use explicit neutral and semantic fallbacks for degenerate palettes, and validate role pairs with WCAG 2.1 before treating them as export-ready.
 - **Reason:** Prevent invisible status colors, unusable single-color previews and unchecked accessibility regressions during manual editing.
+
+## ADR-015 — Independent domain editing state
+
+- **Status:** Accepted
+- **Date:** 2026-10-27
+- **Decision:** Store role assignments per domain and preserve each domain's manual edits across switches; back JSON exports with a real versioned schema and inspect actual PNG output.
+- **Reason:** Prevent silent work loss and unverifiable export contracts while maintaining deterministic local workflows.

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./schemas/design-tokens/v1.json",
+  "title": "Palette Lab Design Tokens v1",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "domain", "roles", "palette"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "domain": { "enum": ["web-ui", "art-poster"] },
+    "roles": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+    },
+    "palette": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["hex", "share", "oklch"],
+        "properties": {
+          "hex": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+          "share": { "type": "number", "minimum": 0, "maximum": 1 },
+          "oklch": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": { "type": "number" }
+          }
+        }
+      }
+    }
+  }
+}

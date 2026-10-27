@@ -122,4 +122,22 @@ test('exports CSS variables, JSON tokens and a real PNG preview', async ({ page 
   const pngDownload = await pngEvent
   expect(pngDownload.suggestedFilename()).toBe('palette-lab-web-ui.png')
   expect(fs.statSync(await pngDownload.path()).size).toBeGreaterThan(1000)
+  fs.copyFileSync(await pngDownload.path(), 'test-results/export-web.png')
+})
+
+test('preserves separate role edits when switching between domains', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  const webBackground = page.getByLabel('选择页面背景颜色')
+  await webBackground.selectOption({ index: 1 })
+  const customWebBackground = await webBackground.inputValue()
+
+  await page.getByRole('button', { name: 'Art / Poster' }).click()
+  const posterCanvas = page.getByLabel('选择海报底色颜色')
+  await posterCanvas.selectOption({ index: 2 })
+
+  await page.getByRole('button', { name: 'Web / UI' }).click()
+  await expect(page.getByLabel('选择页面背景颜色')).toHaveValue(customWebBackground)
+  await page.getByRole('button', { name: 'Art / Poster' }).click()
+  await expect(page.getByLabel('选择海报底色颜色')).toHaveValue(await posterCanvas.inputValue())
 })

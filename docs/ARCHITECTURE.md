@@ -40,7 +40,9 @@ Single-color inputs receive explicit neutral roles instead of reusing one swatch
 
 ## Export adapters
 
-`src/lib/exporters.ts` produces semantic CSS variables and versioned JSON design tokens with domain roles and source palette data. `ExportPanel` renders actual Web/Poster previews to PNG at 2× resolution. Downloads run locally without uploading images. The same WCAG report is shown before export; warnings remain visible without blocking user choice.
+`src/lib/exporters.ts` produces semantic CSS variables and versioned JSON design tokens with domain roles and source palette data. `public/schemas/design-tokens/v1.json` provides the real versioned contract used by JSON exports. `ExportPanel` renders actual Web/Poster previews to PNG at 2× resolution. Downloads run locally without uploading images. The same WCAG report is shown before export; warnings remain visible without blocking user choice.
+
+Role assignments are stored independently per domain so switching Web/Art does not discard manual edits. Automatic muted-text selection excludes colors already assigned to background, surface, primary text and accent where possible.
 
 ## Planned source boundaries
 

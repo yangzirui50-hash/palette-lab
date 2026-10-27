@@ -29,7 +29,8 @@ export default function Home() {
   const [domain, setDomain] = useState<DomainId>('web-ui')
   const [colorCount, setColorCount] = useState(6)
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
-  const [assignments, setAssignments] = useState<RoleAssignments>({})
+  const [assignmentsByDomain, setAssignmentsByDomain] = useState<Record<DomainId, RoleAssignments>>({ 'web-ui': {}, 'art-poster': {} })
+  const assignments = assignmentsByDomain[domain]
   const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
   const [source, setSource] = useState<SourceState | null>(null)
   const [busy, setBusy] = useState(false)
@@ -54,12 +55,14 @@ export default function Home() {
 
   const applyPalette = (nextPalette: PaletteSwatch[]) => {
     setPalette(nextPalette)
-    setAssignments(assignPaletteRoles(nextPalette, domain))
+    setAssignmentsByDomain({
+      'web-ui': assignPaletteRoles(nextPalette, 'web-ui'),
+      'art-poster': assignPaletteRoles(nextPalette, 'art-poster'),
+    })
   }
 
   const changeDomain = (nextDomain: DomainId) => {
     setDomain(nextDomain)
-    setAssignments(assignPaletteRoles(palette, nextDomain))
   }
 
   const processFile = async (file?: File) => {
@@ -220,7 +223,10 @@ export default function Home() {
               domain={domain}
               palette={palette}
               assignments={assignments}
-              onChange={(role, hex) => setAssignments((current) => ({ ...current, [role]: hex }))}
+              onChange={(role, hex) => setAssignmentsByDomain((current) => ({
+                ...current,
+                [domain]: { ...current[domain], [role]: hex },
+              }))}
             />
             <DomainPreview domain={domain} assignments={assignments} renderRef={setPreviewTarget} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />

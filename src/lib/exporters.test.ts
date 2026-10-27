@@ -15,6 +15,7 @@ describe('export adapters', () => {
   it('creates structured design tokens with palette data', () => {
     const json = createDesignTokens('art-poster', { canvas: '#080808' }, palette)
     const tokens = JSON.parse(json)
+    expect(tokens.$schema).toBe('./schemas/design-tokens/v1.json')
     expect(tokens.schemaVersion).toBe('1.0.0')
     expect(tokens.domain).toBe('art-poster')
     expect(tokens.roles.canvas).toBe('#080808')

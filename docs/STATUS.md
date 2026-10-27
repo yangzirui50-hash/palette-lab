@@ -14,8 +14,12 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 17 unit tests and 8 real-browser workflow tests pass locally
+- 17 unit tests and 9 real-browser workflow tests pass locally
 - CSS variables, versioned JSON tokens and 2× PNG previews pass real download verification
+- Web and Art role edits are preserved independently across domain switches
+- JSON exports reference a real versioned schema in `public/schemas/`
+- Exported Web PNG is visually reviewed for complete content
+- Automatic role assignment avoids obvious muted-text/surface collisions
 - Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
 - Single-color inputs receive usable neutral roles and semantic fallbacks
 - WCAG 2.1 contrast checks flag unreadable role edits with pair labels and ratios
