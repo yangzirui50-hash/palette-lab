@@ -24,7 +24,9 @@ The local workspace, public deployment and production DeepSeek rollout are compl
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 28 unit tests and 11 real-browser workflow tests pass locally
+- 30 unit tests and 11 real-browser workflow tests pass locally
+- The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
+- Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures
 - Real Unsplash access-key verification is pending owner registration
 - Mock multimodal analysis returns structured reports through the real Worker API
@@ -75,4 +77,4 @@ The local workspace, public deployment and production DeepSeek rollout are compl
 
 ## Next action
 
-After Unsplash approval, configure its Access Key as a Cloudflare secret and verify real attributed search plus DeepSeek comparison.
+Start the multi-image consistency phase from the reviewed stable baseline. After Unsplash approval, separately configure its Access Key and verify real attributed search plus comparison.

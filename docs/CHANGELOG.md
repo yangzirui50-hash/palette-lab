@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Systematic stage-gate review and reliability hardening
+
+- Reviewed functionality, production reliability, cost protection, secret boundaries, tests, deployment and documentation before the next feature phase.
+- Added native Cloudflare rate limiting before paid request processing, with production 429 verification.
+- Added a 90-second analysis timeout, safe error classification and at most one retry for transient provider failures.
+- Prevented stale analysis/reference responses from replacing newer image or domain state.
+- Passed 30 unit tests, 11 browser workflows, environment safety, ESLint, production build and 0-vulnerability audit.
+- Recorded a scoped PASS for the personal public preview; strict global quotas remain a future high-traffic requirement.
+
 ## 2026-10-27 — Production DeepSeek verification
 
 - Configured `AI_API_KEY` exclusively as a Cloudflare Production secret; no credential was added to Git.

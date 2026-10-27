@@ -87,4 +87,4 @@ Color processing, domain rules, project records and export adapters remain platf
 
 ## Reliability
 
-Local palette editing, previews and exports remain available when AI or stock APIs fail. External providers use timeouts, bounded retries, caching and validated fallbacks.
+Local palette editing, previews and exports remain available when AI or stock APIs fail. External providers use timeouts, bounded retries and validated fallbacks. Paid POST endpoints use Cloudflare's approximate regional rate-limit binding before image parsing and provider calls. Analysis/reference UI requests use abort and request-identity guards to prevent stale writes.

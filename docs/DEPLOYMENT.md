@@ -43,6 +43,8 @@ Never commit `.dev.vars`, real API keys, passwords or Cloudflare credentials. Do
 - At 390 px viewport width, document width is 390 px with no horizontal overflow.
 - Before secret configuration, AI analysis returned the visible fallback `AI 服务尚未配置，离线功能不受影响。`
 - A real production DeepSeek Flash analysis returned HTTP 200 with accurate image content, composition and area analysis; provider and model were verified in the response.
+- `AI_RATE_LIMITER` allows six POST requests per route and client IP per 60 seconds, approximately per Cloudflare location. Production returned 429 with `Retry-After: 60` after regional count synchronization; invalid requests did not reach paid providers.
+- Main analysis has a 90-second timeout and at most one retry for transient network/5xx/empty/malformed/schema failures.
 - Reference comparison remains pending Unsplash access; no mock result is presented as production AI.
 
 ## Remaining rollout steps
