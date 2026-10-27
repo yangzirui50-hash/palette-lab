@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import app from './index'
 
 const requestBody = {
@@ -30,6 +30,23 @@ describe('analysis API', () => {
     }, {})
     expect(response.status).toBe(501)
     expect((await response.json()).error).toBe('AI_NOT_CONFIGURED')
+  })
+
+  it('returns a credential-safe provider failure reason', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(null, { status: 401 })))
+    try {
+      const response = await app.request('/api/analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(502)
+      const payload = await response.json()
+      expect(payload.reason).toBe('AI_PROVIDER_401')
+      expect(JSON.stringify(payload)).not.toContain('TEST_PLACEHOLDER')
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 
   it('rejects invalid requests', async () => {

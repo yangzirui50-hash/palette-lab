@@ -41,7 +41,10 @@ app.post('/api/analysis', async (c) => {
       return c.json({ error: 'AI_NOT_CONFIGURED', message: 'AI 服务尚未配置，离线功能不受影响。' }, 501)
     }
     console.error('Analysis provider failed', error)
-    return c.json({ error: 'AI_ANALYSIS_FAILED', message: '分析服务暂时不可用，请稍后重试。' }, 502)
+    const reason = error instanceof Error && /^AI_(?:PROVIDER_\d{3}|EMPTY_RESPONSE)$/.test(error.message)
+      ? error.message
+      : 'AI_ANALYSIS_FAILED'
+    return c.json({ error: 'AI_ANALYSIS_FAILED', reason, message: '分析服务暂时不可用，请稍后重试。' }, 502)
   }
 })
 
