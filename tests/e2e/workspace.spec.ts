@@ -56,3 +56,17 @@ test('preserves palette data across theme and domain combinations', async ({ pag
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await expect(page.locator('.theme-toggle')).toContainText('浅色模式')
 })
+
+test('copies a palette HEX value with feedback', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.swatch-row').first().click()
+  await expect(page.locator('.swatch-on-color').first()).toHaveText('已复制 ✓')
+})
+
+test('shows a useful error for unsupported files', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(path.resolve('tests/fixtures/not-an-image.txt'))
+  await expect(page.getByRole('alert')).toHaveText('请选择 PNG、JPG 或 WebP 图片')
+  await expect(page.locator('.swatch-row')).toHaveCount(0)
+})

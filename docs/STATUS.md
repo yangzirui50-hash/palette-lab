@@ -14,8 +14,10 @@ Phase 1 in progress. The first interactive local workspace is verified; role edi
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 8 unit tests and 3 real-browser workflow tests pass locally
+- 8 unit tests and 5 real-browser workflow tests pass locally
 - Browser image import, local Canvas preprocessing, palette display and HEX copying are verified
+- Stale upload responses are ignored and their object URLs are released
+- Clipboard fallback and unsupported-file feedback have browser coverage
 - Large color fields, palette proportion visualization and responsive mobile swatches are verified
 - All dark domains use the unified charcoal and yellow-green accent system
 - Light Web uses porcelain and deep teal; Light Art uses warm paper and restrained vermilion

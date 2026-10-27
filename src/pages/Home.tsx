@@ -7,6 +7,7 @@ import { extractPalette } from '../lib/color/extract'
 import type { PaletteSwatch, RGBPixel } from '../lib/color/extract'
 import { imageFileToPixels } from '../lib/color/image'
 import { useTheme } from '../hooks/useTheme'
+import { copyText } from '../lib/clipboard'
 
 type SourceState = {
   url: string
@@ -18,6 +19,7 @@ type SourceState = {
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
   const pixelsRef = useRef<RGBPixel[]>([])
+  const uploadRequestRef = useRef(0)
   const { theme, toggleTheme } = useTheme()
   const [domain, setDomain] = useState<DomainId>('web-ui')
   const [colorCount, setColorCount] = useState(6)
@@ -45,20 +47,29 @@ export default function Home() {
 
   const processFile = async (file?: File) => {
     if (!file) return
+    const requestId = ++uploadRequestRef.current
     setBusy(true)
     setError('')
     setCopied('')
     try {
       const processed = await imageFileToPixels(file)
+      if (requestId !== uploadRequestRef.current) {
+        URL.revokeObjectURL(processed.previewUrl)
+        return
+      }
       pixelsRef.current = processed.pixels
       setPalette(extractPalette(processed.pixels, colorCount))
       setSource({ url: processed.previewUrl, name: file.name, width: processed.width, height: processed.height })
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : '图片处理失败，请重试')
+      if (requestId === uploadRequestRef.current) {
+        setError(reason instanceof Error ? reason.message : '图片处理失败，请重试')
+      }
     } finally {
-      setBusy(false)
-      setDragging(false)
-      if (inputRef.current) inputRef.current.value = ''
+      if (requestId === uploadRequestRef.current) {
+        setBusy(false)
+        setDragging(false)
+        if (inputRef.current) inputRef.current.value = ''
+      }
     }
   }
 
@@ -68,12 +79,9 @@ export default function Home() {
   }
 
   const copyColor = async (hex: string) => {
-    try {
-      await navigator.clipboard.writeText(hex)
-      setCopied(hex)
-    } catch {
-      setError(`无法自动复制，请手动复制 ${hex}`)
-    }
+    const didCopy = await copyText(hex)
+    if (didCopy) setCopied(hex)
+    else setError(`无法自动复制，请手动复制 ${hex}`)
   }
 
   return (

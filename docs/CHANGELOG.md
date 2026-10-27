@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Stage review and reliability fixes
+
+- Reviewed implementation, UX, tests, security, CI, backup and deployment readiness.
+- Prevented stale asynchronous uploads from replacing newer selections.
+- Added Clipboard API fallback and copy-feedback browser coverage.
+- Added unsupported-file error coverage; 5 browser tests and 8 unit tests now pass.
+- Confirmed 0 known vulnerabilities and recent remote CI success before the next phase.
+
 ## 2026-10-26 — Ambient mode specification
 
 - Documented a future Standard/Ambient customization mode.
