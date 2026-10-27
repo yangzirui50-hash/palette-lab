@@ -42,7 +42,9 @@ Uses `AI_API_KEY`, `AI_MODEL` and optional `AI_BASE_URL`. The key is read only b
 
 `src/worker/providers/registry.ts` records each provider's protocol, default model, endpoint, vision support, structured-output support and implementation status. `GET /api/providers` exposes capability metadata without credentials. `GET /api/health` reports only the active provider and whether configuration is complete.
 
-DeepSeek is configured locally with `AI_PROVIDER=deepseek`, `AI_MODEL=deepseek-flash` and `AI_BASE_URL=https://api.deepseek.com/chat/completions`. The API key remains empty until the owner creates one. Other supported entries include Kimi, OpenAI and OpenRouter; Cloudflare remains an explicit custom-provider option for a later adapter.
+DeepSeek is configured locally with `AI_PROVIDER=deepseek`, `AI_MODEL=deepseek-flash` and `AI_BASE_URL=https://api.deepseek.com/chat/completions`. Other supported entries include Kimi, OpenAI and OpenRouter; Cloudflare remains an explicit custom-provider option for a later adapter.
+
+The real DeepSeek Flash workflow was verified on 2026-10-27 with HTTP 200. `scripts/verify-real-provider.mjs` starts an isolated local Worker, submits the self-generated image fixture, reports provider/model/summary metadata, and redacts credentials from error output. The real `.dev.vars` file is never committed.
 
 ## Local configuration
 

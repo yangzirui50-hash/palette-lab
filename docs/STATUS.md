@@ -16,7 +16,9 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 - HEX output is normalized to six digits
 - 20 unit tests and 10 real-browser workflow tests pass locally
 - Mock multimodal analysis returns structured reports through the real Worker API
-- Real model credentials are not configured yet; HTTP 501 fallback is explicit and offline-safe
+- Real DeepSeek Flash analysis completed successfully with HTTP 200 on 2026-10-27
+- The real model correctly identified the test image's three color fields and composition; mock output was not reused
+- `scripts/verify-real-provider.mjs` checks the real Worker/provider chain and redacts credentials from failure logs
 - Test environment is restored before production builds to prevent mock deployment
 - CSS variables, versioned JSON tokens and 2× PNG previews pass real download verification
 - Web and Art role edits are preserved independently across domain switches
@@ -48,12 +50,11 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 - Ambient specification commit: `4b254e1 docs: specify ambient background customization`
 - Ambient specification and backup-status commits are synchronized with remote `main`; the retry succeeded on 2026-10-26
 - AI foundation commit `c9d20ca` is committed locally; remote backup is pending after two connection resets
-- DeepSeek provider registration and local non-secret defaults are configured; the real API key is still pending owner registration
+- DeepSeek provider registration and real API credentials are configured locally; secrets remain excluded from version control
 - Remote: https://github.com/yangzirui50-hash/palette-lab
 
 ## Not implemented yet
 
-- Real model credential configuration
 - Stock-image search
 - Multi-image consistency
 - Ambient background mode and adaptive accent generation
@@ -61,4 +62,4 @@ Phase 1 local workspace is complete. Multimodal analysis and online inspiration 
 
 ## Next action
 
-Configure real model credentials after provider selection, then implement attributed online inspiration and AI-assisted reference comparison.
+Implement attributed online inspiration and AI-assisted reference comparison using the verified DeepSeek provider chain.

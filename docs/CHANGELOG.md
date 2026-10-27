@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Real DeepSeek verification
+
+- Completed a real DeepSeek Flash multimodal request through the local Worker with HTTP 200.
+- Confirmed actual image-specific analysis rather than mock content.
+- Added a reusable real-provider verification script with credential-redacted diagnostics.
+- Kept all secrets local and excluded from version control.
+
 ## 2026-10-27 — Provider registry and DeepSeek setup
 
 - Added automatic environment restoration after browser tests so mock mode cannot overwrite the owner's working configuration.
