@@ -9,6 +9,14 @@ All notable project changes are recorded here in reverse chronological order.
 - Normalized share-delta precision and strict share-record typing after test/build review.
 - Added eight tests covering identical images, near colors, role correction, all-member sharing, reordering, primary changes and invalid definitions; 38 unit tests, ESLint and production build pass.
 
+## 2026-10-27 — Series state and diagnostic workflow
+
+- Added explicit single/series modes while preserving single-image state and per-domain role edits.
+- Added local 2–6 image import, reorder, remove, primary selection, object-URL cleanup and responsive thumbnails.
+- Added series overview with shared colors and explainable deviations, plus primary/current image inspection and independent role correction.
+- Fixed CSS `display` overriding native `hidden`, added visibility assertions and visually reviewed desktop/mobile screenshots.
+- Passed 40 unit tests, 13 browser workflows, ESLint and production build. Unification strategies and exports remain pending.
+
 ## 2026-10-27 — Series engine boundary review
 
 - Replaced greedy pairing with deterministic maximum-cardinality, minimum-cost one-to-one assignment after finding an adversarial color-match case.

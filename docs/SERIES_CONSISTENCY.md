@@ -1,6 +1,6 @@
 # Series Color Consistency — V1 Product Contract
 
-_Status: Slice 1 deterministic difference engine implemented and verified on `feat/series-consistency`; UI and exports are not implemented yet._
+_Status: Slices 1–2 implemented and verified on `feat/series-consistency`: difference engine, series state, overview and image inspection. Unification strategies and exports are not implemented yet._
 
 ## Product position
 
