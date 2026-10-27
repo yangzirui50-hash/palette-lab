@@ -49,6 +49,19 @@ describe('analysis API', () => {
     }
   })
 
+  it('rate-limits paid provider requests before image processing', async () => {
+    const limit = vi.fn().mockResolvedValue({ success: false })
+    const response = await app.request('/api/analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'cf-connecting-ip': '203.0.113.10' },
+      body: JSON.stringify(requestBody),
+    }, { AI_PROVIDER: 'mock', AI_RATE_LIMITER: { limit } })
+    expect(response.status).toBe(429)
+    expect(response.headers.get('Retry-After')).toBe('60')
+    expect((await response.json()).error).toBe('RATE_LIMITED')
+    expect(limit).toHaveBeenCalledWith({ key: '/api/analysis:203.0.113.10' })
+  })
+
   it('rejects invalid requests', async () => {
     const response = await app.request('/api/analysis', {
       method: 'POST',

@@ -7,8 +7,21 @@ import { providerRegistry } from './providers/registry'
 import { inspirationRequestSchema, nearestUnsplashColor, buildInspirationQuery } from '../domain/inspiration'
 import { createUnsplashProvider, mockInspirationProvider } from './providers/unsplash'
 import { compareReferences } from './providers/referenceAnalysis'
+import { rateLimitExceeded } from './rateLimit'
 
 const app = new Hono<{ Bindings: WorkerEnv }>()
+
+app.use('/api/*', async (c, next) => {
+  if (c.req.method === 'POST') {
+    const route = new URL(c.req.url).pathname
+    const actor = c.req.header('cf-connecting-ip') ?? 'local'
+    if (await rateLimitExceeded(c.env, `${route}:${actor}`)) {
+      c.header('Retry-After', '60')
+      return c.json({ error: 'RATE_LIMITED', message: '请求较为频繁，请 1 分钟后再试。' }, 429)
+    }
+  }
+  await next()
+})
 
 app.get('/api/providers', (c) => c.json({ providers: Object.values(providerRegistry) }))
 app.get('/api/health', (c) => c.json({

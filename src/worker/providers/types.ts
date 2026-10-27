@@ -11,4 +11,7 @@ export type WorkerEnv = {
   AI_PROVIDER?: string
   UNSPLASH_ACCESS_KEY?: string
   UNSPLASH_PROVIDER?: string
+  AI_RATE_LIMITER?: {
+    limit(input: { key: string }): Promise<{ success: boolean }>
+  }
 }

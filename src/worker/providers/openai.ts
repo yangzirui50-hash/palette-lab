@@ -25,6 +25,7 @@ export function createOpenAIProvider(env: WorkerEnv): AIAnalysisProvider {
             ] },
           ],
         }),
+        signal: AbortSignal.timeout(90_000),
       })
       if (!response.ok) throw new Error(`AI_PROVIDER_${response.status}`)
       const payload = await response.json() as { choices?: Array<{ message?: { content?: string } }> }

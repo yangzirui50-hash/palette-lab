@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fileToAiDataUrl } from '../lib/color/aiImage'
 import type { AnalysisReport } from '../domain/analysis'
 import type { DomainId } from '../domain/profiles'
@@ -18,13 +18,24 @@ type AnalysisPanelProps = {
 export default function AnalysisPanel({ domain, sourceFile, palette, assignments, report, onReportChange }: AnalysisPanelProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const requestId = useRef(0)
+  const controller = useRef<AbortController | null>(null)
 
   useEffect(() => {
+    requestId.current += 1
+    controller.current?.abort()
+    controller.current = null
     onReportChange(null)
+    setLoading(false)
     setError('')
+    return () => controller.current?.abort()
   }, [domain, assignments, sourceFile, onReportChange])
 
   const analyze = async () => {
+    const currentRequest = ++requestId.current
+    controller.current?.abort()
+    const currentController = new AbortController()
+    controller.current = currentController
     setLoading(true)
     setError('')
     try {
@@ -33,14 +44,19 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image, domain, palette, assignments }),
+        signal: currentController.signal,
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.message ?? payload.error ?? '分析失败，请重试')
-      onReportChange(payload as AnalysisReport)
+      if (requestId.current === currentRequest) onReportChange(payload as AnalysisReport)
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : '分析服务暂时不可用')
+      if (reason instanceof DOMException && reason.name === 'AbortError') return
+      if (requestId.current === currentRequest) setError(reason instanceof Error ? reason.message : '分析服务暂时不可用')
     } finally {
-      setLoading(false)
+      if (requestId.current === currentRequest) {
+        controller.current = null
+        setLoading(false)
+      }
     }
   }
 
