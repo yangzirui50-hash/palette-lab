@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Series consistency product contract
+
+- Defined series mode as explainable color-system diagnosis and unification, not multi-image picking or automatic recoloring.
+- Approved three task levels, three unification strategies and explicit role/exception corrections.
+- Added fourteen acceptance tests covering determinism, semantic uncertainty, intentional variation, state, mobile, exports and AI independence.
+- Created the isolated `feat/series-consistency` implementation branch; no feature code is implemented yet.
+
 ## 2026-10-27 — Systematic stage-gate review and reliability hardening
 
 - Reviewed functionality, production reliability, cost protection, secret boundaries, tests, deployment and documentation before the next feature phase.

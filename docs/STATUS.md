@@ -4,7 +4,7 @@ _Last updated: 2026-10-27_
 
 ## Current phase
 
-The local workspace, public deployment and production DeepSeek rollout are complete. Real Unsplash verification remains pending while the owner's application is under review.
+The stable public baseline passed its stage gate. Series consistency V1 is now specified on `feat/series-consistency`; implementation has not started. Real Unsplash verification remains deferred while the owner's application is under review.
 
 ## Production
 
