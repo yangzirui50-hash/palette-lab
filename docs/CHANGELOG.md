@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Real inspiration verification tooling
+
+- Added a credential-redacting verification command for the complete Unsplash and DeepSeek comparison chain.
+- The command checks real photo results, attribution links and model-generated rankings without printing credentials or image payloads.
+- Corrected the repository status: all implementation and environment-safety commits through `363ddeb` are backed up on remote `main`.
+- Real Unsplash verification remains pending until the owner configures an access key.
+
 ## 2026-10-27 — Environment restoration correction
 
 - Identified and documented a local configuration-loss defect in test restoration.

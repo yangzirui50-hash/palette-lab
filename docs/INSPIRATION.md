@@ -32,4 +32,7 @@ AI comparison is limited to four candidates. Search and comparison have bounded 
 - Query and color-filter unit tests
 - Mock Worker tests for photos, attribution and comparison
 - Browser workflow from image → analysis → reference comparison
+- Run `npm run verify:inspiration` after locally configuring both `AI_API_KEY` and `UNSPLASH_ACCESS_KEY`
+- The command starts an isolated full Worker on port 7102, stops it afterward, and reports only status, source, query, attribution and comparison summaries
+- It never prints credentials or source-image payloads; a successful run must include Unsplash photos, attribution links and DeepSeek rankings
 - Real Unsplash verification remains pending until the owner configures an access key

@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:e2e": "node scripts/run-e2e.mjs",
     "test:env": "node scripts/test-env-safety.mjs",
+    "verify:inspiration": "node scripts/verify-inspiration.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
