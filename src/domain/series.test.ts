@@ -58,6 +58,28 @@ describe('series color distance and image comparison', () => {
     expect(seriesColorDistance('#080808', '#090909')).toBeLessThan(0.08)
   })
 
+  it('finds the maximum one-to-one matches instead of taking a greedy shortcut', () => {
+    const first = swatch('#a2a2a2', 0.5)
+    const second = swatch('#bdbdbd', 0.5)
+    const nearFirst = swatch('#aeaeae', 0.5)
+    const alternateFirst = swatch('#909090', 0.5)
+    const comparison = compareSeriesImage(
+      image('primary', [first, second]),
+      image('candidate', [nearFirst, alternateFirst]),
+    )
+    expect(comparison.colorDifferences.filter((difference) => difference.type === 'shared')).toHaveLength(2)
+    expect(comparison.colorDifferences).toContainEqual(expect.objectContaining({
+      type: 'shared',
+      primary: first,
+      candidate: alternateFirst,
+    }))
+    expect(comparison.colorDifferences).toContainEqual(expect.objectContaining({
+      type: 'shared',
+      primary: second,
+      candidate: nearFirst,
+    }))
+  })
+
   it('reports only changed roles and clears them after independent correction', () => {
     const candidate = image('candidate', [black, green, blue], {
       ...primary.roles,
@@ -66,6 +88,18 @@ describe('series color distance and image comparison', () => {
     expect(compareSeriesImage(primary, candidate).roleDifferences).toHaveLength(1)
     const corrected = { ...candidate, roles: primary.roles }
     expect(compareSeriesImage(primary, corrected).roleDifferences).toEqual([])
+  })
+
+  it('reports a missing role instead of silently ignoring it', () => {
+    const roles = { ...primary.roles }
+    delete roles.accent
+    const comparison = compareSeriesImage(primary, image('candidate', [black, green, blue], roles))
+    expect(comparison.roleDifferences).toContainEqual({
+      role: 'accent',
+      primaryHex: '#e0ff50',
+      candidateHex: null,
+      distance: null,
+    })
   })
 
   it('keeps only colors shared by every series member', () => {
@@ -98,6 +132,7 @@ describe('series color distance and image comparison', () => {
   it('rejects invalid series definitions', () => {
     expect(() => compareSeries([primary], 'primary')).toThrow('between 2 and 6')
     expect(() => compareSeries([primary, primary], 'primary')).toThrow('unique')
+    expect(() => compareSeries(Array.from({ length: 7 }, (_, index) => image(`image-${index}`, [black])), 'image-0')).toThrow('between 2 and 6')
     expect(() => compareSeries([primary, image('candidate', [black])], 'missing')).toThrow('Primary image')
   })
 })

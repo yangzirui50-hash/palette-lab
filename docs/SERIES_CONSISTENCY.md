@@ -69,6 +69,8 @@ Core records should remain provider-independent:
 
 Metrics must be reproducible and explainable. Any normalized indicator must publish its inputs and must not be presented as a universal measure of beauty. AI may interpret results but may not alter measured colors, shares or differences.
 
+Color pairs use an OKLCH distance threshold of 0.08 and deterministic maximum-cardinality, minimum-cost one-to-one assignment rather than greedy matching. Role differences use a 0.02 threshold; a missing role is reported explicitly with a null distance rather than ignored or treated as zero. Share deltas are normalized to six decimal places and comparisons are sorted by candidate ID.
+
 ## Risk corrections
 
 ### Pixels do not prove roles

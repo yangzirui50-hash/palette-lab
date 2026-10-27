@@ -31,9 +31,9 @@ export type SeriesColorDifference = SharedColorDifference | MissingColorDifferen
 
 export type SeriesRoleDifference = {
   role: string
-  primaryHex: string
-  candidateHex: string
-  distance: number
+  primaryHex: string | null
+  candidateHex: string | null
+  distance: number | null
 }
 
 export type SeriesImageComparison = {
@@ -74,36 +74,61 @@ export function seriesColorDistance(primaryHex: string, candidateHex: string) {
   )
 }
 
-function matchPalettes(primary: PaletteSwatch[], candidate: PaletteSwatch[]) {
-  const pairs = primary.flatMap((primarySwatch, primaryIndex) =>
-    candidate.map((candidateSwatch, candidateIndex) => ({
-      primaryIndex,
-      candidateIndex,
-      distance: seriesColorDistance(primarySwatch.hex, candidateSwatch.hex),
-    })),
-  ).sort((a, b) => a.distance - b.distance
-    || primary[a.primaryIndex].hex.localeCompare(primary[b.primaryIndex].hex)
-    || candidate[a.candidateIndex].hex.localeCompare(candidate[b.candidateIndex].hex))
+type PaletteAssignment = {
+  matches: number
+  cost: number
+  pairs: Array<[number, number]>
+  signature: string
+}
 
+function matchPalettes(primary: PaletteSwatch[], candidate: PaletteSwatch[]) {
+  const distances = primary.map((primarySwatch) => candidate.map((candidateSwatch) =>
+    seriesColorDistance(primarySwatch.hex, candidateSwatch.hex),
+  ))
+  const memo = new Map<string, PaletteAssignment>()
+  const empty: PaletteAssignment = { matches: 0, cost: 0, pairs: [], signature: '' }
+  const better = (a: PaletteAssignment, b: PaletteAssignment) =>
+    a.matches > b.matches || (a.matches === b.matches && (a.cost < b.cost || (a.cost === b.cost && a.signature < b.signature))) ? a : b
+
+  const assign = (primaryIndex: number, candidateMask: number): PaletteAssignment => {
+    if (primaryIndex >= primary.length) return empty
+    const key = `${primaryIndex}:${candidateMask}`
+    const cached = memo.get(key)
+    if (cached) return cached
+    let best = assign(primaryIndex + 1, candidateMask)
+    candidate.forEach((candidateSwatch, candidateIndex) => {
+      if ((candidateMask & (1 << candidateIndex)) !== 0) return
+      const distance = distances[primaryIndex][candidateIndex]
+      if (distance > COLOR_MATCH_THRESHOLD) return
+      const remaining = assign(primaryIndex + 1, candidateMask | (1 << candidateIndex))
+      const option: PaletteAssignment = {
+        matches: remaining.matches + 1,
+        cost: remaining.cost + distance,
+        pairs: [[primaryIndex, candidateIndex], ...remaining.pairs],
+        signature: `${primary[primaryIndex].hex}>${candidateSwatch.hex}|${remaining.signature}`,
+      }
+      best = better(best, option)
+    })
+    memo.set(key, best)
+    return best
+  }
+
+  const assignment = assign(0, 0)
   const matchedPrimary = new Set<number>()
   const matchedCandidate = new Set<number>()
-  const differences: SeriesColorDifference[] = []
-
-  for (const pair of pairs) {
-    if (pair.distance > COLOR_MATCH_THRESHOLD) break
-    if (matchedPrimary.has(pair.primaryIndex) || matchedCandidate.has(pair.candidateIndex)) continue
-    matchedPrimary.add(pair.primaryIndex)
-    matchedCandidate.add(pair.candidateIndex)
-    const primarySwatch = primary[pair.primaryIndex]
-    const candidateSwatch = candidate[pair.candidateIndex]
-    differences.push({
+  const differences: SeriesColorDifference[] = assignment.pairs.map(([primaryIndex, candidateIndex]) => {
+    matchedPrimary.add(primaryIndex)
+    matchedCandidate.add(candidateIndex)
+    const primarySwatch = primary[primaryIndex]
+    const candidateSwatch = candidate[candidateIndex]
+    return {
       type: 'shared',
       primary: primarySwatch,
       candidate: candidateSwatch,
-      distance: pair.distance,
+      distance: distances[primaryIndex][candidateIndex],
       shareDelta: Number((candidateSwatch.share - primarySwatch.share).toFixed(6)),
-    })
-  }
+    }
+  })
 
   primary.forEach((swatch, index) => {
     if (!matchedPrimary.has(index)) differences.push({ type: 'missing', primary: swatch })
@@ -116,13 +141,18 @@ function matchPalettes(primary: PaletteSwatch[], candidate: PaletteSwatch[]) {
 
 export function compareSeriesImage(primary: SeriesImageAnalysis, candidate: SeriesImageAnalysis): SeriesImageComparison {
   const roles = new Set([...Object.keys(primary.roles), ...Object.keys(candidate.roles)])
-  const roleDifferences = [...roles].sort().flatMap((role) => {
-    const primaryHex = primary.roles[role]
-    const candidateHex = candidate.roles[role]
-    if (!primaryHex || !candidateHex) return []
+  const roleDifferences: SeriesRoleDifference[] = []
+  for (const role of [...roles].sort()) {
+    const primaryHex = primary.roles[role] ?? null
+    const candidateHex = candidate.roles[role] ?? null
+    if (!primaryHex && !candidateHex) continue
+    if (!primaryHex || !candidateHex) {
+      roleDifferences.push({ role, primaryHex, candidateHex, distance: null })
+      continue
+    }
     const distance = seriesColorDistance(primaryHex, candidateHex)
-    return distance > ROLE_DIFFERENCE_THRESHOLD ? [{ role, primaryHex, candidateHex, distance }] : []
-  })
+    if (distance > ROLE_DIFFERENCE_THRESHOLD) roleDifferences.push({ role, primaryHex, candidateHex, distance })
+  }
 
   return {
     candidateId: candidate.id,

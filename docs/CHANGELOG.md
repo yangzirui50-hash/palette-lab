@@ -9,6 +9,13 @@ All notable project changes are recorded here in reverse chronological order.
 - Normalized share-delta precision and strict share-record typing after test/build review.
 - Added eight tests covering identical images, near colors, role correction, all-member sharing, reordering, primary changes and invalid definitions; 38 unit tests, ESLint and production build pass.
 
+## 2026-10-27 — Series engine boundary review
+
+- Replaced greedy pairing with deterministic maximum-cardinality, minimum-cost one-to-one assignment after finding an adversarial color-match case.
+- Added explicit missing-role diagnostics with nullable evidence instead of silently ignoring absent roles.
+- Documented match thresholds, stable ordering and precision contracts; added adversarial and missing-role coverage.
+- Passed 40 unit tests, 11 existing browser workflows, ESLint, production build and 0-vulnerability audit. UI and exports remain unimplemented.
+
 ## 2026-10-27 — Series consistency product contract
 
 - Defined series mode as explainable color-system diagnosis and unification, not multi-image picking or automatic recoloring.
