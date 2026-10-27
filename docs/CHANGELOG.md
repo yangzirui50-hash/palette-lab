@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Production DeepSeek verification
+
+- Configured `AI_API_KEY` exclusively as a Cloudflare Production secret; no credential was added to Git.
+- Synchronized non-secret provider settings in `wrangler.jsonc` for consistent Git deployments.
+- Added credential-safe provider failure reasons and a regression test; 28 unit tests, ESLint and production build pass.
+- Verified production health with `configured: true` and `provider: deepseek`.
+- Completed a real production DeepSeek Flash multimodal request with HTTP 200 and accurate color-field and area analysis.
+- Real Unsplash access remains pending application review.
+
 ## 2026-10-27 — Secure local key setup and DeepSeek re-verification
 
 - Added hidden-input PowerShell setup for local DeepSeek and Unsplash variables without embedding secrets in commands.

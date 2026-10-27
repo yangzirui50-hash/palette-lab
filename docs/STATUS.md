@@ -4,16 +4,17 @@ _Last updated: 2026-10-27_
 
 ## Current phase
 
-The local workspace and first public deployment are complete. Production DeepSeek configuration and real Unsplash verification are the remaining rollout steps.
+The local workspace, public deployment and production DeepSeek rollout are complete. Real Unsplash verification remains pending while the owner's application is under review.
 
 ## Production
 
 - Public URL: https://palette-lab.3476554092.workers.dev/
 - Cloudflare Workers is connected to the dedicated GitHub repository and `main` branch.
-- The first production build and deployment completed successfully on 2026-10-27.
 - Public image import, exact three-color extraction, dark Art rendering and 390 px mobile layout are verified.
-- Public API health returns HTTP 200 with `configured: false`; unconfigured AI shows an offline fallback and never substitutes mock output.
-- No provider secrets are deployed yet; see `docs/DEPLOYMENT.md`.
+- Public API health returns HTTP 200 with `configured: true` and `provider: deepseek`.
+- `AI_API_KEY` is stored only as a Cloudflare server-side secret; non-secret provider settings are synchronized in `wrangler.jsonc`.
+- A real production DeepSeek Flash multimodal request returned HTTP 200 and correctly identified the test image's three color fields and 50% / 32.5% / 17.5% area relationship.
+- The production response identifies `provider: deepseek` and `model: deepseek-flash`; mock output was not used.
 
 ## Verified
 
@@ -23,7 +24,7 @@ The local workspace and first public deployment are complete. Production DeepSee
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 27 unit tests and 11 real-browser workflow tests pass locally
+- 28 unit tests and 11 real-browser workflow tests pass locally
 - Online inspiration and AI comparison are verified with attributed mock fixtures
 - Real Unsplash access-key verification is pending owner registration
 - Mock multimodal analysis returns structured reports through the real Worker API
@@ -70,9 +71,8 @@ The local workspace and first public deployment are complete. Production DeepSee
 
 - Multi-image consistency
 - Ambient background mode and adaptive accent generation
-- Production provider secrets and real provider calls
 - Real Unsplash access while the owner's application is under review
 
 ## Next action
 
-Configure DeepSeek as a Cloudflare server-side secret and verify production analysis. After Unsplash approval, configure its Access Key and verify real attributed search plus comparison.
+After Unsplash approval, configure its Access Key as a Cloudflare secret and verify real attributed search plus DeepSeek comparison.

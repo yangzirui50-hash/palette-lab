@@ -14,7 +14,7 @@ The first Git-connected production build completed successfully on 2026-10-27. L
 
 ## Environment configuration
 
-No provider secrets were included in the first deployment. The public health check therefore reports `configured: false`, and the interface presents an explicit offline fallback rather than mock AI output.
+The first deployment contained no provider secrets and correctly presented an offline fallback. DeepSeek has since been configured for production: the public health check reports `configured: true` and `provider: deepseek`.
 
 Non-secret provider settings:
 
@@ -36,17 +36,16 @@ Never commit `.dev.vars`, real API keys, passwords or Cloudflare credentials. Do
 
 - Public page and static assets load successfully.
 - `/api/health` and `/api/providers` return HTTP 200 in the browser.
-- Health state is `status: ok`, `configured: false`, `provider: unconfigured`.
+- Current health state is `status: ok`, `configured: true`, `provider: deepseek`.
 - The 800 × 500 test image returns three expected colors: `#080808` 50%, `#E0FF50` 32.5%, `#4890E0` 17.5%.
 - Dark mode and Art/Poster rendering work after deployment.
 - The Art/Poster preview passes its two configured contrast checks.
 - At 390 px viewport width, document width is 390 px with no horizontal overflow.
-- AI analysis without a server key returns the visible fallback `AI 服务尚未配置，离线功能不受影响。`
-- Reference comparison remains unavailable until real analysis succeeds; no mock result is presented as production AI.
+- Before secret configuration, AI analysis returned the visible fallback `AI 服务尚未配置，离线功能不受影响。`
+- A real production DeepSeek Flash analysis returned HTTP 200 with accurate image content, composition and area analysis; provider and model were verified in the response.
+- Reference comparison remains pending Unsplash access; no mock result is presented as production AI.
 
 ## Remaining rollout steps
 
-1. Configure DeepSeek through Cloudflare server-side settings and secrets.
-2. Redeploy and run a real multimodal production request without exposing credentials.
-3. After Unsplash approval, configure its Access Key and verify attributed search plus DeepSeek comparison.
-4. Keep local and production secret configurations separate, and monitor provider usage.
+1. After Unsplash approval, configure its Access Key and verify attributed search plus DeepSeek comparison.
+2. Keep local and production secret configurations separate, and monitor provider usage.
