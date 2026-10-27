@@ -52,6 +52,8 @@ Copy `.dev.vars.example` to `.dev.vars`. Use `AI_PROVIDER=mock` for development 
 
 Use Cloudflare secrets for `AI_API_KEY` and `AI_MODEL`; configure `AI_BASE_URL` only when a compatible endpoint differs from the default. Production builds restore the pre-test environment before bundling.
 
+`npm run test:e2e` uses `scripts/run-e2e.mjs` to restore the real local environment immediately after Playwright exits, whether tests succeed or fail. Mock configuration must never overwrite the owner's working configuration after a test run.
+
 ## Failure behavior
 
 - Missing configuration: HTTP 501 with an explicit offline-safe message
