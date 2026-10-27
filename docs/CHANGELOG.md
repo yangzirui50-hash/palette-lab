@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-27 — Secure local key setup and DeepSeek re-verification
+
+- Added hidden-input PowerShell setup for local DeepSeek and Unsplash variables without embedding secrets in commands.
+- Added a clipboard-based DeepSeek setup that validates input, writes only to Git-ignored `.dev.vars`, and clears the clipboard afterward.
+- Removed temporary launchers to prevent accidental source-file paste or secret commits.
+- Reverified the real local DeepSeek Flash request with HTTP 200 and correct three-field image analysis.
+
 ## 2026-10-27 — First production deployment
 
 - Connected Cloudflare Workers to the dedicated `palette-lab` GitHub repository with least-privilege repository access.

@@ -61,8 +61,8 @@ The local workspace and first public deployment are complete. Production DeepSee
 - Ambient specification commit: `4b254e1 docs: specify ambient background customization`
 - Ambient specification and backup-status commits are synchronized with remote `main`; the retry succeeded on 2026-10-26
 - AI foundation, DeepSeek verification, online inspiration and environment-safety commits through `363ddeb` are synchronized with remote `main`
-- DeepSeek Flash real analysis succeeded before a local environment-restore defect removed the owner's configuration file
-- The file has been rebuilt with non-secret defaults; the owner must re-enter the API key locally
+- DeepSeek Flash real analysis succeeded again on 2026-10-27 after secure local key reconfiguration, with HTTP 200 and correct image-specific analysis
+- Local key setup uses hidden input or clipboard transfer without displaying secrets; `.dev.vars` remains excluded from Git
 - `test:env` now proves real configs are preserved and mock files are removed only when explicitly marked
 - Remote: https://github.com/yangzirui50-hash/palette-lab
 
