@@ -7,10 +7,11 @@ import './DomainPreview.css'
 type DomainPreviewProps = {
   domain: DomainId
   assignments: RoleAssignments
+  sourceUrl?: string
   renderRef?: Ref<HTMLDivElement>
 }
 
-export default function DomainPreview({ domain, assignments, renderRef }: DomainPreviewProps) {
+export default function DomainPreview({ domain, assignments, sourceUrl, renderRef }: DomainPreviewProps) {
   const report = getContrastReport(domain, assignments)
 
   return (
@@ -24,7 +25,7 @@ export default function DomainPreview({ domain, assignments, renderRef }: Domain
           : `⚠ ${report.issues.length} 组对比不足：${report.issues.map((issue) => `${issue.label} ${issue.ratio.toFixed(1)}:1`).join('；')}`}
       </div>
       <div className="preview-render-target" ref={renderRef}>
-        {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} />}
+        {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} sourceUrl={sourceUrl} />}
       </div>
     </section>
   )
@@ -63,7 +64,7 @@ function WebPreview({ assignments }: { assignments: RoleAssignments }) {
   )
 }
 
-function PosterPreview({ assignments }: { assignments: RoleAssignments }) {
+function PosterPreview({ assignments, sourceUrl }: { assignments: RoleAssignments; sourceUrl?: string }) {
   const primaryVisual = assignments.primaryVisual === assignments.canvas
     ? assignments.secondaryVisual === assignments.canvas ? assignments.accent : assignments.secondaryVisual
     : assignments.primaryVisual
@@ -80,9 +81,16 @@ function PosterPreview({ assignments }: { assignments: RoleAssignments }) {
     <div className="preview-poster" style={style}>
       <div className="poster-top"><span>PALETTE LAB®</span><span>VISUAL STUDY — 001</span></div>
       <div className="poster-rule"><span>CHROMATIC RESEARCH</span><span>色彩・構成・余白</span></div>
-      <div className="poster-composition" aria-hidden="true">
-        <i className="poster-orbit" /><i className="poster-core" /><i className="poster-plane" /><i className="poster-axis" />
-      </div>
+      {sourceUrl ? (
+        <figure className="poster-image-frame">
+          <img src={sourceUrl} alt="当前图片的海报主视觉" />
+          <figcaption>SOURCE IMAGE / 001</figcaption>
+        </figure>
+      ) : (
+        <div className="poster-composition" aria-hidden="true">
+          <i className="poster-orbit" /><i className="poster-core" /><i className="poster-plane" /><i className="poster-axis" />
+        </div>
+      )}
       <div className="poster-copy">
         <small>COLOR AS ATMOSPHERE</small>
         <h3>色彩<br />与想象</h3>

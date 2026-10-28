@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Source-driven poster and spatial denoising
+
+- Replaced decorative-only poster composition with source-image-driven editorial framing, metadata and responsive layout.
+- Added two-pass neighborhood cleanup limited to isolated components of at most two pixels, preserving meaningful connected color regions and detail.
+- Unified spatial overlay and metrics on the same denoised assignments, with transparent-pixel handling and new noise/detail regression tests.
+- Reviewed actual source-driven poster and spatial output; 55 unit tests, 15 browser workflows, ESLint and production build pass.
+
 ## 2026-10-28 — Editorial poster and AI report refinement
 
 - Rebuilt Art/Poster with a modern editorial grid, stronger Chinese display hierarchy, metadata, orbit/core/plane/axis composition and responsive behavior.

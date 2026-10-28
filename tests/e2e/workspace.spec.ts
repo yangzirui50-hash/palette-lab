@@ -86,9 +86,8 @@ test('edits role colors and updates Web and Poster previews', async ({ page }) =
 
   await page.getByRole('button', { name: 'Art / Poster' }).click()
   await expect(page.locator('.preview-poster')).toBeVisible()
-  const posterCanvas = await page.locator('.preview-poster').evaluate((element) => getComputedStyle(element).backgroundColor)
-  const primaryVisual = await page.locator('.poster-core').evaluate((element) => getComputedStyle(element).backgroundColor)
-  expect(primaryVisual).not.toBe(posterCanvas)
+  await expect(page.locator('.poster-image-frame')).toBeVisible()
+  await expect(page.locator('.poster-image-frame img')).toHaveAttribute('alt', '当前图片的海报主视觉')
   await expect(page.locator('.role-field select')).toHaveCount(6)
   await page.screenshot({ path: 'test-results/poster-preview.png', fullPage: true })
 })

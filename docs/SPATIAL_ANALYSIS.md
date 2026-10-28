@@ -17,7 +17,7 @@ Spatial analysis answers where a color appears and whether it is concentrated, c
 - Significant connected-component count
 - Mean distance to the next-nearest palette color
 
-Transparent pixels are excluded from shares and components. Edge calculations use normalized coordinates and work for small images. There is no universal aesthetic score.
+Transparent pixels are excluded from shares and components. Edge calculations use normalized coordinates and work for small images. Two neighborhood passes clean only isolated components of at most two pixels, preserving connected subject regions and meaningful small details. Overlay and metrics share the same denoised assignments. There is no universal aesthetic score.
 
 ## Spatial share versus palette share
 
@@ -39,4 +39,5 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Real browser blue-region highlighting with spatial evidence and no layout regression
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
-- 54 unit tests and 15 real-browser workflows pass, along with ESLint, production build and 0-vulnerability audit
+- Isolated-noise removal and connected-detail preservation tests
+- 55 unit tests and 15 real-browser workflows pass, along with ESLint, production build and 0-vulnerability audit

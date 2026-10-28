@@ -23,11 +23,80 @@ function distanceSquared(a: readonly number[], b: readonly number[]) {
   return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2
 }
 
+export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]) {
+  if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
+  const paletteLab = palette.map((color) => oklab(color.rgb))
+  const separations = new Float64Array(pixels.length)
+  let assignments = new Uint16Array(pixels.length).fill(65535)
+
+  pixels.forEach((pixel, index) => {
+    if (!pixel) return
+    const lab = oklab(pixel)
+    const distances = paletteLab.map((candidate) => distanceSquared(lab, candidate))
+    const sorted = [...distances].sort((a, b) => a - b)
+    assignments[index] = distances.indexOf(sorted[0])
+    separations[index] = Math.sqrt(sorted[1] ?? sorted[0])
+  })
+
+  const visited = new Uint8Array(pixels.length)
+  const queue = new Int32Array(pixels.length)
+  const smallComponents = new Set<number>()
+  for (let start = 0; start < pixels.length; start += 1) {
+    if (assignments[start] === 65535 || visited[start]) continue
+    const label = assignments[start]
+    const component: number[] = []
+    let head = 0
+    let tail = 0
+    queue[tail++] = start
+    visited[start] = 1
+    while (head < tail) {
+      const current = queue[head++]
+      component.push(current)
+      const x = current % width
+      const neighbors = [current - 1, current + 1, current - width, current + width]
+      neighbors.forEach((next, direction) => {
+        if (next < 0 || next >= pixels.length) return
+        if (direction === 0 && x === 0) return
+        if (direction === 1 && x === width - 1) return
+        if (assignments[next] === label && !visited[next]) {
+          visited[next] = 1
+          queue[tail++] = next
+        }
+      })
+    }
+    if (component.length <= 2) component.forEach((index) => smallComponents.add(index))
+  }
+
+  for (let pass = 0; pass < 2; pass += 1) {
+    const next = new Uint16Array(assignments)
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const index = y * width + x
+        if (assignments[index] === 65535 || !smallComponents.has(index)) continue
+        const counts = new Map<number, number>()
+        for (let dy = -1; dy <= 1; dy += 1) {
+          for (let dx = -1; dx <= 1; dx += 1) {
+            const nx = x + dx
+            const ny = y + dy
+            if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue
+            const label = assignments[ny * width + nx]
+            if (label !== 65535) counts.set(label, (counts.get(label) ?? 0) + 1)
+          }
+        }
+        const majority = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0])[0]
+        if (majority && majority[1] >= 6) next[index] = majority[0]
+      }
+    }
+    assignments = next
+  }
+  return { assignments, separations }
+}
+
 export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]): SpatialRegionEvidence[] {
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
   if (palette.length === 0) return []
   const opaqueCount = pixels.filter(Boolean).length
-  const paletteLab = palette.map((color) => oklab(color.rgb))
+  const { assignments, separations } = buildSpatialAssignments(pixels, width, height, palette)
   const states = palette.map(() => ({
     count: 0,
     x: 0,
@@ -40,14 +109,10 @@ export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], widt
     edge: 0,
     separation: 0,
   }))
-  const assignments = new Uint16Array(pixels.length).fill(65535)
 
   pixels.forEach((pixel, index) => {
     if (!pixel) return
-    const lab = oklab(pixel)
-    const distances = paletteLab.map((candidate) => distanceSquared(lab, candidate))
-    const sorted = [...distances].sort((a, b) => a - b)
-    const nearest = distances.indexOf(sorted[0])
+    const nearest = assignments[index]
     const x = index % width
     const y = Math.floor(index / width)
     const state = states[nearest]
@@ -62,8 +127,7 @@ export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], widt
     const normalizedX = width === 1 ? 0 : x / (width - 1)
     const normalizedY = height === 1 ? 0 : y / (height - 1)
     if (normalizedX <= 0.1 || normalizedX >= 0.9 || normalizedY <= 0.1 || normalizedY >= 0.9) state.edge += 1
-    state.separation += Math.sqrt(sorted[1] ?? sorted[0])
-    assignments[index] = nearest
+    state.separation += separations[index]
   })
 
   return palette.map((color, paletteIndex) => {

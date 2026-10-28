@@ -40,7 +40,7 @@ Neutral workbench, precise grid, restrained radius, readable control labels and 
 
 #### Art / Poster
 
-Warm paper, sumi ink, vermilion and indigo references, editorial display type and asymmetric visual composition. The poster preview uses a modern editorial grid with orbit/core/plane/axis geometry and a preview-only contrast fallback when primary visual equals canvas. Japanese print-inspired decoration belongs in headers, empty states and previews, never behind form controls or color values.
+Warm paper, sumi ink, vermilion and indigo references, editorial display type and asymmetric visual composition. The poster preview uses source-image-driven editorial framing and a preview-only contrast fallback when primary visual equals canvas. Geometric fallback remains available when no source image is supplied. Japanese print-inspired decoration belongs in headers, empty states and previews, never behind form controls or color values.
 
 ## Invariants
 

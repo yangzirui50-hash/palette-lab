@@ -36,7 +36,10 @@
 .poster-core { top: 15%; right: 15%; width: 58%; aspect-ratio: 1; border-radius: 50%; background: var(--preview-primary); box-shadow: 0 0 0 18px color-mix(in srgb, var(--preview-primary) 8%, transparent); }
 .poster-plane { right: 0; bottom: 0; width: 34%; height: 46%; background: var(--preview-secondary); }
 .poster-axis { top: -4%; bottom: -4%; left: 4%; width: 2px; background: var(--preview-accent); }
-.poster-copy { position: absolute; z-index: 2; bottom: 86px; left: 30px; max-width: 64%; }
+.poster-image-frame { position: absolute; z-index: 1; top: 15%; right: 6%; width: 45%; height: 66%; margin: 0; padding: 10px; border: 1px solid color-mix(in srgb, var(--preview-secondary) 55%, transparent); background: color-mix(in srgb, var(--preview-secondary) 10%, transparent); }
+.poster-image-frame img { width: 100%; height: calc(100% - 24px); object-fit: cover; object-position: center; filter: saturate(.92) contrast(1.02); }
+.poster-image-frame figcaption { padding-top: 8px; color: var(--preview-body); font: 8px Inter, sans-serif; letter-spacing: .12em; }
+.poster-copy { position: absolute; z-index: 2; bottom: 86px; left: 30px; max-width: 52%; }
 .poster-copy small { color: var(--preview-accent); font-family: Inter, system-ui, sans-serif; font-size: 9px; letter-spacing: .15em; }
 .poster-copy h3 { margin: 18px 0 20px; font-size: clamp(54px, 7vw, 96px); font-weight: 500; letter-spacing: -.07em; line-height: 1.02; }
 .poster-copy p { max-width: 310px; margin: 0; color: var(--preview-body); font-size: 12px; line-height: 1.9; }
@@ -47,6 +50,7 @@
   .preview-web-body { grid-template-columns: 1fr; gap: 28px; padding: 36px 24px; }
   .preview-poster { min-height: 620px; }
   .poster-composition { top: 19%; width: 72%; height: 56%; opacity: .58; }
+  .poster-image-frame { top: 18%; width: 62%; height: 56%; opacity: .62; }
   .poster-copy { max-width: 82%; }
   .poster-index { display: none; }
 }

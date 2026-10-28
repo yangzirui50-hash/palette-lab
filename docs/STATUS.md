@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The deterministic series workflow and spatial evidence layer are implemented. Art/Poster now uses an editorial grid with a contrast-safe visual fallback, and AI reports separate summary, visual evidence, role rationale, actions and uncertainty. 54 unit tests and 15 browser workflows pass; final production visual review is next.
+The deterministic series workflow and spatial evidence layer are implemented. Art/Poster now uses source-image-driven editorial composition, and spatial assignments remove isolated salt-and-pepper artifacts while preserving connected subject detail. AI reports have separate evidence and action layers. 55 unit tests and 15 browser workflows pass; owner's boundary review is next.
 
 ## Production
 
@@ -24,7 +24,7 @@ The deterministic series workflow and spatial evidence layer are implemented. Ar
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 54 unit tests and 15 real-browser workflow tests pass locally
+- 55 unit tests and 15 real-browser workflow tests pass locally
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures

@@ -29,11 +29,19 @@ describe('spatial palette evidence', () => {
     expect(regions[1].meanColorSeparation).toBeGreaterThan(0)
   })
 
-  it('separates disconnected areas instead of treating them as one region', () => {
-    const pixels = Array.from({ length: 9 }, (_, index) => [0, 4].includes(index) ? redPixel : grayPixel)
-    const regions = analyzePaletteSpatial(pixels, 3, 3, [red, gray])
+  it('separates meaningful disconnected areas instead of merging them', () => {
+    const pixels = Array.from({ length: 28 }, (_, index) => [0, 1, 4, 5, 7, 8, 11, 12].includes(index) ? redPixel : grayPixel)
+    const regions = analyzePaletteSpatial(pixels, 7, 4, [red, gray])
     expect(regions[0].componentCount).toBe(2)
     expect(regions[0].largestComponentShare).toBe(0.5)
+  })
+
+  it('removes isolated salt-and-pepper assignments without erasing real regions', () => {
+    const pixels = Array.from({ length: 16 }, () => grayPixel)
+    pixels[5] = redPixel
+    const regions = analyzePaletteSpatial(pixels, 4, 4, [gray, red])
+    expect(regions[0].pixelCount).toBe(16)
+    expect(regions[1].pixelCount).toBe(0)
   })
 
   it('excludes transparent pixels from shares and connected regions', () => {

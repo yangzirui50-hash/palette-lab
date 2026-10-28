@@ -1,4 +1,4 @@
-import Color from 'colorjs.io'
+import { buildSpatialAssignments } from './spatial'
 import type { PaletteSwatch, RGBPixel } from './extract'
 
 export type SpatialImageData = {
@@ -36,11 +36,6 @@ async function loadSpatialImage(file: File, maxEdge: number): Promise<SpatialIma
   }
 }
 
-function oklab(rgb: RGBPixel) {
-  const [lightness, a, b] = new Color('srgb', [rgb[0] / 255, rgb[1] / 255, rgb[2] / 255]).to('oklab').coords
-  return [lightness ?? 0, a ?? 0, b ?? 0] as const
-}
-
 export async function imageFileToSpatialData(file: File, maxEdge = 320): Promise<SpatialImageData> {
   const { pixels, width, height } = await loadSpatialImage(file, maxEdge)
   return { pixels, width, height }
@@ -51,16 +46,11 @@ export async function createSpatialOverlay(file: File, palette: PaletteSwatch[],
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('无法生成空间高亮')
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-  const paletteLab = palette.map((color) => oklab(color.rgb))
+  const { assignments } = buildSpatialAssignments(pixels, canvas.width, canvas.height, palette)
   const selectedIndex = Math.max(0, palette.findIndex((color) => color.hex.toLowerCase() === selectedHex.toLowerCase()))
   pixels.forEach((pixel, index) => {
     if (!pixel) return
-    const lab = oklab(pixel)
-    const distances = paletteLab.map((candidate) =>
-      (lab[0] - candidate[0]) ** 2 + (lab[1] - candidate[1]) ** 2 + (lab[2] - candidate[2]) ** 2,
-    )
-    const nearest = distances.indexOf(Math.min(...distances))
-    if (nearest !== selectedIndex) {
+    if (assignments[index] !== selectedIndex) {
       const offset = index * 4
       const gray = (imageData.data[offset] + imageData.data[offset + 1] + imageData.data[offset + 2]) / 3 * 0.22
       imageData.data[offset] = gray

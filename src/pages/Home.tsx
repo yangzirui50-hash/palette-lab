@@ -252,7 +252,7 @@ export default function Home() {
               }))}
             />
             <SpatialPanel sourceFile={source.file} palette={palette} onEvidenceChange={setSpatialEvidence} />
-            <DomainPreview domain={domain} assignments={assignments} renderRef={setPreviewTarget} />
+            <DomainPreview domain={domain} assignments={assignments} sourceUrl={source.url} renderRef={setPreviewTarget} />
             <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} spatialEvidence={spatialEvidence} report={analysisReport} onReportChange={setAnalysisReport} />
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
