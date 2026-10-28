@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Series unification and production exports
+
+- Added Follow Primary, Balanced and Preserve Accents strategies using existing-role medoids rather than RGB averaging, with primary/candidate role locks.
+- Defaulted to Preserve Accents for safer intent retention and made independent exceptions visible.
+- Added unified role editing, existing Web/Art previews, WCAG checks, CSS/tokens/report exports and versioned series schemas.
+- Replaced unreliable whole-workspace DOM capture with a native Canvas series overview PNG using filenames instead of internal IDs.
+- Passed 48 unit tests, 14 browser workflows, ESLint, production build and 0-vulnerability audit; desktop/mobile and actual PNG output reviewed.
+
 ## 2026-10-27 — Deterministic series difference engine
 
 - Added provider-independent series records and one-to-one OKLCH color matching with shared, missing and additional color evidence.

@@ -88,3 +88,5 @@ Color processing, domain rules, project records and export adapters remain platf
 ## Reliability
 
 Local palette editing, previews and exports remain available when AI or stock APIs fail. External providers use timeouts, bounded retries and validated fallbacks. Paid POST endpoints use Cloudflare's approximate regional rate-limit binding before image parsing and provider calls. Analysis/reference UI requests use abort and request-identity guards to prevent stale writes.
+
+Series comparison reuses extracted palettes and roles without rereading image pixels. It supports at most six images and uses deterministic optimal matching plus existing-role medoids for balanced unification; no RGB averaging or AI call is required. Preserve Accents and role locks are explicit export data. Series overview PNG uses a bounded native Canvas renderer rather than cloning the full interactive workspace.

@@ -194,6 +194,48 @@ test('manages a series and preserves independent roles and single-image state', 
   await expect(page.locator('.swatch-row').first()).toContainText('50.0%')
 })
 
+test('unifies a series with preserved accents and exports production artifacts', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: '系列', exact: true }).click()
+  await page.locator('.series-workspace input[type=file]').setInputFiles([fixture, fixture])
+  await page.getByRole('button', { name: '检查图片：palette-test.png' }).nth(1).click()
+  await page.locator('.series-workspace').getByLabel('选择行动强调颜色').selectOption('#4890e0')
+  await page.getByRole('button', { name: '锁定行动强调' }).click()
+  await page.getByRole('button', { name: '统一色组' }).click()
+  await expect(page.getByRole('button', { name: '保留个性', exact: false })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.series-exceptions')).toContainText('accent #4890e0')
+  await expect(page.locator('.series-export')).toContainText('4 组对比不足，仍可导出但建议先修正')
+  await page.screenshot({ path: 'test-results/series-unified.png', fullPage: true })
+
+  const cssEvent = page.waitForEvent('download')
+  await page.locator('.series-export-actions button').nth(0).click()
+  const cssDownload = await cssEvent
+  expect(cssDownload.suggestedFilename()).toBe('palette-lab-series-preserve-accents.css')
+  expect(fs.readFileSync(await cssDownload.path(), 'utf8')).toContain('--color-accent: #e0ff50;')
+
+  const jsonEvent = page.waitForEvent('download')
+  await page.locator('.series-export-actions button').nth(1).click()
+  const jsonDownload = await jsonEvent
+  const tokens = JSON.parse(fs.readFileSync(await jsonDownload.path(), 'utf8'))
+  expect(tokens.strategy).toBe('preserve-accents')
+  expect(tokens.roles.accent).toBe('#e0ff50')
+  expect(Object.values(tokens.exceptions)[0]).toEqual({ accent: '#4890e0' })
+
+  const reportEvent = page.waitForEvent('download')
+  await page.locator('.series-export-actions button').nth(2).click()
+  const reportDownload = await reportEvent
+  const report = JSON.parse(fs.readFileSync(await reportDownload.path(), 'utf8'))
+  expect(report.$schema).toBe('./schemas/series-report/v1.json')
+  expect(report.unifiedRoles.accent).toBe('#e0ff50')
+
+  const pngEvent = page.waitForEvent('download')
+  await page.locator('.series-export-actions button').nth(3).click()
+  const pngDownload = await pngEvent
+  expect(pngDownload.suggestedFilename()).toBe('palette-lab-series-preserve-accents.png')
+  expect(fs.statSync(await pngDownload.path()).size).toBeGreaterThan(1000)
+  fs.copyFileSync(await pngDownload.path(), 'test-results/series-export.png')
+})
+
 test('keeps the series workflow usable at a phone viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
@@ -203,6 +245,8 @@ test('keeps the series workflow usable at a phone viewport', async ({ page }) =>
   await expect(page.locator('.series-thumbnail')).toHaveCount(2)
   await page.getByRole('button', { name: '检查图片：palette-test.png' }).first().click()
   await expect(page.getByRole('heading', { name: '单图检查' })).toBeVisible()
+  await page.getByRole('button', { name: '统一色组' }).click()
+  await expect(page.getByRole('heading', { name: '选择统一策略' })).toBeVisible()
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
   expect(overflow).toBe(false)
   await page.screenshot({ path: 'test-results/series-mobile.png', fullPage: true })

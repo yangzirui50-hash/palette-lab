@@ -1,6 +1,6 @@
 # Series Color Consistency — V1 Product Contract
 
-_Status: Slices 1–2 implemented and verified on `feat/series-consistency`: difference engine, series state, overview and image inspection. Unification strategies and exports are not implemented yet._
+_Status: Slices 1–3 implemented and verified on `feat/series-consistency`: difference engine, diagnostic workflow, three unification strategies, role locks, previews and versioned exports. Optional series AI interpretation is not implemented._
 
 ## Product position
 

@@ -8,6 +8,10 @@ import { extractPalette } from '../lib/color/extract'
 import type { PaletteSwatch } from '../lib/color/extract'
 import { imageFileToPixels } from '../lib/color/image'
 import RoleEditor from './RoleEditor'
+import DomainPreview from './DomainPreview'
+import SeriesExportPanel from './SeriesExportPanel'
+import { generateUnifiedSeriesPalette } from '../domain/unify'
+import type { SeriesStrategy } from '../domain/unify'
 import './SeriesWorkspace.css'
 
 type SeriesImageState = Omit<SeriesImageAnalysis, 'roles'> & {
@@ -16,6 +20,7 @@ type SeriesImageState = Omit<SeriesImageAnalysis, 'roles'> & {
   width: number
   height: number
   rolesByDomain: Record<DomainId, RoleAssignments>
+  lockedRoles: string[]
 }
 
 type SeriesWorkspaceProps = {
@@ -28,7 +33,9 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
   const [images, setImages] = useState<SeriesImageState[]>([])
   const [primaryId, setPrimaryId] = useState('')
   const [selectedId, setSelectedId] = useState('')
-  const [view, setView] = useState<'overview' | 'inspect'>('overview')
+  const [view, setView] = useState<'overview' | 'inspect' | 'unify'>('overview')
+  const [strategy, setStrategy] = useState<SeriesStrategy>('preserve-accents')
+  const [manualUnified, setManualUnified] = useState<RoleAssignments | null>(null)
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
@@ -38,10 +45,26 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
     urls.current.clear()
   }, [])
 
+  useEffect(() => {
+    setManualUnified(null)
+  }, [images, primaryId, domain, strategy])
+
   const report = useMemo(() => {
     if (images.length < 2 || !primaryId) return null
     return compareSeries(images.map(({ id, label, palette, rolesByDomain }) => ({ id, label, palette, roles: rolesByDomain[domain] })), primaryId)
   }, [images, primaryId, domain])
+
+  const unified = useMemo(() => {
+    if (images.length < 2 || !primaryId) return null
+    return generateUnifiedSeriesPalette(images.map(({ id, label, palette, rolesByDomain, lockedRoles }) => ({
+      id,
+      label,
+      palette,
+      roles: rolesByDomain[domain],
+      lockedRoles,
+    })), primaryId, domain, strategy)
+  }, [images, primaryId, domain, strategy])
+  const unifiedAssignments = manualUnified ?? unified?.roles ?? {}
 
   const selected = images.find((image) => image.id === selectedId) ?? images[0]
   const primary = images.find((image) => image.id === primaryId) ?? images[0]
@@ -73,6 +96,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
             'web-ui': assignPaletteRoles(palette, 'web-ui'),
             'art-poster': assignPaletteRoles(palette, 'art-poster'),
           },
+          lockedRoles: [],
         })
       }
       setImages((current) => [...current, ...additions])
@@ -160,6 +184,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
           <nav className="series-tabs" aria-label="系列任务层级">
             <button className={view === 'overview' ? 'active' : ''} onClick={() => setView('overview')}>系列总览</button>
             <button className={view === 'inspect' ? 'active' : ''} onClick={() => selected && inspect(selected.id)}>单图检查</button>
+            <button className={view === 'unify' ? 'active' : ''} onClick={() => setView('unify')}>统一色组</button>
           </nav>
 
           {view === 'overview' ? (
@@ -206,7 +231,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                 </div>
               </section>
             </div>
-          ) : selected && (
+          ) : view === 'inspect' && selected && (
             <div className="series-inspection">
               <section className="inspection-images">
                 <div className="panel-heading"><span>03</span><h3>单图检查</h3><small>INDEPENDENT ROLES</small></div>
@@ -225,6 +250,11 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                 domain={domain}
                 palette={selected.palette}
                 assignments={selected.rolesByDomain[domain]}
+                lockedRoles={selected.lockedRoles}
+                onLockChange={(role, locked) => setImages((current) => current.map((image) => image.id === selected.id ? {
+                  ...image,
+                  lockedRoles: locked ? [...image.lockedRoles, role] : image.lockedRoles.filter((item) => item !== role),
+                } : image))}
                 onChange={(role, hex) => setImages((current) => current.map((image) => image.id === selected.id ? {
                   ...image,
                   rolesByDomain: {
@@ -232,6 +262,50 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                     [domain]: { ...image.rolesByDomain[domain], [role]: hex },
                   },
                 } : image))}
+              />
+            </div>
+          )}
+
+          {view === 'unify' && unified && (
+            <div className="series-unify">
+              <section className="strategy-panel">
+                <div className="panel-heading"><span>04</span><h3>选择统一策略</h3><small>INTENT PRESERVED</small></div>
+                <div className="strategy-grid">
+                  {([
+                    ['follow-primary', '跟随主图', '强统一，以主图作为全部基础角色的基准。'],
+                    ['balanced', '折中统一', '每张作品一票，选择全系列距离最小的现有代表色。'],
+                    ['preserve-accents', '保留个性', '统一基础角色，每张作品保留自己的强调色。'],
+                  ] as const).map(([id, label, description]) => (
+                    <button key={id} className={strategy === id ? 'active' : ''} onClick={() => setStrategy(id)} aria-pressed={strategy === id}>
+                      <strong>{label}</strong><span>{description}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="strategy-rationale">{unified.rationale}</p>
+                <div className="unified-palette-graphic" aria-label="统一色组">
+                  {unified.palette.map((color) => <i key={color.hex} style={{ backgroundColor: color.hex }} title={color.hex} />)}
+                </div>
+                {Object.keys(unified.exceptions).length > 0 && (
+                  <div className="series-exceptions">
+                    <strong>独立保留</strong>
+                    {Object.entries(unified.exceptions).map(([id, roles]) => (
+                      <span key={id}>{images.find((image) => image.id === id)?.label}：{Object.entries(roles).map(([role, hex]) => `${role} ${hex}`).join('、')}</span>
+                    ))}
+                  </div>
+                )}
+              </section>
+              <RoleEditor
+                domain={domain}
+                palette={unified.palette}
+                assignments={unifiedAssignments}
+                onChange={(role, hex) => setManualUnified({ ...unifiedAssignments, [role]: hex })}
+              />
+              <DomainPreview domain={domain} assignments={unifiedAssignments} />
+              <SeriesExportPanel
+                unified={unified}
+                assignments={unifiedAssignments}
+                comparison={report}
+                imageLabels={Object.fromEntries(images.map((image) => [image.id, image.label]))}
               />
             </div>
           )}

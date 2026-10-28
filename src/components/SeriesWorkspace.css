@@ -52,6 +52,25 @@
 .inspection-image-grid figcaption span { flex: 0 0 auto; color: var(--muted); font-size: 9px; }
 .inspection-palette { display: flex; height: 8px; gap: 2px; overflow: hidden; border-radius: 5px; }
 .inspection-palette i { min-width: 3px; }
+.series-unify { display: grid; gap: 20px; }
+.strategy-panel, .series-export { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.strategy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.strategy-grid button { display: grid; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 11px; color: var(--text); background: var(--soft); text-align: left; cursor: pointer; }
+.strategy-grid button.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); }
+.strategy-grid strong { font-size: 12px; font-weight: 550; }
+.strategy-grid span { color: var(--muted); font-size: 10px; line-height: 1.6; }
+.strategy-rationale { margin: 14px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.unified-palette-graphic { display: flex; height: 64px; gap: 5px; margin-top: 14px; }
+.unified-palette-graphic i { flex: 1; min-width: 0; border-radius: 8px; }
+.series-exceptions { display: grid; gap: 6px; margin-top: 14px; padding: 12px; border-radius: 9px; background: var(--soft); }
+.series-exceptions strong { color: var(--accent); font-size: 10px; }
+.series-exceptions span { color: var(--muted); font-size: 9px; }
+.series-export-audit { margin: 0 0 14px; color: var(--accent); font-size: 10px; }
+.series-export-audit.has-issues { color: #c64b45; }
+.series-export-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+.series-export-actions button { display: grid; gap: 5px; padding: 13px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--soft); text-align: left; cursor: pointer; }
+.series-export-actions strong { color: var(--accent); font-size: 11px; }
+.series-export-actions span { color: var(--muted); font-size: 9px; }
 @media (max-width: 760px) {
   .series-intro { align-items: flex-start; flex-direction: column; gap: 12px; }
   .series-intro > p { text-align: left; }
@@ -63,5 +82,7 @@
   .deviation-metrics { grid-template-columns: repeat(2, 1fr); }
   .inspection-image-grid { grid-template-columns: 1fr; }
   .inspection-image-grid img { height: 230px; }
-  .series-shared, .series-deviations, .inspection-images { padding: 16px; }
+  .series-shared, .series-deviations, .inspection-images, .strategy-panel, .series-export { padding: 16px; }
+  .strategy-grid { grid-template-columns: 1fr; }
+  .series-export-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
