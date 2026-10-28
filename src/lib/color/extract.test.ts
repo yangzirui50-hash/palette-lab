@@ -96,6 +96,16 @@ describe('extractPalette', () => {
     expect(palette.some((color) => color.rgb[0] > color.rgb[2] * 1.8 && color.rgb[1] > color.rgb[2] * 1.8)).toBe(true)
   })
 
+  it('avoids losing an entire color family to periodic sampling aliases', () => {
+    const pixels = Array.from({ length: 16000 }, (_, index): RGBPixel => index % 2 === 0 ? [215, 30, 55] : [25, 75, 215])
+    const palette = extractPalette(pixels, 2)
+    expect(palette).toHaveLength(2)
+    expect(palette.some((color) => color.rgb[0] > color.rgb[2] * 2)).toBe(true)
+    expect(palette.some((color) => color.rgb[2] > color.rgb[0] * 2)).toBe(true)
+    expect(palette[0].share).toBeCloseTo(0.5, 1)
+    expect(palette[1].share).toBeCloseTo(0.5, 1)
+  })
+
   it('rejects empty input and invalid color counts', () => {
     expect(() => extractPalette([], 4)).toThrow('At least one pixel')
     expect(() => extractPalette(solid([0, 0, 0], 1), 1)).toThrow('between 2 and 8')

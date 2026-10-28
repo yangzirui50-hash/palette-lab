@@ -44,10 +44,14 @@ const distanceSquared = (a: RGBPixel, b: RGBPixel) => {
 }
 
 function buildSamples(pixels: readonly RGBPixel[], maxSamples = 8000): WeightedSample[] {
-  const stride = Math.max(1, Math.ceil(pixels.length / maxSamples))
+  const sampleCount = Math.min(pixels.length, maxSamples)
   const histogram = new Map<string, { rgb: RGBPixel; weight: number }>()
 
-  for (let index = 0; index < pixels.length; index += stride) {
+  for (let sample = 0; sample < sampleCount; sample += 1) {
+    const start = Math.floor(sample * pixels.length / sampleCount)
+    const end = Math.floor((sample + 1) * pixels.length / sampleCount)
+    const phase = (Math.imul(sample + 1, 2654435761) >>> 0) / 4294967296
+    const index = Math.min(pixels.length - 1, start + Math.floor(phase * (end - start)))
     const source = pixels[index]
     const rgb = source.map((channel) => Math.round(channel / 8) * 8) as unknown as RGBPixel
     const clamped = rgb.map((channel) => Math.min(255, channel)) as unknown as RGBPixel

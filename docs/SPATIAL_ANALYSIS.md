@@ -57,8 +57,10 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Distribution tests preserve isolated lights, prefer high contrast, avoid uniform-field hotspots, prevent edge/corner amplification and exclude transparency
 - Real browser all-region display, pointer ROI selection, local-dominant selection, cropped-share verification and unchanged global-palette checks
 - Permanent night-city regression proves red-family preservation, zero red-like pixels in deep blue, real overlay switching and ROI reset after source change
+- Eight diverse fixtures pass sequential upload, normalized-palette, dual-mode and stale-state checks in one browser session
+- Periodic red-blue stripes verify both families survive deterministic stratified sampling and cannot cross-assign
+- Permanent person workflow verifies complete face/arm display and independent face-local extraction without changing the global palette
 - Neon browser workflow verifies heatmap rendering, nonzero hotspots, distribution metrics, region switching and 390 px layout; local ROI also works in distribution mode
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
-- Reviewed the owner's person image: all-region mode highlights both face and arms; a face ROI produces an independent palette and selects its dominant light color
-- 66 unit tests and 17 real-browser workflows pass, along with ESLint and production build
+- 67 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits

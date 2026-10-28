@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Multi-image corpus and alias-resistant sampling
+
+- Added permanent person and complex night fixtures plus deterministic product, landscape, UI, poster, monochrome, transparency, periodic and tiny-image coverage.
+- Added sequential mixed-image browser verification for normalized palettes, both spatial modes, stale-state rejection and runtime stability.
+- Replaced periodic-only sampling with deterministic stratified jitter after red-blue stripes exposed loss of the entire blue family.
+- Added periodic unit/browser assertions and documented corpus scope and remaining real-world generalization limits.
+- Passed 67 unit tests and 20 browser workflows, ESLint and production build.
+
 ## 2026-10-28 — Color-engine root-cause corrections and adversarial regression
 
 - Corrected hue averaging through OKLab vectors, constrained salient chromatic centers and made emitted RGB/OKLCH swatches consistent.

@@ -98,5 +98,7 @@ No current local commit should be described as production-validated for general 
 - The permanent night-city browser regression proves a red representative survives and zero red-like pixels enter the deep-blue selection.
 - Distribution uses an average-density boundary after zero padding was independently found to create a uniform-field center hotspot. Both uniform-field and edge/corner tests now pass.
 - Stale overlays are keyed out while new work loads, ROI dragging commits analysis only on release, and source changes reset the spatial panel.
-- Current gate: 66 unit tests and 17 browser workflows, ESLint and production build pass locally.
-- Remaining open work: higher-resolution and alias-resistant sampling, cross-image distribution contracts, actionable hotspots and continuous-region edge refinement.
+- Periodic sampling alias was independently reproduced with red-blue stripes; deterministic stratified jitter now preserves both families in unit and browser regressions.
+- A permanent multi-image corpus now covers sequential person, product, landscape, UI, poster, monochrome, transparency and tiny-image workflows, with corpus limits recorded in `docs/TEST_CORPUS.md`.
+- Current gate: 67 unit tests and 20 browser workflows, ESLint and production build pass locally.
+- Remaining open work: higher-resolution fidelity, broader independent real imagery, cross-image distribution contracts, actionable hotspots and continuous-region edge refinement.

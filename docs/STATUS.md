@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, independent local palettes, stable-boundary heatmaps and stale-overlay/ROI lifecycle corrections are verified. A permanent complex night-city regression is in place. 66 unit tests and 17 browser workflows pass; higher-resolution sampling and actionable hotspots precede continuous-region edge refinement.
+The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, independent local palettes, stable-boundary heatmaps and alias-resistant stratified sampling are verified. A permanent multi-image corpus covers real and synthetic fixtures with sequential source changes. 67 unit tests and 20 browser workflows pass; higher-resolution fidelity and actionable hotspots precede continuous-region edge refinement.
 
 ## Production
 
@@ -24,7 +24,7 @@ The deterministic series workflow and dual-mode spatial evidence layer are imple
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 66 unit tests and 17 real-browser workflow tests pass locally
+- 67 unit tests and 20 real-browser workflow tests pass locally
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures
