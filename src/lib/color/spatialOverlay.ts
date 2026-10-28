@@ -1,4 +1,5 @@
-import { buildSpatialAssignments } from './spatial'
+import { buildSpatialAssignments, cropSpatialPixels } from './spatial'
+import type { SpatialRoi } from './spatial'
 import type { PaletteSwatch, RGBPixel } from './extract'
 
 export type SpatialImageData = {
@@ -41,16 +42,20 @@ export async function imageFileToSpatialData(file: File, maxEdge = 320): Promise
   return { pixels, width, height }
 }
 
-export async function createSpatialOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 320, mode: 'largest' | 'all' = 'largest') {
+export async function createSpatialOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 320, mode: 'largest' | 'all' = 'largest', roi?: SpatialRoi) {
   const { canvas, pixels } = await loadSpatialImage(file, maxEdge)
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('无法生成空间高亮')
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
   const originalData = new Uint8ClampedArray(imageData.data)
-  const { components } = buildSpatialAssignments(pixels, canvas.width, canvas.height, palette)
+  const crop = roi ? cropSpatialPixels(pixels, canvas.width, canvas.height, roi) : null
+  const { components } = buildSpatialAssignments(crop?.pixels ?? pixels, crop?.width ?? canvas.width, crop?.height ?? canvas.height, palette)
   const selectedIndex = Math.max(0, palette.findIndex((color) => color.hex.toLowerCase() === selectedHex.toLowerCase()))
   const largest = [...components[selectedIndex]].sort((a, b) => b.length - a.length)[0]
-  const allowed = mode === 'largest' && largest ? new Set(largest) : new Set(components[selectedIndex].flat())
+  const localize = (indices: number[]) => indices.map((index) => crop
+    ? (Math.floor(index / crop.width) + crop.offsetY) * canvas.width + (index % crop.width) + crop.offsetX
+    : index)
+  const allowed = new Set(localize(mode === 'largest' && largest ? largest : components[selectedIndex].flat()))
   pixels.forEach((pixel, index) => {
     if (!pixel) return
     if (!allowed.has(index)) {
@@ -84,5 +89,10 @@ export async function createSpatialOverlay(file: File, palette: PaletteSwatch[],
   selectedContext.filter = 'none'
   selectedContext.globalCompositeOperation = 'source-over'
   context.drawImage(selectedCanvas, 0, 0)
+  if (roi) {
+    context.strokeStyle = '#e0ff50'
+    context.lineWidth = 2
+    context.strokeRect(roi.x * canvas.width, roi.y * canvas.height, roi.width * canvas.width, roi.height * canvas.height)
+  }
   return canvas.toDataURL('image/png')
 }

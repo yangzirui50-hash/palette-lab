@@ -23,6 +23,22 @@ function distanceSquared(a: readonly number[], b: readonly number[]) {
   return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2
 }
 
+export type SpatialRoi = { x: number; y: number; width: number; height: number }
+
+export function cropSpatialPixels(pixels: readonly (RGBPixel | null)[], width: number, height: number, roi: SpatialRoi) {
+  const x = Math.max(0, Math.min(width - 1, Math.floor(roi.x * width)))
+  const y = Math.max(0, Math.min(height - 1, Math.floor(roi.y * height)))
+  const cropWidth = Math.max(1, Math.min(width - x, Math.ceil(roi.width * width)))
+  const cropHeight = Math.max(1, Math.min(height - y, Math.ceil(roi.height * height)))
+  const cropped: Array<RGBPixel | null> = []
+  for (let row = y; row < y + cropHeight; row += 1) {
+    for (let column = x; column < x + cropWidth; column += 1) {
+      cropped.push(pixels[row * width + column])
+    }
+  }
+  return { pixels: cropped, width: cropWidth, height: cropHeight, offsetX: x, offsetY: y }
+}
+
 export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]) {
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
   const paletteLab = palette.map((color) => oklab(color.rgb))

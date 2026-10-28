@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Region-of-interest color analysis
+
+- Added pointer-based region selection so similarly colored skin, clothing and other objects outside the selected area no longer distort local spatial evidence.
+- Aligned selection coordinates with the rendered image rather than its letterboxed container; mapped cropped assignments back to the original overlay.
+- Kept whole-image palette shares unchanged, made local evidence explicit and prevented cropped evidence from being sent to AI as full-image context.
+- Reviewed the reported shirt/skin capture and passed 56 unit tests, 15 browser workflows, ESLint and production build.
+
 ## 2026-10-28 — Connected-region highlighting and semantic boundaries
 
 - Added largest/all connected-region display modes so similar colors on different objects need not appear as one undifferentiated mask.
