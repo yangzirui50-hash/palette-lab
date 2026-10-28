@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { analyzePaletteSpatial, cropSpatialPixels } from '../lib/color/spatial'
 import type { SpatialRegionEvidence, SpatialRoi } from '../lib/color/spatial'
 import { createSpatialOverlay, imageFileToSpatialData } from '../lib/color/spatialOverlay'
+import { extractPalette } from '../lib/color/extract'
 import type { PaletteSwatch } from '../lib/color/extract'
 import './SpatialPanel.css'
 
@@ -13,8 +14,9 @@ type SpatialPanelProps = {
 
 export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
+  const [localPalette, setLocalPalette] = useState<PaletteSwatch[]>([])
   const [selectedHex, setSelectedHex] = useState('')
-  const [mode, setMode] = useState<'largest' | 'all'>('largest')
+  const [mode, setMode] = useState<'largest' | 'all'>('all')
   const [overlay, setOverlay] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -23,17 +25,29 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   const startPoint = useRef<{ x: number; y: number } | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
+  const activePalette = roi ? localPalette : palette
+
   useEffect(() => {
     let active = true
     void imageFileToSpatialData(sourceFile).then((data) => {
       if (!active) return
       const crop = roi ? cropSpatialPixels(data.pixels, data.width, data.height, roi) : null
-      const result = analyzePaletteSpatial(crop?.pixels ?? data.pixels, crop?.width ?? data.width, crop?.height ?? data.height, palette)
+      const scopedPixels = crop?.pixels ?? data.pixels
+      if (roi && scopedPixels.every((pixel) => pixel === null)) throw new Error('框选区域内没有可分析的不透明像素')
+      const nextPalette = roi
+        ? extractPalette(scopedPixels.filter((pixel) => pixel !== null), Math.max(2, Math.min(8, palette.length)))
+        : palette
+      const result = analyzePaletteSpatial(scopedPixels, crop?.width ?? data.width, crop?.height ?? data.height, nextPalette)
+      setLocalPalette(roi ? nextPalette : [])
       setEvidence(result)
       // A cropped region must not be presented to AI as evidence about the full image.
       onEvidenceChange?.(roi ? [] : result)
-      const salient = [...palette].sort((a, b) => b.oklch[1] - a.oklch[1])[0]
-      setSelectedHex((current) => current || salient?.hex || palette[0]?.hex || '')
+      const salient = [...nextPalette].sort((a, b) => b.oklch[1] - a.oklch[1])[0]
+      const preferred = roi ? nextPalette[0] : salient || nextPalette[0]
+      setSelectedHex((current) => roi
+        ? preferred?.hex || ''
+        : nextPalette.some((color) => color.hex === current) ? current : preferred?.hex || '')
+      setError('')
       setLoading(false)
     }).catch((reason: unknown) => {
       if (!active) return
@@ -44,15 +58,15 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   }, [sourceFile, palette, onEvidenceChange, roi])
 
   useEffect(() => {
-    if (!selectedHex) return
+    if (!selectedHex || activePalette.length === 0) return
     let active = true
-    void createSpatialOverlay(sourceFile, palette, selectedHex, 320, mode, roi ?? undefined).then((url) => {
+    void createSpatialOverlay(sourceFile, activePalette, selectedHex, 320, mode, roi ?? undefined).then((url) => {
       if (active) setOverlay(url)
     }).catch((reason: unknown) => {
       if (active) setError(reason instanceof Error ? reason.message : '区域高亮失败')
     })
     return () => { active = false }
-  }, [sourceFile, palette, selectedHex, mode, roi])
+  }, [sourceFile, activePalette, selectedHex, mode, roi])
 
   const selected = evidence.find((region) => region.hex.toLowerCase() === selectedHex.toLowerCase())
   const vertical = selected ? selected.centroid.y < 0.34 ? '上方' : selected.centroid.y > 0.66 ? '下方' : '中部' : ''
@@ -118,8 +132,12 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
             </div>
           ) : <p>{loading ? '正在分析空间分布…' : '等待区域高亮'}</p>}
         </div>
-        <div className="spatial-swatches" aria-label="选择要高亮的颜色">
-          {palette.map((color) => (
+        <div className="spatial-swatches" aria-label={roi ? '局部色板：选择要高亮的颜色' : '全局色板：选择要高亮的颜色'}>
+          <div className="spatial-palette-heading">
+            <strong>{roi ? '局部色板' : '全局色板'}</strong>
+            <small>{roi ? '仅根据框选范围重新提取' : '基于整张图片'}</small>
+          </div>
+          {activePalette.map((color) => (
             <button key={color.hex} className={selectedHex === color.hex ? 'active' : ''} onClick={() => setSelectedHex(color.hex)} aria-pressed={selectedHex === color.hex}>
               <i style={{ backgroundColor: color.hex }} /><span>{color.hex}</span><small>{(color.share * 100).toFixed(1)}%</small>
             </button>

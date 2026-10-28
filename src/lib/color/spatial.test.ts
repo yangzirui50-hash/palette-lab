@@ -1,5 +1,6 @@
 import Color from 'colorjs.io'
 import { describe, expect, it } from 'vitest'
+import { extractPalette } from './extract'
 import type { PaletteSwatch, RGBPixel } from './extract'
 import { analyzePaletteSpatial, cropSpatialPixels } from './spatial'
 
@@ -61,6 +62,18 @@ describe('spatial palette evidence', () => {
     const regions = analyzePaletteSpatial(crop.pixels, crop.width, crop.height, [red, gray])
     expect(regions[0].share).toBe(1)
     expect(regions[1].pixelCount).toBe(0)
+  })
+
+  it('extracts an independent local palette without changing the global palette', () => {
+    const pixels = [redPixel, grayPixel, redPixel, grayPixel]
+    const globalPalette = extractPalette(pixels.filter((pixel) => pixel !== null), 2)
+    const crop = cropSpatialPixels(pixels, 2, 2, { x: 0, y: 0, width: 0.5, height: 1 })
+    const localPalette = extractPalette(crop.pixels.filter((pixel) => pixel !== null), 2)
+    expect(globalPalette).toHaveLength(2)
+    expect(localPalette).toHaveLength(1)
+    expect(localPalette[0].hex).toBe('#ff0000')
+    expect(localPalette[0].share).toBe(1)
+    expect(globalPalette.map((color) => color.hex)).toEqual(['#ff0000', '#808080'])
   })
 
   it('returns empty evidence for absent colors and validates dimensions', () => {

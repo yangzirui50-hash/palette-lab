@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Independent local palettes and complete color regions
+
+- ROI now re-extracts an independent local palette with the same deterministic engine while preserving the whole-image palette.
+- All approximate-color regions are shown by default so disconnected same-color areas are no longer hidden; largest-region mode remains optional.
+- Local analysis selects the dominant in-scope color instead of an incidental high-chroma accent.
+- Added independent-local-palette and browser regression coverage; reviewed the owner's person image for face/arm completeness and face-local extraction.
+- Passed 57 unit tests, 15 browser workflows, ESLint and production build.
+
 ## 2026-10-28 — Region-of-interest color analysis
 
 - Added pointer-based region selection so similarly colored skin, clothing and other objects outside the selected area no longer distort local spatial evidence.
