@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Editorial poster and AI report refinement
+
+- Rebuilt Art/Poster with a modern editorial grid, stronger Chinese display hierarchy, metadata, orbit/core/plane/axis composition and responsive behavior.
+- Added preview-only contrast fallback when primary visual equals canvas, preventing invisible main artwork without changing user roles.
+- Reorganized AI results into summary, visual evidence, role rationale, executable actions and uncertainty with clearer typography and card structure.
+- Reviewed actual desktop/mobile/AI screenshots; 54 unit tests, 15 browser workflows, ESLint and production build pass.
+
 ## 2026-10-28 — Spatial evidence and region-aware AI analysis
 
 - Added deterministic spatial evidence for palette regions: centroid, bounds, center/edge shares, connected components and color separation.
