@@ -64,9 +64,12 @@ function WebPreview({ assignments }: { assignments: RoleAssignments }) {
 }
 
 function PosterPreview({ assignments }: { assignments: RoleAssignments }) {
+  const primaryVisual = assignments.primaryVisual === assignments.canvas
+    ? assignments.secondaryVisual === assignments.canvas ? assignments.accent : assignments.secondaryVisual
+    : assignments.primaryVisual
   const style = {
     '--preview-bg': assignments.canvas,
-    '--preview-primary': assignments.primaryVisual,
+    '--preview-primary': primaryVisual,
     '--preview-secondary': assignments.secondaryVisual,
     '--preview-accent': assignments.accent,
     '--preview-display': assignments.displayText,
@@ -75,14 +78,18 @@ function PosterPreview({ assignments }: { assignments: RoleAssignments }) {
 
   return (
     <div className="preview-poster" style={style}>
-      <div className="poster-top"><span>VISUAL STUDY 001</span><span>色彩・構成・余白</span></div>
-      <div className="poster-composition" aria-hidden="true"><i /><i /><i /></div>
+      <div className="poster-top"><span>PALETTE LAB®</span><span>VISUAL STUDY — 001</span></div>
+      <div className="poster-rule"><span>CHROMATIC RESEARCH</span><span>色彩・構成・余白</span></div>
+      <div className="poster-composition" aria-hidden="true">
+        <i className="poster-orbit" /><i className="poster-core" /><i className="poster-plane" /><i className="poster-axis" />
+      </div>
       <div className="poster-copy">
         <small>COLOR AS ATMOSPHERE</small>
         <h3>色彩<br />与想象</h3>
         <p>从图像出发，建立属于作品的视觉秩序。</p>
       </div>
-      <div className="poster-foot"><span>PALETTE LAB</span><span>ART DIRECTION / 2026</span></div>
+      <div className="poster-index" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span></div>
+      <div className="poster-foot"><span>FORM / COLOR / SPACE</span><span>ART DIRECTION — 2026</span></div>
     </div>
   )
 }

@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The deterministic series workflow is merged to `main`. Salient-color extraction is corrected and the new spatial evidence layer provides region highlighting, centroids, edge/center shares and connected components. Spatial evidence is included in real DeepSeek requests, verified with HTTP 200. 54 unit tests and 15 browser workflows pass; owner's visual review is next.
+The deterministic series workflow and spatial evidence layer are implemented. Art/Poster now uses an editorial grid with a contrast-safe visual fallback, and AI reports separate summary, visual evidence, role rationale, actions and uncertainty. 54 unit tests and 15 browser workflows pass; final production visual review is next.
 
 ## Production
 

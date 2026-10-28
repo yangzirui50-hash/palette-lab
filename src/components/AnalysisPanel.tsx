@@ -74,21 +74,42 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
       {error && <p className="analysis-error" role="alert">{error}</p>}
       {report && (
         <div className="analysis-report">
-          <div className="analysis-summary"><small>ANALYSIS SUMMARY</small><h3>{report.summary}</h3><p>{report.scene}</p></div>
+          <div className="analysis-summary">
+            <div className="analysis-summary-top"><small>ANALYSIS SUMMARY</small><span>{report.provider} · {report.model}</span></div>
+            <h3>{report.summary}</h3>
+            <p>{report.scene}</p>
+          </div>
+          <div className="analysis-section-label">视觉证据</div>
           <div className="analysis-facts">
-            <div><small>视觉主体</small><p>{report.subjects.join('、')}</p></div>
-            <div><small>构图</small><p>{report.composition}</p></div>
-            <div><small>光线</small><p>{report.lighting}</p></div>
-            <div><small>风格</small><p>{report.styleTags.join('、')}</p></div>
+            <div><small>01 · 视觉主体</small><p>{report.subjects.join('、')}</p></div>
+            <div><small>02 · 构图关系</small><p>{report.composition}</p></div>
+            <div><small>03 · 光线与明暗</small><p>{report.lighting}</p></div>
+            <div><small>04 · 风格特征</small><p>{report.styleTags.join('、')}</p></div>
           </div>
+          {report.paletteRoles.length > 0 && (
+            <div className="analysis-role-evidence">
+              <div className="analysis-section-label">角色依据</div>
+              <div className="analysis-role-list">
+                {report.paletteRoles.map((item, index) => (
+                  <article key={`${item.role}-${index}`}><strong>{item.role}</strong><p>{item.rationale}</p></article>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="analysis-recommendations">
-            <small>可执行建议</small>
-            {report.recommendations.map((item, index) => (
-              <article key={`${item.title}-${index}`}><strong>{item.title}</strong><p>{item.rationale}</p><span>{item.action}</span></article>
-            ))}
+            <div className="analysis-section-label">可执行建议</div>
+            <div className="analysis-recommendation-grid">
+              {report.recommendations.map((item, index) => (
+                <article key={`${item.title}-${index}`}>
+                  <span className="recommendation-index">{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{item.title}</strong>
+                  <p>{item.rationale}</p>
+                  <div><small>建议行动</small><span>{item.action}</span></div>
+                </article>
+              ))}
+            </div>
           </div>
-          {report.uncertainties.length > 0 && <p className="analysis-uncertainty">不确定项：{report.uncertainties.join('；')}</p>}
-          <p className="analysis-model">Provider: {report.provider} · Model: {report.model}</p>
+          {report.uncertainties.length > 0 && <aside className="analysis-uncertainty"><strong>不确定性</strong><p>{report.uncertainties.join('；')}</p></aside>}
         </div>
       )}
     </section>
