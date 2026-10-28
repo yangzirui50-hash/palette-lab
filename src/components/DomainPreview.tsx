@@ -1,17 +1,18 @@
 import type { CSSProperties, Ref } from 'react'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
+import type { SpatialRegionEvidence } from '../lib/color/spatial'
 import { getContrastReport } from '../domain/contrast'
 import './DomainPreview.css'
 
 type DomainPreviewProps = {
   domain: DomainId
   assignments: RoleAssignments
-  sourceUrl?: string
+  spatial?: SpatialRegionEvidence[]
   renderRef?: Ref<HTMLDivElement>
 }
 
-export default function DomainPreview({ domain, assignments, sourceUrl, renderRef }: DomainPreviewProps) {
+export default function DomainPreview({ domain, assignments, spatial = [], renderRef }: DomainPreviewProps) {
   const report = getContrastReport(domain, assignments)
 
   return (
@@ -25,7 +26,7 @@ export default function DomainPreview({ domain, assignments, sourceUrl, renderRe
           : `⚠ ${report.issues.length} 组对比不足：${report.issues.map((issue) => `${issue.label} ${issue.ratio.toFixed(1)}:1`).join('；')}`}
       </div>
       <div className="preview-render-target" ref={renderRef}>
-        {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} sourceUrl={sourceUrl} />}
+        {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} spatial={spatial} />}
       </div>
     </section>
   )
@@ -64,10 +65,18 @@ function WebPreview({ assignments }: { assignments: RoleAssignments }) {
   )
 }
 
-function PosterPreview({ assignments, sourceUrl }: { assignments: RoleAssignments; sourceUrl?: string }) {
+function PosterPreview({ assignments, spatial }: { assignments: RoleAssignments; spatial: SpatialRegionEvidence[] }) {
   const primaryVisual = assignments.primaryVisual === assignments.canvas
     ? assignments.secondaryVisual === assignments.canvas ? assignments.accent : assignments.secondaryVisual
     : assignments.primaryVisual
+  const position = (hex: string, fallback: { x: number; y: number }) => {
+    const point = spatial.find((region) => region.hex.toLowerCase() === hex.toLowerCase())?.dominantCentroid ?? fallback
+    const clamp = (value: number) => Math.max(0.18, Math.min(0.82, value))
+    return { x: `${clamp(point.x) * 100}%`, y: `${clamp(point.y) * 100}%` }
+  }
+  const primary = position(primaryVisual, { x: 0.68, y: 0.38 })
+  const secondary = position(assignments.secondaryVisual, { x: 0.3, y: 0.32 })
+  const accent = position(assignments.accent, { x: 0.72, y: 0.62 })
   const style = {
     '--preview-bg': assignments.canvas,
     '--preview-primary': primaryVisual,
@@ -75,28 +84,28 @@ function PosterPreview({ assignments, sourceUrl }: { assignments: RoleAssignment
     '--preview-accent': assignments.accent,
     '--preview-display': assignments.displayText,
     '--preview-body': assignments.bodyText,
+    '--primary-x': primary.x,
+    '--primary-y': primary.y,
+    '--secondary-x': secondary.x,
+    '--secondary-y': secondary.y,
+    '--accent-x': accent.x,
+    '--accent-y': accent.y,
   } as CSSProperties
 
   return (
     <div className="preview-poster" style={style}>
-      <div className="poster-top"><span>PALETTE LAB®</span><span>VISUAL STUDY — 001</span></div>
+      <div className="poster-atmosphere" aria-hidden="true">
+        <i className="poster-main-form" /><i className="poster-secondary-form" /><i className="poster-accent-form" />
+        <i className="poster-arc" /><i className="poster-horizon" /><i className="poster-grain" />
+      </div>
+      <div className="poster-top"><span>PALETTE LAB®</span><span>GENERATIVE STUDY — 001</span></div>
       <div className="poster-rule"><span>CHROMATIC RESEARCH</span><span>色彩・構成・余白</span></div>
-      {sourceUrl ? (
-        <figure className="poster-image-frame">
-          <img src={sourceUrl} alt="当前图片的海报主视觉" />
-          <figcaption>SOURCE IMAGE / 001</figcaption>
-        </figure>
-      ) : (
-        <div className="poster-composition" aria-hidden="true">
-          <i className="poster-orbit" /><i className="poster-core" /><i className="poster-plane" /><i className="poster-axis" />
-        </div>
-      )}
+      <div className="poster-chapter" aria-hidden="true"><span>COMPOSITION</span><strong>01</strong><small>COLOR / FORM / SPACE</small></div>
       <div className="poster-copy">
         <small>COLOR AS ATMOSPHERE</small>
         <h3>色彩<br />与想象</h3>
-        <p>从图像出发，建立属于作品的视觉秩序。</p>
+        <p>以源图的色彩关系与空间重心，重构完整的视觉场景。</p>
       </div>
-      <div className="poster-index" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span></div>
       <div className="poster-foot"><span>FORM / COLOR / SPACE</span><span>ART DIRECTION — 2026</span></div>
     </div>
   )

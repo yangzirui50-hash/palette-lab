@@ -91,7 +91,9 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   const selected = evidence.find((region) => region.hex.toLowerCase() === selectedHex.toLowerCase())
   const displayedRoi = draftRoi ?? roi
   const selectedDistribution = distributions.find((item) => item.hex.toLowerCase() === selectedHex.toLowerCase())
-  const centroid = viewMode === 'distribution' ? selectedDistribution?.centroid : selected?.centroid
+  const centroid = viewMode === 'distribution'
+    ? selectedDistribution?.hotspots[0] ?? selectedDistribution?.centroid
+    : selected?.dominantCentroid
   const vertical = centroid ? centroid.y < 0.34 ? '上方' : centroid.y > 0.66 ? '下方' : '中部' : ''
   const horizontal = centroid ? centroid.x < 0.34 ? '左侧' : centroid.x > 0.66 ? '右侧' : '中央' : ''
 
@@ -192,11 +194,8 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
         <div className="spatial-facts" aria-live="polite">
           <div><small>主要位置</small><strong>{vertical} · {horizontal}</strong></div>
           <div><small>实际面积</small><strong>{(selected.share * 100).toFixed(1)}%</strong></div>
-          <div><small>中心区域占比</small><strong>{(selected.centerShare * 100).toFixed(1)}%</strong></div>
-          <div><small>边缘区域占比</small><strong>{(selected.edgeShare * 100).toFixed(1)}%</strong></div>
-          <div><small>最大连续区域</small><strong>{(selected.largestComponentShare * 100).toFixed(1)}%</strong></div>
-          <div><small>显著区域数量</small><strong>{selected.componentCount}</strong></div>
-          <div><small>平均色彩分离度</small><strong>{selected.meanColorSeparation.toFixed(3)}</strong></div>
+          <div><small>连续完整性</small><strong>{(selected.largestComponentShare * 100).toFixed(1)}%</strong></div>
+          <div><small>边缘接触率</small><strong>{(selected.edgeShare * 100).toFixed(1)}%</strong></div>
         </div>
       )}
       {viewMode === 'distribution' && selectedDistribution && (

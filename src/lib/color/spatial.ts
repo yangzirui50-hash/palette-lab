@@ -6,6 +6,7 @@ export type SpatialRegionEvidence = {
   pixelCount: number
   share: number
   centroid: { x: number; y: number }
+  dominantCentroid: { x: number; y: number }
   bounds: { x: number; y: number; width: number; height: number }
   centerShare: number
   edgeShare: number
@@ -167,7 +168,7 @@ export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
   if (palette.length === 0) return { regions: [], unassignedShare: pixels.some(Boolean) ? 1 : 0 }
   const opaqueCount = pixels.filter(Boolean).length
-  const { assignments, separations } = buildSpatialAssignments(pixels, width, height, palette)
+  const { assignments, separations, components } = buildSpatialAssignments(pixels, width, height, palette)
   const states = palette.map(() => ({
     count: 0,
     x: 0,
@@ -210,6 +211,7 @@ export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)
         pixelCount: 0,
         share: 0,
         centroid: { x: 0, y: 0 },
+        dominantCentroid: { x: 0, y: 0 },
         bounds: { x: 0, y: 0, width: 0, height: 0 },
         centerShare: 0,
         edgeShare: 0,
@@ -252,12 +254,19 @@ export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)
     }
     const minimumSignificantSize = Math.max(1, Math.floor(state.count * 0.01))
     const significant = componentSizes.filter((size) => size >= minimumSignificantSize)
+    const centroid = { x: (state.x / state.count + 0.5) / width, y: (state.y / state.count + 0.5) / height }
+    const dominant = [...components[paletteIndex]].sort((a, b) => b.length - a.length)[0]
+    const dominantCentroid = dominant ? {
+      x: (dominant.reduce((sum, index) => sum + index % width, 0) / dominant.length + 0.5) / width,
+      y: (dominant.reduce((sum, index) => sum + Math.floor(index / width), 0) / dominant.length + 0.5) / height,
+    } : centroid
 
     return {
       hex: color.hex,
       pixelCount: state.count,
       share: opaqueCount > 0 ? state.count / opaqueCount : 0,
-      centroid: { x: (state.x / state.count + 0.5) / width, y: (state.y / state.count + 0.5) / height },
+      centroid,
+      dominantCentroid,
       bounds: {
         x: state.minX / width,
         y: state.minY / height,

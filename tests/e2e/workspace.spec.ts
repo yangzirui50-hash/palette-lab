@@ -29,6 +29,11 @@ test('keeps the workspace usable at a phone viewport', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
   expect(overflow).toBe(false)
   await page.screenshot({ path: 'test-results/palette-mobile.png', fullPage: true })
+  await page.getByRole('button', { name: 'Art / Poster' }).click()
+  await expect(page.locator('.poster-main-form')).toBeVisible()
+  const artOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
+  expect(artOverflow).toBe(false)
+  await page.locator('.domain-preview').screenshot({ path: 'test-results/art-mobile.png' })
 })
 
 test('preserves palette data across theme and domain combinations', async ({ page }) => {
@@ -47,6 +52,9 @@ test('preserves palette data across theme and domain combinations', async ({ pag
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
       expect(overflow).toBe(false)
       if (domain === 'art-poster') {
+        await expect(page.locator('.poster-atmosphere')).toBeVisible()
+        await expect(page.locator('.poster-main-form')).toBeVisible()
+        await expect(page.locator('.preview-poster img')).toHaveCount(0)
         await page.waitForTimeout(250)
         await page.screenshot({ path: `test-results/art-${theme}.png`, fullPage: true })
       }
@@ -86,8 +94,8 @@ test('edits role colors and updates Web and Poster previews', async ({ page }) =
 
   await page.getByRole('button', { name: 'Art / Poster' }).click()
   await expect(page.locator('.preview-poster')).toBeVisible()
-  await expect(page.locator('.poster-image-frame')).toBeVisible()
-  await expect(page.locator('.poster-image-frame img')).toHaveAttribute('alt', '当前图片的海报主视觉')
+  await expect(page.locator('.poster-atmosphere')).toBeVisible()
+  await expect(page.locator('.preview-poster img')).toHaveCount(0)
   await expect(page.locator('.role-field select')).toHaveCount(6)
   await page.screenshot({ path: 'test-results/poster-preview.png', fullPage: true })
 })
@@ -263,7 +271,7 @@ test('highlights spatial color regions with explainable evidence', async ({ page
   await expect(page.locator('.spatial-preview img')).toHaveAttribute('alt', /#4890e0/)
   await expect(page.locator('.spatial-facts')).toContainText('18.8%')
   await expect(page.locator('.spatial-facts')).toContainText('右侧')
-  await expect(page.locator('.spatial-facts')).toContainText('最大连续区域')
+  await expect(page.locator('.spatial-facts')).toContainText('连续完整性')
   await expect(page.locator('.spatial-facts')).toContainText('100.0%')
   await expect(page.locator('.spatial-mode')).toContainText('近似色区域，不是物体分割')
   await expect(page.locator('.spatial-mode button')).toHaveText('全部近似色区域')

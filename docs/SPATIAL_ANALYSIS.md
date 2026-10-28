@@ -15,7 +15,8 @@ Global extraction averages hue through OKLab vectors rather than linear hue degr
 `src/lib/color/spatial.ts` assigns sampled pixels to a reliable palette color and reports:
 
 - Pixel count and opaque-pixel share
-- Normalized centroid and bounding box
+- Overall normalized centroid and dominant-component centroid
+- Normalized bounding box
 - Central-region and edge-region shares
 - Largest connected-component share
 - Significant connected-component count
@@ -29,7 +30,7 @@ Palette share comes from weighted clustering. Spatial share is recomputed by nea
 
 ## Region highlighting
 
-Clicking a swatch dims other regions while preserving the selected color in the original thumbnail. The default view shows all approximate-color regions so disconnected areas with the same color are not hidden; users can switch to only the largest connected region. Feathered masks soften boundaries. The interface explicitly states that these are approximate color regions, not semantic object segmentation, so similar colors on skin, books or other objects are not claimed to be one object. Highlighting is generated locally and requires no AI call or image upload.
+Clicking a swatch dims other regions while preserving the selected color in the original thumbnail. The default view shows all approximate-color regions so disconnected areas with the same color are not hidden; users can switch to only the largest connected region. “主要位置” uses the dominant component rather than averaging separate sides into a false center. The default panel keeps four decision-useful metrics: location, actual area, connected integrity and edge contact; advanced evidence remains internal. Feathered masks soften boundaries. The interface explicitly states that these are approximate color regions, not semantic object segmentation, so similar colors on skin, books or other objects are not claimed to be one object. Highlighting is generated locally and requires no AI call or image upload.
 
 ## Region of interest
 
@@ -53,7 +54,7 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 
 - Hue-wraparound, RGB/OKLCH consistency, multiple chromatic-family and constrained-center unit tests
 - Dark-red conflict, low-chroma compatible-reassignment and explicit unassigned tests
-- Center-focus, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
+- Center-focus, dominant-component location, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
 - Distribution tests preserve isolated lights, prefer high contrast, avoid uniform-field hotspots, prevent edge/corner amplification and exclude transparency
 - Real browser all-region display, pointer ROI selection, local-dominant selection, cropped-share verification and unchanged global-palette checks
 - Permanent night-city regression proves red-family preservation, zero red-like pixels in deep blue, real overlay switching and ROI reset after source change
@@ -63,4 +64,4 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Neon browser workflow verifies heatmap rendering, nonzero hotspots, distribution metrics, region switching and 390 px layout; local ROI also works in distribution mode
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
-- 67 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits
+- 68 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits

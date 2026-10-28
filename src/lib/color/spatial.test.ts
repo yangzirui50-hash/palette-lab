@@ -30,6 +30,18 @@ describe('spatial palette evidence', () => {
     expect(regions[1].meanColorSeparation).toBeGreaterThan(0)
   })
 
+  it('uses the dominant component rather than averaging separate sides into the center', () => {
+    const pixels = Array.from({ length: 18 }, (_, index) => {
+      const x = index % 9
+      return x <= 2 || x >= 7 ? redPixel : grayPixel
+    })
+    const region = analyzePaletteSpatial(pixels, 9, 2, [red, gray])[0]
+    expect(region.centroid.x).toBeGreaterThan(0.34)
+    expect(region.centroid.x).toBeLessThan(0.66)
+    expect(region.dominantCentroid.x).toBeLessThan(0.34)
+    expect(region.largestComponentShare).toBeCloseTo(0.6)
+  })
+
   it('separates meaningful disconnected areas instead of merging them', () => {
     const pixels = Array.from({ length: 28 }, (_, index) => [0, 1, 4, 5, 7, 8, 11, 12].includes(index) ? redPixel : grayPixel)
     const regions = analyzePaletteSpatial(pixels, 7, 4, [red, gray])

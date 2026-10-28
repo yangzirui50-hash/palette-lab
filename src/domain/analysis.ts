@@ -29,6 +29,7 @@ export const spatialRegionSchema = z.object({
   pixelCount: z.number().int().nonnegative(),
   share: z.number().min(0).max(1),
   centroid: z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }),
+  dominantCentroid: z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }),
   bounds: z.object({
     x: z.number().min(0).max(1),
     y: z.number().min(0).max(1),

@@ -11,6 +11,7 @@ const requestBody = {
     pixelCount: 100,
     share: 1,
     centroid: { x: 0.5, y: 0.5 },
+    dominantCentroid: { x: 0.5, y: 0.5 },
     bounds: { x: 0, y: 0, width: 1, height: 1 },
     centerShare: 1,
     edgeShare: 0,

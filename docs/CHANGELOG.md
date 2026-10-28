@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Dominant-location evidence and generative poster scenes
+
+- Replaced misleading whole-color average placement with dominant-component location; distribution mode prefers the leading hotspot.
+- Reduced the region panel to four decision-useful metrics: dominant location, actual area, connected integrity and edge contact. Advanced evidence remains available internally.
+- Removed source-image cropping/pasting from Art preview and generated complete editorial scenes from role colors and dominant spatial positions.
+- Added organic forms, atmospheric gradients, orbit/horizon structure and grain with responsive light/dark/mobile rendering and no poster image element.
+- Passed 68 unit tests and 20 browser workflows, ESLint and production build.
+
 ## 2026-10-28 — Multi-image corpus and alias-resistant sampling
 
 - Added permanent person and complex night fixtures plus deterministic product, landscape, UI, poster, monochrome, transparency, periodic and tiny-image coverage.
