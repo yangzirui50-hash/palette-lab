@@ -251,3 +251,17 @@ test('keeps the series workflow usable at a phone viewport', async ({ page }) =>
   expect(overflow).toBe(false)
   await page.screenshot({ path: 'test-results/series-mobile.png', fullPage: true })
 })
+
+test('highlights spatial color regions with explainable evidence', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type=file]').setInputFiles(fixture)
+  await expect(page.getByRole('heading', { name: '视觉重心与色彩地图' })).toBeVisible()
+  await expect(page.locator('.spatial-facts')).toBeVisible()
+  await page.locator('.spatial-swatches button').nth(2).click()
+  await expect(page.locator('.spatial-preview img')).toHaveAttribute('alt', /#4890e0/)
+  await expect(page.locator('.spatial-facts')).toContainText('18.8%')
+  await expect(page.locator('.spatial-facts')).toContainText('右侧')
+  await expect(page.locator('.spatial-facts')).toContainText('最大连续区域')
+  await expect(page.locator('.spatial-facts')).toContainText('100.0%')
+  await page.screenshot({ path: 'test-results/spatial-evidence.png', fullPage: true })
+})
