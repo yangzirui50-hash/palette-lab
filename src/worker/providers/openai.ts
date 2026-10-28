@@ -3,7 +3,7 @@ import type { AnalysisRequest } from '../../domain/analysis'
 import type { AIAnalysisProvider, WorkerEnv } from './types'
 import { getProviderDefinition } from './registry'
 
-const systemPrompt = `You are a visual design analyst. Analyze the actual image and the supplied deterministic palette. Return only valid JSON with this exact shape: summary, subjects (max 6 strings), scene, composition, lighting, styleTags (max 6), suitableUseCases (max 4), paletteRoles (max 8 objects with role and rationale), recommendations (max 4 objects with title, rationale and actionable action), uncertainties (max 4), provider and model. Do not invent objects or certainty. Distinguish objective visual evidence from subjective design interpretation. Use concise Simplified Chinese for all user-facing values.`
+const systemPrompt = `You are a visual design analyst. Analyze the actual image and the supplied deterministic palette. Return only valid JSON with this exact shape: summary, subjects (max 6 strings), scene, composition, lighting, styleTags (max 6), suitableUseCases (max 4), paletteRoles (max 8 objects with role and rationale), recommendations (max 4 objects with title, rationale and actionable action), uncertainties (max 4), provider and model. Do not invent objects or certainty. Distinguish objective visual evidence from subjective design interpretation. Use concise Simplified Chinese for all user-facing values. Use supplied spatial evidence to distinguish edge-connected backgrounds, central subjects and small salient accents; area alone is not visual importance.`
 
 function isRetryable(error: unknown) {
   return error instanceof Error && (
@@ -26,7 +26,7 @@ async function requestAnalysis(env: WorkerEnv, request: AnalysisRequest) {
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: [
-            { type: 'text', text: JSON.stringify({ domain: request.domain, palette: request.palette, assignments: request.assignments }) },
+            { type: 'text', text: JSON.stringify({ domain: request.domain, palette: request.palette, assignments: request.assignments, spatial: request.spatial ?? [] }) },
             { type: 'image_url', image_url: { url: request.image } },
           ] },
         ],

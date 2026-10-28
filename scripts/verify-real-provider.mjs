@@ -46,6 +46,11 @@ try {
         { hex: '#4890e0', share: 0.175 },
       ],
       assignments: { background: '#080808', accent: '#e0ff50', surface: '#4890e0' },
+      spatial: [
+        { hex: '#080808', pixelCount: 200000, share: 0.5, centroid: { x: 0.25, y: 0.5 }, bounds: { x: 0, y: 0, width: 0.5, height: 1 }, centerShare: 0.5, edgeShare: 0.5, largestComponentShare: 1, componentCount: 1, meanColorSeparation: 0.4 },
+        { hex: '#e0ff50', pixelCount: 130000, share: 0.325, centroid: { x: 0.5, y: 0.5 }, bounds: { x: 0.5, y: 0, width: 0.325, height: 1 }, centerShare: 1, edgeShare: 0, largestComponentShare: 1, componentCount: 1, meanColorSeparation: 0.5 },
+        { hex: '#4890e0', pixelCount: 70000, share: 0.175, centroid: { x: 0.825, y: 0.5 }, bounds: { x: 0.825, y: 0, width: 0.175, height: 1 }, centerShare: 0, edgeShare: 1, largestComponentShare: 1, componentCount: 1, meanColorSeparation: 0.434 },
+      ],
     }),
     signal: AbortSignal.timeout(120_000),
   })

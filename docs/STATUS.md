@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The deterministic series workflow is merged to `main`. A user-reported loss of small saturated subject colors has been fixed locally: extraction now protects salient hue clusters and all series distances use true OKLab coordinates. 50 unit tests and 14 browser workflows pass. Production recheck with the owner's original image is pending.
+The deterministic series workflow is merged to `main`. Salient-color extraction is corrected and the new spatial evidence layer provides region highlighting, centroids, edge/center shares and connected components. Spatial evidence is included in real DeepSeek requests, verified with HTTP 200. 54 unit tests and 15 browser workflows pass; owner's visual review is next.
 
 ## Production
 
@@ -24,7 +24,7 @@ The deterministic series workflow is merged to `main`. A user-reported loss of s
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 50 unit tests and 14 real-browser workflow tests pass locally
+- 54 unit tests and 15 real-browser workflow tests pass locally
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures

@@ -5,12 +5,14 @@ import { domainProfiles } from '../domain/profiles'
 import type { DomainId } from '../domain/profiles'
 import { extractPalette } from '../lib/color/extract'
 import type { PaletteSwatch, RGBPixel } from '../lib/color/extract'
+import type { SpatialRegionEvidence } from '../lib/color/spatial'
 import { imageFileToPixels } from '../lib/color/image'
 import { useTheme } from '../hooks/useTheme'
 import { copyText } from '../lib/clipboard'
 import { assignPaletteRoles } from '../domain/assign'
 import type { RoleAssignments } from '../domain/assign'
 import RoleEditor from '../components/RoleEditor'
+import SpatialPanel from '../components/SpatialPanel'
 import DomainPreview from '../components/DomainPreview'
 import ExportPanel from '../components/ExportPanel'
 import AnalysisPanel from '../components/AnalysisPanel'
@@ -40,6 +42,7 @@ export default function Home() {
   const assignments = assignmentsByDomain[domain]
   const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
   const [source, setSource] = useState<SourceState | null>(null)
+  const [spatialEvidence, setSpatialEvidence] = useState<SpatialRegionEvidence[]>([])
   const [analysisReport, setAnalysisReport] = useState<AnalysisReport | null>(null)
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
@@ -79,6 +82,7 @@ export default function Home() {
     setBusy(true)
     setError('')
     setCopied('')
+    setSpatialEvidence([])
     try {
       const processed = await imageFileToPixels(file)
       if (requestId !== uploadRequestRef.current) {
@@ -247,8 +251,9 @@ export default function Home() {
                 [domain]: { ...current[domain], [role]: hex },
               }))}
             />
+            <SpatialPanel sourceFile={source.file} palette={palette} onEvidenceChange={setSpatialEvidence} />
             <DomainPreview domain={domain} assignments={assignments} renderRef={setPreviewTarget} />
-            <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} report={analysisReport} onReportChange={setAnalysisReport} />
+            <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} spatialEvidence={spatialEvidence} report={analysisReport} onReportChange={setAnalysisReport} />
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
           </div>

@@ -3,6 +3,7 @@ import { fileToAiDataUrl } from '../lib/color/aiImage'
 import type { AnalysisReport } from '../domain/analysis'
 import type { DomainId } from '../domain/profiles'
 import type { PaletteSwatch } from '../lib/color/extract'
+import type { SpatialRegionEvidence } from '../lib/color/spatial'
 import type { RoleAssignments } from '../domain/assign'
 import './AnalysisPanel.css'
 
@@ -11,11 +12,12 @@ type AnalysisPanelProps = {
   sourceFile: File
   palette: PaletteSwatch[]
   assignments: RoleAssignments
+  spatialEvidence: SpatialRegionEvidence[]
   report: AnalysisReport | null
   onReportChange: (report: AnalysisReport | null) => void
 }
 
-export default function AnalysisPanel({ domain, sourceFile, palette, assignments, report, onReportChange }: AnalysisPanelProps) {
+export default function AnalysisPanel({ domain, sourceFile, palette, assignments, spatialEvidence, report, onReportChange }: AnalysisPanelProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const requestId = useRef(0)
@@ -29,7 +31,7 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
     setLoading(false)
     setError('')
     return () => controller.current?.abort()
-  }, [domain, assignments, sourceFile, onReportChange])
+  }, [domain, assignments, sourceFile, spatialEvidence, onReportChange])
 
   const analyze = async () => {
     const currentRequest = ++requestId.current
@@ -43,7 +45,7 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
       const response = await fetch('/api/analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image, domain, palette, assignments }),
+        body: JSON.stringify({ image, domain, palette, assignments, spatial: spatialEvidence }),
         signal: currentController.signal,
       })
       const payload = await response.json()

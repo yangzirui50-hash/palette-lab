@@ -6,6 +6,18 @@ const requestBody = {
   domain: 'web-ui' as const,
   palette: [{ hex: '#080808', share: 1 }],
   assignments: { background: '#080808' },
+  spatial: [{
+    hex: '#080808',
+    pixelCount: 100,
+    share: 1,
+    centroid: { x: 0.5, y: 0.5 },
+    bounds: { x: 0, y: 0, width: 1, height: 1 },
+    centerShare: 1,
+    edgeShare: 0,
+    largestComponentShare: 1,
+    componentCount: 1,
+    meanColorSeparation: 0,
+  }],
 }
 
 describe('analysis API', () => {
@@ -66,6 +78,7 @@ describe('analysis API', () => {
       expect(response.status).toBe(200)
       expect((await response.json()).provider).toBe('deepseek')
       expect(fetchMock).toHaveBeenCalledTimes(2)
+      expect(fetchMock.mock.calls[0][1].body).toContain('largestComponentShare')
     } finally {
       vi.unstubAllGlobals()
     }

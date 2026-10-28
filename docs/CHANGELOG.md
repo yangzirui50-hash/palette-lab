@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Spatial evidence and region-aware AI analysis
+
+- Added deterministic spatial evidence for palette regions: centroid, bounds, center/edge shares, connected components and color separation.
+- Added local original-image region highlighting with transparent-pixel and small-dimension handling.
+- Explained why spatial nearest-color shares can differ slightly from weighted-cluster shares.
+- Added optional schema-validated spatial evidence to DeepSeek requests and prompt guidance for backgrounds, central subjects and salient accents.
+- Verified real DeepSeek spatial analysis with HTTP 200; 54 unit tests, 15 browser workflows, ESLint, production build and 0-vulnerability audit pass.
+
 ## 2026-10-28 — Salient subject-color and OKLab correction
 
 - Reproduced a user-reported case where small red subject regions disappeared from extracted palettes under dominant neutrals.
