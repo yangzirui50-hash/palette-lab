@@ -51,6 +51,17 @@ describe('palette distribution evidence', () => {
     expect(result.centroid?.y).toBeCloseTo(0.5)
   })
 
+  it('does not amplify identical lights merely because they touch an edge or corner', () => {
+    const peakAt = (index: number) => {
+      const pixels = Array.from({ length: 1600 }, () => darkPixel as RGBPixel | null)
+      pixels[index] = redPixel
+      return analyzePaletteDistribution(pixels, 40, 40, [dark, red])[1].heat.peak
+    }
+    const center = peakAt(20 * 40 + 20)
+    expect(peakAt(20 * 40)).toBeLessThanOrEqual(center)
+    expect(peakAt(0)).toBeLessThanOrEqual(center)
+  })
+
   it('excludes transparent pixels and validates dimensions', () => {
     const pixels = Array.from({ length: 20 }, () => null) as Array<RGBPixel | null>
     pixels[17] = redPixel

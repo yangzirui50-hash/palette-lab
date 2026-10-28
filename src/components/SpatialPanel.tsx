@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { analyzePaletteDistribution } from '../lib/color/distribution'
 import type { PaletteDistribution } from '../lib/color/distribution'
-import { analyzePaletteSpatial, cropSpatialPixels } from '../lib/color/spatial'
+import { analyzePaletteSpatialDetailed, cropSpatialPixels } from '../lib/color/spatial'
 import type { SpatialRegionEvidence, SpatialRoi } from '../lib/color/spatial'
 import { createDistributionOverlay, createSpatialOverlay, imageFileToSpatialData } from '../lib/color/spatialOverlay'
 import { extractPalette } from '../lib/color/extract'
@@ -17,19 +17,29 @@ type SpatialPanelProps = {
 export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
+  const [unassignedShare, setUnassignedShare] = useState(0)
   const [localPalette, setLocalPalette] = useState<PaletteSwatch[]>([])
   const [selectedHex, setSelectedHex] = useState('')
   const [viewMode, setViewMode] = useState<'regions' | 'distribution'>('regions')
   const [mode, setMode] = useState<'largest' | 'all'>('all')
-  const [overlay, setOverlay] = useState('')
+  const [overlay, setOverlay] = useState({ url: '', key: '' })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [roi, setRoi] = useState<SpatialRoi | null>(null)
+  const [draftRoi, setDraftRoi] = useState<SpatialRoi | null>(null)
   const [selecting, setSelecting] = useState<'armed' | 'dragging' | null>(null)
   const startPoint = useRef<{ x: number; y: number } | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
   const activePalette = roi ? localPalette : palette
+  const overlayKey = [
+    `${sourceFile.name}:${sourceFile.lastModified}:${sourceFile.size}`,
+    viewMode,
+    mode,
+    selectedHex,
+    activePalette.map((color) => color.hex).join(','),
+    roi ? `${roi.x},${roi.y},${roi.width},${roi.height}` : 'full',
+  ].join('|')
 
   useEffect(() => {
     let active = true
@@ -41,13 +51,14 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
       const nextPalette = roi
         ? extractPalette(scopedPixels.filter((pixel) => pixel !== null), Math.max(2, Math.min(8, palette.length)))
         : palette
-      const result = analyzePaletteSpatial(scopedPixels, crop?.width ?? data.width, crop?.height ?? data.height, nextPalette)
+      const result = analyzePaletteSpatialDetailed(scopedPixels, crop?.width ?? data.width, crop?.height ?? data.height, nextPalette)
       const distributionResult = analyzePaletteDistribution(scopedPixels, crop?.width ?? data.width, crop?.height ?? data.height, nextPalette)
       setLocalPalette(roi ? nextPalette : [])
-      setEvidence(result)
+      setEvidence(result.regions)
+      setUnassignedShare(result.unassignedShare)
       setDistributions(distributionResult)
       // A cropped region must not be presented to AI as evidence about the full image.
-      onEvidenceChange?.(roi ? [] : result)
+      onEvidenceChange?.(roi ? [] : result.regions)
       const salient = [...nextPalette].sort((a, b) => b.oklch[1] - a.oklch[1])[0]
       const preferred = roi ? nextPalette[0] : salient || nextPalette[0]
       setSelectedHex((current) => roi
@@ -70,14 +81,15 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
       ? createDistributionOverlay(sourceFile, activePalette, selectedHex, 320, roi ?? undefined)
       : createSpatialOverlay(sourceFile, activePalette, selectedHex, 320, mode, roi ?? undefined)
     void request.then((url) => {
-      if (active) setOverlay(url)
+      if (active) setOverlay({ url, key: overlayKey })
     }).catch((reason: unknown) => {
       if (active) setError(reason instanceof Error ? reason.message : '空间可视化失败')
     })
     return () => { active = false }
-  }, [sourceFile, activePalette, selectedHex, mode, roi, viewMode])
+  }, [sourceFile, activePalette, selectedHex, mode, roi, viewMode, overlayKey])
 
   const selected = evidence.find((region) => region.hex.toLowerCase() === selectedHex.toLowerCase())
+  const displayedRoi = draftRoi ?? roi
   const selectedDistribution = distributions.find((item) => item.hex.toLowerCase() === selectedHex.toLowerCase())
   const centroid = viewMode === 'distribution' ? selectedDistribution?.centroid : selected?.centroid
   const vertical = centroid ? centroid.y < 0.34 ? '上方' : centroid.y > 0.66 ? '下方' : '中部' : ''
@@ -97,13 +109,13 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
     const point = pointFromEvent(event)
     startPoint.current = point
     setSelecting('dragging')
-    setRoi({ x: point.x, y: point.y, width: 0, height: 0 })
+    setDraftRoi({ x: point.x, y: point.y, width: 0, height: 0 })
   }
 
   const updateSelection = (event: React.PointerEvent<HTMLDivElement>) => {
     if (selecting !== 'dragging' || !startPoint.current) return
     const point = pointFromEvent(event)
-    setRoi({
+    setDraftRoi({
       x: Math.min(startPoint.current.x, point.x),
       y: Math.min(startPoint.current.y, point.y),
       width: Math.abs(point.x - startPoint.current.x),
@@ -112,7 +124,14 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   }
 
   const finishSelection = () => {
-    if (selecting === 'dragging') setSelecting(roi && roi.width > 0.02 && roi.height > 0.02 ? null : 'armed')
+    if (selecting !== 'dragging') return
+    if (draftRoi && draftRoi.width > 0.02 && draftRoi.height > 0.02) {
+      setRoi(draftRoi)
+      setSelecting(null)
+    } else {
+      setSelecting('armed')
+    }
+    setDraftRoi(null)
   }
 
   return (
@@ -133,7 +152,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
       </div>
       <div className="spatial-layout">
         <div className={`spatial-preview ${selecting ? 'selecting' : ''}`}>
-          {overlay ? (
+          {overlay.url && overlay.key === overlayKey ? (
             <div
               ref={previewRef}
               className="spatial-image-stage"
@@ -142,10 +161,10 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
               onPointerUp={finishSelection}
               onPointerCancel={finishSelection}
             >
-              <img src={overlay} alt={viewMode === 'distribution' ? `原图中 ${selectedHex} 的色彩密度热图` : `原图中 ${selectedHex} 的颜色区域高亮`} />
-              {roi && <div className="spatial-roi" style={{ left: `${roi.x * 100}%`, top: `${roi.y * 100}%`, width: `${roi.width * 100}%`, height: `${roi.height * 100}%` }} />}
+              <img src={overlay.url} alt={viewMode === 'distribution' ? `原图中 ${selectedHex} 的色彩密度热图` : `原图中 ${selectedHex} 的颜色区域高亮`} />
+              {displayedRoi && <div className="spatial-roi" style={{ left: `${displayedRoi.x * 100}%`, top: `${displayedRoi.y * 100}%`, width: `${displayedRoi.width * 100}%`, height: `${displayedRoi.height * 100}%` }} />}
             </div>
-          ) : <p>{loading ? '正在分析空间分布…' : '等待空间可视化'}</p>}
+          ) : <p>{loading ? '正在分析空间分布…' : '正在更新可视化…'}</p>}
         </div>
         <div className="spatial-swatches" aria-label={roi ? '局部色板：选择要高亮的颜色' : '全局色板：选择要高亮的颜色'}>
           <div className="spatial-palette-heading">
@@ -190,6 +209,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
           <div><small>分析口径</small><strong>密度＋局部反差</strong></div>
         </div>
       )}
+      <p className="spatial-unassigned">未可靠归属 {(unassignedShare * 100).toFixed(1)}%：{unassignedShare > 0 ? '这些像素不参与颜色高亮或热点计算。' : '当前不透明像素均有可用代表色。'}</p>
       {error && <p className="error-message" role="alert">{error}</p>}
     </section>
   )

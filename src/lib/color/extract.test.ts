@@ -1,3 +1,4 @@
+import Color from 'colorjs.io'
 import { describe, expect, it } from 'vitest'
 import { extractPalette } from './extract'
 import type { RGBPixel } from './extract'
@@ -57,6 +58,42 @@ describe('extractPalette', () => {
     const salientRed = palette.find((color) => color.oklch[1] > 0.12 && color.rgb[0] > color.rgb[1] * 2)
     expect(salientRed).toBeDefined()
     expect(salientRed?.share).toBeGreaterThan(0.005)
+  })
+
+  it('keeps wraparound hue families and emitted RGB/OKLCH values consistent', () => {
+    const pixels: RGBPixel[] = []
+    for (let index = 0; index < 24; index += 1) {
+      const lightness = 0.42 + (index % 6) * 0.045
+      const hue = index < 12 ? 344 + index : index - 12
+      for (const offset of [0, 5]) {
+        const rgb = new Color('oklch', [lightness, 0.16, (hue + offset) % 360]).to('srgb').coords
+          .map((channel) => Math.max(0, Math.min(255, Math.round((channel ?? 0) * 255)))) as unknown as RGBPixel
+        pixels.push(...solid(rgb, 5))
+      }
+      pixels.push(...solid([16 + index * 3, 18 + index * 2, 24 + index * 2], 5))
+    }
+    const palette = extractPalette(pixels, 3)
+    palette.forEach((swatch) => {
+      const actual = new Color('srgb', [swatch.rgb[0] / 255, swatch.rgb[1] / 255, swatch.rgb[2] / 255]).to('oklch').coords
+      actual.forEach((value, index) => expect(value ?? 0).toBeCloseTo(swatch.oklch[index], 6))
+    })
+    const chromatic = palette.filter((swatch) => swatch.oklch[1] > 0.08)
+    expect(chromatic.length).toBeGreaterThan(0)
+    chromatic.forEach((swatch) => expect(Math.min(swatch.oklch[2], 360 - swatch.oklch[2])).toBeLessThan(75))
+  })
+
+  it('preserves multiple small chromatic families through the full clustering process', () => {
+    const pixels: RGBPixel[] = []
+    for (let index = 0; index < 10; index += 1) {
+      pixels.push(...solid([20 + index * 6, 24 + index * 5, 32 + index * 4], 60))
+      pixels.push(...solid([210 + index * 4, 12 + index * 2, 35 + index * 3], 10))
+      pixels.push(...solid([12 + index * 2, 190 + index * 5, 210 + index * 4], 10))
+      pixels.push(...solid([220 + index * 3, 185 + index * 5, 25 + index * 2], 10))
+    }
+    const palette = extractPalette(pixels, 6)
+    expect(palette.some((color) => color.rgb[0] > color.rgb[1] * 1.8 && color.rgb[0] > color.rgb[2] * 1.5)).toBe(true)
+    expect(palette.some((color) => color.rgb[1] > color.rgb[0] * 1.8 && color.rgb[2] > color.rgb[0] * 1.8)).toBe(true)
+    expect(palette.some((color) => color.rgb[0] > color.rgb[2] * 1.8 && color.rgb[1] > color.rgb[2] * 1.8)).toBe(true)
   })
 
   it('rejects empty input and invalid color counts', () => {

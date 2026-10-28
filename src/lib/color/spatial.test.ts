@@ -2,7 +2,7 @@ import Color from 'colorjs.io'
 import { describe, expect, it } from 'vitest'
 import { extractPalette } from './extract'
 import type { PaletteSwatch, RGBPixel } from './extract'
-import { analyzePaletteSpatial, cropSpatialPixels } from './spatial'
+import { analyzePaletteSpatial, analyzePaletteSpatialDetailed, buildSpatialAssignments, cropSpatialPixels } from './spatial'
 
 function swatch(hex: string): PaletteSwatch {
   const color = new Color(hex)
@@ -74,6 +74,27 @@ describe('spatial palette evidence', () => {
     expect(localPalette[0].hex).toBe('#ff0000')
     expect(localPalette[0].share).toBe(1)
     expect(globalPalette.map((color) => color.hex)).toEqual(['#ff0000', '#808080'])
+  })
+
+  it('rejects chromatic conflicts instead of forcing dark red into a blue-gray region', () => {
+    const darkRed: RGBPixel = [92, 25, 33]
+    const blueGray = swatch('#343543')
+    const result = buildSpatialAssignments([darkRed], 1, 1, [blueGray, gray])
+    expect(result.assignments[0]).toBe(65535)
+    expect(result.confidence[0]).toBe(0)
+    const detailed = analyzePaletteSpatialDetailed([darkRed], 1, 1, [blueGray, gray])
+    expect(detailed.unassignedShare).toBe(1)
+    expect(detailed.regions.every((region) => region.pixelCount === 0)).toBe(true)
+    expect(buildSpatialAssignments([redPixel], 1, 1, [red, gray]).assignments[0]).toBe(0)
+  })
+
+  it('reassigns low-chroma reds to a compatible red family instead of deep blue', () => {
+    const mutedRed: RGBPixel = [52, 33, 43]
+    const deepBlue = swatch('#191f2e')
+    const darkRed = swatch('#713033')
+    const result = buildSpatialAssignments([mutedRed], 1, 1, [deepBlue, darkRed, gray])
+    expect(result.assignments[0]).toBe(1)
+    expect(result.confidence[0]).toBeGreaterThan(0)
   })
 
   it('returns empty evidence for absent colors and validates dimensions', () => {

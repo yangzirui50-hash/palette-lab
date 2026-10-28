@@ -6,9 +6,13 @@ _Status: Implemented and verified on 2026-10-28._
 
 Spatial analysis answers where a color appears and whether it is concentrated, central or edge-connected. It complements palette extraction instead of treating area or chroma as visual importance by itself.
 
+## Palette integrity and assignment confidence
+
+Global extraction averages hue through OKLab vectors rather than linear hue degrees, preserves multiple salient chromatic families with constrained centers, and recomputes OKLCH from every emitted RGB swatch. Spatial assignment still starts with true OKLab distance, but chromatic conflicts can trigger a hue-compatible reassignment or an explicit unassigned result. Unassigned pixels are excluded from region shares, highlights and distribution hotspots, and their share is visible in the interface.
+
 ## Local evidence
 
-`src/lib/color/spatial.ts` assigns sampled pixels to the nearest palette color in true OKLab space and reports:
+`src/lib/color/spatial.ts` assigns sampled pixels to a reliable palette color and reports:
 
 - Pixel count and opaque-pixel share
 - Normalized centroid and bounding box
@@ -37,7 +41,7 @@ ROI uses the same deterministic extraction engine to create an independent local
 
 “散点分布” is a separate visualization for neon scenes, stars, textures and other fragmented color fields. It preserves isolated lights instead of applying region-noise cleanup. A bounded analysis grid combines three Gaussian density scales with local luminance contrast and palette chroma, then reports a weighted salient centroid, dispersion, significant hotspot count and hotspot-energy shares. Hotspot circles identify concentrations rather than object boundaries.
 
-Distribution heatmaps use the same global/local palettes and ROI coordinates as region mode. Uniform fields do not receive fabricated hotspots. These measurements describe visual evidence, not human attention guarantees, semantic recognition or aesthetic quality. Distribution evidence is currently local-only and is not added to the AI request contract.
+Distribution heatmaps use the same global/local palettes and ROI coordinates as region mode. An average-density boundary avoids both repeated-edge amplification and uniform-field center hotspots. These measurements describe visual evidence, not human attention guarantees, semantic recognition or aesthetic quality. Distribution evidence is currently local-only and is not added to the AI request contract.
 
 ## AI request contract
 
@@ -47,12 +51,14 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 
 ## Verification
 
+- Hue-wraparound, RGB/OKLCH consistency, multiple chromatic-family and constrained-center unit tests
+- Dark-red conflict, low-chroma compatible-reassignment and explicit unassigned tests
 - Center-focus, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
-- Distribution tests preserve isolated lights, prefer a high-contrast cluster, avoid uniform-field hotspots and exclude transparency
+- Distribution tests preserve isolated lights, prefer high contrast, avoid uniform-field hotspots, prevent edge/corner amplification and exclude transparency
 - Real browser all-region display, pointer ROI selection, local-dominant selection, cropped-share verification and unchanged global-palette checks
+- Permanent night-city regression proves red-family preservation, zero red-like pixels in deep blue, real overlay switching and ROI reset after source change
 - Neon browser workflow verifies heatmap rendering, nonzero hotspots, distribution metrics, region switching and 390 px layout; local ROI also works in distribution mode
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
-- Isolated-noise removal and connected-detail preservation tests
 - Reviewed the owner's person image: all-region mode highlights both face and arms; a face ROI produces an independent palette and selects its dominant light color
-- 61 unit tests and 16 real-browser workflows pass, along with ESLint and production build
+- 66 unit tests and 17 real-browser workflows pass, along with ESLint and production build

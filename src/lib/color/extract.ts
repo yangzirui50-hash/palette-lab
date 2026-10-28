@@ -28,6 +28,15 @@ const toOklab = (lch: RGBPixel): RGBPixel => {
   return [lch[0], lch[1] * Math.cos(radians), lch[1] * Math.sin(radians)]
 }
 
+const fromOklab = (lab: RGBPixel): RGBPixel => {
+  const chroma = Math.hypot(lab[1], lab[2])
+  const hue = ((Math.atan2(lab[2], lab[1]) * 180 / Math.PI) + 360) % 360
+  return [lab[0], chroma, hue]
+}
+
+const toRgb = (lch: RGBPixel): RGBPixel => new Color('oklch', [lch[0], lch[1], lch[2]]).to('srgb').coords
+  .map((channel) => Math.max(0, Math.min(255, Math.round((channel ?? 0) * 255)))) as unknown as RGBPixel
+
 const distanceSquared = (a: RGBPixel, b: RGBPixel) => {
   const labA = toOklab(a)
   const labB = toOklab(b)
@@ -54,7 +63,7 @@ function buildSamples(pixels: readonly RGBPixel[], maxSamples = 8000): WeightedS
   }))
 }
 
-function findSalientCenter(samples: WeightedSample[], dominant: RGBPixel): RGBPixel | null {
+function findSalientCenters(samples: WeightedSample[], dominant: RGBPixel): RGBPixel[] {
   const totalWeight = samples.reduce((sum, sample) => sum + sample.weight, 0)
   const bins = new Map<number, { weight: number; score: number; center: RGBPixel }>()
   for (const sample of samples) {
@@ -73,25 +82,24 @@ function findSalientCenter(samples: WeightedSample[], dominant: RGBPixel): RGBPi
     ]
     bins.set(binIndex, bin)
   }
-  const salient = [...bins.values()]
+  return [...bins.values()]
     .filter((bin) => bin.weight / totalWeight >= 0.005 && bin.score > 0)
-    .sort((a, b) => (b.score / b.weight) - (a.score / a.weight))[0]
-  if (!salient) return null
-  const lab = salient.center.map((channel) => channel / salient.score)
-  const chroma = Math.hypot(lab[1], lab[2])
-  const hue = ((Math.atan2(lab[2], lab[1]) * 180 / Math.PI) + 360) % 360
-  const center: RGBPixel = [lab[0], chroma, hue]
-  return distanceSquared(center, dominant) > 0.0064 ? center : null
+    .sort((a, b) => (b.score / b.weight) - (a.score / a.weight))
+    .map((bin) => fromOklab(bin.center.map((channel) => channel / bin.score) as unknown as RGBPixel))
+    .filter((center) => distanceSquared(center, dominant) > 0.0064)
 }
 
-function initialCenters(samples: WeightedSample[], count: number): RGBPixel[] {
+function initialCenters(samples: WeightedSample[], count: number): { centers: RGBPixel[]; protectedCount: number } {
   const remaining = [...samples]
   const centers: RGBPixel[] = []
   const first = remaining.reduce((best, sample) => sample.weight > best.weight ? sample : best)
   centers.push(first.oklch)
-  const salient = findSalientCenter(samples, first.oklch)
-  if (salient && count > 1) centers.push(salient)
+  for (const salient of findSalientCenters(samples, first.oklch)) {
+    if (centers.length >= count) break
+    if (centers.every((center) => distanceSquared(center, salient) > 0.0064)) centers.push(salient)
+  }
 
+  const protectedCount = centers.length
   while (centers.length < count && remaining.length > centers.length) {
     const next = remaining.reduce((best, sample) => {
       const nearest = Math.min(...centers.map((center) => distanceSquared(sample.oklch, center)))
@@ -101,7 +109,7 @@ function initialCenters(samples: WeightedSample[], count: number): RGBPixel[] {
     centers.push(next.sample.oklch)
   }
 
-  return centers
+  return { centers, protectedCount }
 }
 
 function directSwatches(samples: WeightedSample[]): PaletteSwatch[] {
@@ -125,7 +133,9 @@ export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): Pal
   const samples = buildSamples(pixels)
   if (samples.length <= colorCount) return directSwatches(samples)
 
-  let centers = initialCenters(samples, colorCount)
+  const initialization = initialCenters(samples, colorCount)
+  let centers = initialization.centers
+  const protectedCount = initialization.protectedCount
   const assignments = new Array<number>(samples.length).fill(0)
 
   for (let iteration = 0; iteration < 14; iteration += 1) {
@@ -143,12 +153,14 @@ export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): Pal
     })
 
     const nextCenters = centers.map((center, centerIndex): RGBPixel => {
+      if (centerIndex > 0 && centerIndex < protectedCount) return center
       const members = samples.filter((_, index) => assignments[index] === centerIndex)
       if (members.length === 0) return center
       const weight = members.reduce((sum, sample) => sum + sample.weight, 0)
-      const mean = (channel: 0 | 1 | 2) =>
-        members.reduce((sum, sample) => sum + sample.oklch[channel] * sample.weight, 0) / weight
-      return [mean(0), mean(1), mean(2)]
+      const lab = [0, 1, 2].map((channel) =>
+        members.reduce((sum, sample) => sum + toOklab(sample.oklch)[channel] * sample.weight, 0) / weight,
+      ) as unknown as RGBPixel
+      return fromOklab(lab)
     })
 
     const changed = nextCenters.some((center, index) => distanceSquared(center, centers[index]) > 1e-10)
@@ -164,11 +176,11 @@ export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): Pal
       if (members.length === 0) return null
       const mean = (channel: 0 | 1 | 2) =>
         Math.round(members.reduce((sum, sample) => sum + sample.rgb[channel] * sample.weight, 0) / weight)
-      const rgb: RGBPixel = [mean(0), mean(1), mean(2)]
+      const rgb = centerIndex > 0 && centerIndex < protectedCount ? toRgb(center) : [mean(0), mean(1), mean(2)] as RGBPixel
       return {
         hex: toHex(rgb),
         rgb,
-        oklch: center,
+        oklch: toOklch(rgb),
         share: weight / total,
       }
     })

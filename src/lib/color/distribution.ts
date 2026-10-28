@@ -24,13 +24,15 @@ function blurField(source: Float64Array, width: number, height: number, sigma: n
   const normalized = kernel.map((value) => value / kernelSum)
   const horizontal = new Float64Array(source.length)
   const result = new Float64Array(source.length)
+  const padding = source.reduce((sum, value) => sum + value, 0) / source.length
 
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       let sum = 0
       for (let offset = -radius; offset <= radius; offset += 1) {
-        const sampleX = Math.max(0, Math.min(width - 1, x + offset))
-        sum += source[y * width + sampleX] * normalized[offset + radius]
+        const sampleX = x + offset
+        const value = sampleX < 0 || sampleX >= width ? padding : source[y * width + sampleX]
+        sum += value * normalized[offset + radius]
       }
       horizontal[y * width + x] = sum
     }
@@ -39,8 +41,9 @@ function blurField(source: Float64Array, width: number, height: number, sigma: n
     for (let x = 0; x < width; x += 1) {
       let sum = 0
       for (let offset = -radius; offset <= radius; offset += 1) {
-        const sampleY = Math.max(0, Math.min(height - 1, y + offset))
-        sum += horizontal[sampleY * width + x] * normalized[offset + radius]
+        const sampleY = y + offset
+        const value = sampleY < 0 || sampleY >= height ? padding : horizontal[sampleY * width + x]
+        sum += value * normalized[offset + radius]
       }
       result[y * width + x] = sum
     }
@@ -163,6 +166,7 @@ export function analyzePaletteDistribution(
     const cell = gridY * gridWidth + gridX
     cellSizes[cell] += 1
     const label = assignments[index]
+    if (label === 65535) return
     const chroma = Math.min(1, palette[label].oklch[1] / 0.18)
     grids[label][cell] += 0.65 + contrast[index] * 0.45 + chroma * 0.25
   })

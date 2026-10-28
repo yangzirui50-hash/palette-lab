@@ -43,6 +43,7 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
   const paletteLab = palette.map((color) => oklab(color.rgb))
   const separations = new Float64Array(pixels.length)
+  const confidence = new Float64Array(pixels.length)
   let assignments = new Uint16Array(pixels.length).fill(65535)
 
   pixels.forEach((pixel, index) => {
@@ -50,7 +51,33 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     const lab = oklab(pixel)
     const distances = paletteLab.map((candidate) => distanceSquared(lab, candidate))
     const sorted = [...distances].sort((a, b) => a - b)
-    assignments[index] = distances.indexOf(sorted[0])
+    const nearest = distances.indexOf(sorted[0])
+    const nearestDistance = Math.sqrt(sorted[0])
+    const pixelChroma = Math.hypot(lab[1], lab[2])
+    const pixelHue = ((Math.atan2(lab[2], lab[1]) * 180 / Math.PI) + 360) % 360
+    const hueDistanceTo = (candidate: RGBPixel) => Math.abs(((pixelHue - candidate[2] + 540) % 360) - 180)
+    const candidate = palette[nearest].oklch
+    const chromaticConflict = pixelChroma >= 0.02 && nearestDistance > 0.045 &&
+      (candidate[1] < 0.035 || hueDistanceTo(candidate) > 55)
+    let assigned = nearest
+    let assignedDistance = nearestDistance
+    let reliable = palette.length <= 1 || (nearestDistance <= 0.14 && !chromaticConflict)
+    if (!reliable && pixelChroma >= 0.02) {
+      const compatible = palette.map((color, candidateIndex) => ({
+        candidateIndex,
+        distance: Math.sqrt(distances[candidateIndex]),
+        hueDistance: hueDistanceTo(color.oklch),
+        chroma: color.oklch[1],
+      })).filter((option) => option.chroma >= 0.035 && option.hueDistance <= 50 && option.distance <= 0.18)
+        .sort((a, b) => (a.distance + a.hueDistance / 180 * 0.02) - (b.distance + b.hueDistance / 180 * 0.02))[0]
+      if (compatible) {
+        assigned = compatible.candidateIndex
+        assignedDistance = compatible.distance
+        reliable = true
+      }
+    }
+    if (reliable) assignments[index] = assigned
+    confidence[index] = reliable ? 1 - Math.min(1, assignedDistance / 0.18) : 0
     separations[index] = Math.sqrt(sorted[1] ?? sorted[0])
   })
 
@@ -133,12 +160,12 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     }
     components[label].push(indices)
   }
-  return { assignments, separations, components }
+  return { assignments, separations, confidence, components }
 }
 
-export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]): SpatialRegionEvidence[] {
+export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]) {
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
-  if (palette.length === 0) return []
+  if (palette.length === 0) return { regions: [], unassignedShare: pixels.some(Boolean) ? 1 : 0 }
   const opaqueCount = pixels.filter(Boolean).length
   const { assignments, separations } = buildSpatialAssignments(pixels, width, height, palette)
   const states = palette.map(() => ({
@@ -157,6 +184,7 @@ export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], widt
   pixels.forEach((pixel, index) => {
     if (!pixel) return
     const nearest = assignments[index]
+    if (nearest === 65535) return
     const x = index % width
     const y = Math.floor(index / width)
     const state = states[nearest]
@@ -174,7 +202,7 @@ export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], widt
     state.separation += separations[index]
   })
 
-  return palette.map((color, paletteIndex) => {
+  const regions = palette.map((color, paletteIndex) => {
     const state = states[paletteIndex]
     if (state.count === 0) {
       return {
@@ -243,4 +271,10 @@ export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], widt
       meanColorSeparation: state.separation / state.count,
     }
   })
+  const unassignedCount = pixels.reduce((count, pixel, index) => count + (pixel && assignments[index] === 65535 ? 1 : 0), 0)
+  return { regions, unassignedShare: opaqueCount ? unassignedCount / opaqueCount : 0 }
+}
+
+export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]): SpatialRegionEvidence[] {
+  return analyzePaletteSpatialDetailed(pixels, width, height, palette).regions
 }

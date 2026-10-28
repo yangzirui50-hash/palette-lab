@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Color-engine root-cause corrections and adversarial regression
+
+- Corrected hue averaging through OKLab vectors, constrained salient chromatic centers and made emitted RGB/OKLCH swatches consistent.
+- Added hue-compatible reassignment plus explicit unassigned evidence instead of forcing every pixel into an unrelated palette color.
+- Replaced edge-repeating heatmap convolution with an average-density boundary after testing both corner amplification and uniform-field center bias.
+- Prevented stale overlay display, deferred analysis until ROI drag completion and reset spatial state on source changes.
+- Added a permanent complex night-city regression proving red-family preservation, zero red-like pixels in the deep-blue selection and ROI reset.
+- Passed 66 unit tests and 17 browser workflows, ESLint and production build; higher-resolution sampling, actionable hotspots and region-edge refinement remain separate stages.
+
 ## 2026-10-28 — Multi-scale scattered-color distribution mode
 
 - Added a dedicated distribution mode for neon, stars, textures and fragmented color fields instead of forcing them through connected-region logic.
