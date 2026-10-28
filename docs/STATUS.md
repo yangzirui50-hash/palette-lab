@@ -1,10 +1,10 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-10-27_
+_Last updated: 2026-10-28_
 
 ## Current phase
 
-The local workspace, public deployment and production DeepSeek rollout are complete. Real Unsplash verification remains pending while the owner's application is under review.
+The stable public baseline passed its stage gate. Series slices 1–3 are verified on `feat/series-consistency`: difference engine, diagnostic workflow, three unification strategies, role locks, previews and versioned exports. Optional series AI interpretation and final merge review remain. Real Unsplash verification remains deferred.
 
 ## Production
 
@@ -24,7 +24,7 @@ The local workspace, public deployment and production DeepSeek rollout are compl
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 30 unit tests and 11 real-browser workflow tests pass locally
+- 48 unit tests and 14 real-browser workflow tests pass locally
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures

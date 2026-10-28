@@ -125,3 +125,10 @@
 - **Date:** 2026-10-27
 - **Decision:** Derive Unsplash searches from validated analysis, preserve source/photographer attribution, hotlink official image URLs, and compare at most four candidates with fit and actionable guidance rather than fake aesthetic scores.
 - **Reason:** Provide useful inspiration without copying assets, hiding provenance or making unbounded AI calls.
+
+## ADR-019 — Explainable series consistency without automatic recoloring
+
+- **Status:** Accepted for implementation
+- **Date:** 2026-10-27
+- **Decision:** Build series mode around cross-image role consistency, reproducible differences and three unification strategies. Keep pixel-level recoloring and universal aesthetic scores out of scope.
+- **Reason:** Provide practical design-system value and a defensible workflow distinction without pretending that color extraction alone proves semantics or that all variation is undesirable.

@@ -8,9 +8,11 @@ type RoleEditorProps = {
   palette: PaletteSwatch[]
   assignments: RoleAssignments
   onChange: (role: string, hex: string) => void
+  lockedRoles?: string[]
+  onLockChange?: (role: string, locked: boolean) => void
 }
 
-export default function RoleEditor({ domain, palette, assignments, onChange }: RoleEditorProps) {
+export default function RoleEditor({ domain, palette, assignments, onChange, lockedRoles = [], onLockChange }: RoleEditorProps) {
   const labels = roleLabels[domain]
 
   return (
@@ -28,6 +30,19 @@ export default function RoleEditor({ domain, palette, assignments, onChange }: R
                 <option value={semanticFallbacks[role]}>{semanticFallbacks[role]}（语义回退）</option>
               )}
             </select>
+            {onLockChange && (
+              <button
+                type="button"
+                className={`role-lock ${lockedRoles.includes(role) ? 'locked' : ''}`}
+                aria-label={`${lockedRoles.includes(role) ? '解锁' : '锁定'}${label}`}
+                aria-pressed={lockedRoles.includes(role)}
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  onLockChange(role, !lockedRoles.includes(role))
+                }}
+              >{lockedRoles.includes(role) ? '锁' : '○'}</button>
+            )}
           </label>
         ))}
       </div>

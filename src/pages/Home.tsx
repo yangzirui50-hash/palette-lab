@@ -15,6 +15,7 @@ import DomainPreview from '../components/DomainPreview'
 import ExportPanel from '../components/ExportPanel'
 import AnalysisPanel from '../components/AnalysisPanel'
 import InspirationPanel from '../components/InspirationPanel'
+import SeriesWorkspace from '../components/SeriesWorkspace'
 import type { AnalysisReport } from '../domain/analysis'
 
 type SourceState = {
@@ -30,6 +31,8 @@ export default function Home() {
   const pixelsRef = useRef<RGBPixel[]>([])
   const uploadRequestRef = useRef(0)
   const { theme, toggleTheme } = useTheme()
+  const [mode, setMode] = useState<'single' | 'series'>('single')
+  const [seriesActivated, setSeriesActivated] = useState(false)
   const [domain, setDomain] = useState<DomainId>('web-ui')
   const [colorCount, setColorCount] = useState(6)
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
@@ -125,7 +128,16 @@ export default function Home() {
       </header>
 
       <main>
-        <section className="intro">
+        <section className="domain-bar mode-bar" aria-label="工作模式">
+          <span>工作模式</span>
+          <div>
+            <button className={mode === 'single' ? 'active' : ''} onClick={() => setMode('single')}>单图</button>
+            <button className={mode === 'series' ? 'active' : ''} onClick={() => { setSeriesActivated(true); setMode('series') }}>系列</button>
+          </div>
+          <small>{mode === 'single' ? '单图色彩系统' : '2–6 张系列作品'}</small>
+        </section>
+
+        <section className="intro" hidden={mode !== 'single'}>
           <div>
             <p className="kicker">IMAGE → COLOR SYSTEM</p>
             <h1>色彩工作台</h1>
@@ -145,7 +157,9 @@ export default function Home() {
           <small>{domainProfiles[domain].colorRoles.length} 个颜色角色</small>
         </section>
 
-        <section className="workspace">
+        {seriesActivated && <div hidden={mode !== 'series'}><SeriesWorkspace domain={domain} /></div>}
+
+        <section className="workspace" hidden={mode !== 'single'}>
           <div className="source-panel">
             <div className="panel-heading">
               <span>01</span><h2>图像输入</h2><small>LOCAL ONLY</small>
@@ -223,7 +237,7 @@ export default function Home() {
         </section>
 
         {source && palette.length > 0 && (
-          <>
+          <div hidden={mode !== 'single'}>
             <RoleEditor
               domain={domain}
               palette={palette}
@@ -237,10 +251,10 @@ export default function Home() {
             <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} report={analysisReport} onReportChange={setAnalysisReport} />
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
-          </>
+          </div>
         )}
 
-        <footer className="studio-footer">
+        <footer className="studio-footer" hidden={mode !== 'single'}>
           <span><i /> LOCAL ENGINE READY</span>
           <p>角色编辑、场景预览与文件导出已启用</p>
         </footer>

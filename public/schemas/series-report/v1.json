@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./schemas/series-report/v1.json",
+  "title": "Palette Lab Series Report v1",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "domain", "strategy", "rationale", "unifiedRoles", "exceptions", "comparison"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "domain": { "enum": ["web-ui", "art-poster"] },
+    "strategy": { "enum": ["follow-primary", "balanced", "preserve-accents"] },
+    "rationale": { "type": "string" },
+    "unifiedRoles": { "$ref": "#/$defs/roles" },
+    "exceptions": { "type": "object", "additionalProperties": { "$ref": "#/$defs/roles" } },
+    "comparison": { "type": "object" }
+  },
+  "$defs": {
+    "roles": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" } }
+  }
+}

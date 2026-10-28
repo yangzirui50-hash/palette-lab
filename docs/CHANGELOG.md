@@ -2,6 +2,43 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Series unification and production exports
+
+- Added Follow Primary, Balanced and Preserve Accents strategies using existing-role medoids rather than RGB averaging, with primary/candidate role locks.
+- Defaulted to Preserve Accents for safer intent retention and made independent exceptions visible.
+- Added unified role editing, existing Web/Art previews, WCAG checks, CSS/tokens/report exports and versioned series schemas.
+- Replaced unreliable whole-workspace DOM capture with a native Canvas series overview PNG using filenames instead of internal IDs.
+- Passed 48 unit tests, 14 browser workflows, ESLint, production build and 0-vulnerability audit; desktop/mobile and actual PNG output reviewed.
+
+## 2026-10-27 — Deterministic series difference engine
+
+- Added provider-independent series records and one-to-one OKLCH color matching with shared, missing and additional color evidence.
+- Added share deltas, per-role differences, all-member shared colors and stable candidate ordering.
+- Normalized share-delta precision and strict share-record typing after test/build review.
+- Added eight tests covering identical images, near colors, role correction, all-member sharing, reordering, primary changes and invalid definitions; 38 unit tests, ESLint and production build pass.
+
+## 2026-10-27 — Series state and diagnostic workflow
+
+- Added explicit single/series modes while preserving single-image state and per-domain role edits.
+- Added local 2–6 image import, reorder, remove, primary selection, object-URL cleanup and responsive thumbnails.
+- Added series overview with shared colors and explainable deviations, plus primary/current image inspection and independent role correction.
+- Fixed CSS `display` overriding native `hidden`, added visibility assertions and visually reviewed desktop/mobile screenshots.
+- Passed 40 unit tests, 13 browser workflows, ESLint and production build. Unification strategies and exports remain pending.
+
+## 2026-10-27 — Series engine boundary review
+
+- Replaced greedy pairing with deterministic maximum-cardinality, minimum-cost one-to-one assignment after finding an adversarial color-match case.
+- Added explicit missing-role diagnostics with nullable evidence instead of silently ignoring absent roles.
+- Documented match thresholds, stable ordering and precision contracts; added adversarial and missing-role coverage.
+- Passed 40 unit tests, 11 existing browser workflows, ESLint, production build and 0-vulnerability audit. UI and exports remain unimplemented.
+
+## 2026-10-27 — Series consistency product contract
+
+- Defined series mode as explainable color-system diagnosis and unification, not multi-image picking or automatic recoloring.
+- Approved three task levels, three unification strategies and explicit role/exception corrections.
+- Added fourteen acceptance tests covering determinism, semantic uncertainty, intentional variation, state, mobile, exports and AI independence.
+- Created the isolated `feat/series-consistency` implementation branch; no feature code is implemented yet.
+
 ## 2026-10-27 — Systematic stage-gate review and reliability hardening
 
 - Reviewed functionality, production reliability, cost protection, secret boundaries, tests, deployment and documentation before the next feature phase.
@@ -99,7 +136,7 @@ All notable project changes are recorded here in reverse chronological order.
 
 - Replaced hue-inferred status colors with stable semantic fallbacks.
 - Added neutral role assignments for single-color images.
-- Added WCAG 2.1 role-pair checks with visible pair labels and ratios.
+- Added WCAG 2.1 contrast checks with visible pair labels and ratios.
 - Added unit and browser coverage for degenerate palettes and unreadable edits; 15 unit tests and 7 workflows now pass.
 
 ## 2026-10-27 — Role editing and domain previews
@@ -152,7 +189,7 @@ All notable project changes are recorded here in reverse chronological order.
 - Replaced small palette rows with large color fields and a proportional color strip.
 - Removed fluorescent yellow-green from Web themes; introduced muted indigo actions.
 - Reduced Art vermilion saturation for more comfortable Light and Dark modes.
-- Added responsive two-column mobile swatches and final-state screenshot reviews.
+- Added responsive two-column mobile swatches and final-state visual reviews.
 - Reverified 8 unit tests, 3 browser tests, builds and 0 known vulnerabilities.
 
 ## 2026-10-26 — Theme and domain token system
