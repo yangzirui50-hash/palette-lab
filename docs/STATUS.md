@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The deterministic series workflow and spatial evidence layer are implemented. Art/Poster now uses source-image-driven editorial composition, and spatial assignments remove isolated salt-and-pepper artifacts while preserving connected subject detail. AI reports have separate evidence and action layers. 55 unit tests and 15 browser workflows pass; owner's boundary review is next.
+The deterministic series workflow and spatial evidence layer are implemented. Source-driven posters, isolated-noise cleanup, largest-region highlighting and feathered masks are implemented. The UI explicitly distinguishes approximate color regions from semantic object segmentation. 55 unit tests and 15 browser workflows pass; owner's boundary review is next.
 
 ## Production
 

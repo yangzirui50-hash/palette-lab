@@ -41,16 +41,19 @@ export async function imageFileToSpatialData(file: File, maxEdge = 320): Promise
   return { pixels, width, height }
 }
 
-export async function createSpatialOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 320) {
+export async function createSpatialOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 320, mode: 'largest' | 'all' = 'largest') {
   const { canvas, pixels } = await loadSpatialImage(file, maxEdge)
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('无法生成空间高亮')
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-  const { assignments } = buildSpatialAssignments(pixels, canvas.width, canvas.height, palette)
+  const originalData = new Uint8ClampedArray(imageData.data)
+  const { components } = buildSpatialAssignments(pixels, canvas.width, canvas.height, palette)
   const selectedIndex = Math.max(0, palette.findIndex((color) => color.hex.toLowerCase() === selectedHex.toLowerCase()))
+  const largest = [...components[selectedIndex]].sort((a, b) => b.length - a.length)[0]
+  const allowed = mode === 'largest' && largest ? new Set(largest) : new Set(components[selectedIndex].flat())
   pixels.forEach((pixel, index) => {
     if (!pixel) return
-    if (assignments[index] !== selectedIndex) {
+    if (!allowed.has(index)) {
       const offset = index * 4
       const gray = (imageData.data[offset] + imageData.data[offset + 1] + imageData.data[offset + 2]) / 3 * 0.22
       imageData.data[offset] = gray
@@ -59,5 +62,27 @@ export async function createSpatialOverlay(file: File, palette: PaletteSwatch[],
     }
   })
   context.putImageData(imageData, 0, 0)
+
+  const selectedCanvas = document.createElement('canvas')
+  selectedCanvas.width = canvas.width
+  selectedCanvas.height = canvas.height
+  const selectedContext = selectedCanvas.getContext('2d')
+  if (!selectedContext) throw new Error('无法柔化高亮边缘')
+  selectedContext.putImageData(new ImageData(originalData, canvas.width, canvas.height), 0, 0)
+  const mask = document.createElement('canvas')
+  mask.width = canvas.width
+  mask.height = canvas.height
+  const maskContext = mask.getContext('2d')
+  if (!maskContext) throw new Error('无法创建高亮蒙版')
+  maskContext.fillStyle = '#ffffff'
+  const drawMask = (indices: number[]) => indices.forEach((index) => maskContext.fillRect(index % canvas.width, Math.floor(index / canvas.width), 1, 1))
+  if (allowed) drawMask([...allowed])
+  else components[selectedIndex].forEach(drawMask)
+  selectedContext.filter = 'blur(1px)'
+  selectedContext.globalCompositeOperation = 'destination-in'
+  selectedContext.drawImage(mask, 0, 0)
+  selectedContext.filter = 'none'
+  selectedContext.globalCompositeOperation = 'source-over'
+  context.drawImage(selectedCanvas, 0, 0)
   return canvas.toDataURL('image/png')
 }

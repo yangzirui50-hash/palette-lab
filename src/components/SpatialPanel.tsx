@@ -14,6 +14,7 @@ type SpatialPanelProps = {
 export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [selectedHex, setSelectedHex] = useState('')
+  const [mode, setMode] = useState<'largest' | 'all'>('largest')
   const [overlay, setOverlay] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -39,13 +40,13 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   useEffect(() => {
     if (!selectedHex) return
     let active = true
-    void createSpatialOverlay(sourceFile, palette, selectedHex).then((url) => {
+    void createSpatialOverlay(sourceFile, palette, selectedHex, 320, mode).then((url) => {
       if (active) setOverlay(url)
     }).catch((reason: unknown) => {
       if (active) setError(reason instanceof Error ? reason.message : '区域高亮失败')
     })
     return () => { active = false }
-  }, [sourceFile, palette, selectedHex])
+  }, [sourceFile, palette, selectedHex, mode])
 
   const selected = evidence.find((region) => region.hex.toLowerCase() === selectedHex.toLowerCase())
   const vertical = selected ? selected.centroid.y < 0.34 ? '上方' : selected.centroid.y > 0.66 ? '下方' : '中部' : ''
@@ -66,6 +67,12 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
             </button>
           ))}
         </div>
+      </div>
+      <div className="spatial-mode">
+        <button onClick={() => setMode(mode === 'largest' ? 'all' : 'largest')} aria-pressed={mode === 'all'}>
+          {mode === 'largest' ? '仅最大连续区域' : '全部近似色区域'}
+        </button>
+        <span>近似色区域，不是物体分割；相同颜色可能属于不同物体。</span>
       </div>
       {selected && (
         <div className="spatial-facts" aria-live="polite">

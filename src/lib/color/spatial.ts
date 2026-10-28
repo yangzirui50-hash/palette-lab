@@ -89,7 +89,35 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     }
     assignments = next
   }
-  return { assignments, separations }
+  const components = Array.from({ length: palette.length }, () => [] as number[][])
+  const componentVisited = new Uint8Array(pixels.length)
+  const componentQueue = new Int32Array(pixels.length)
+  for (let start = 0; start < pixels.length; start += 1) {
+    const label = assignments[start]
+    if (label === 65535 || componentVisited[start]) continue
+    const indices: number[] = []
+    let head = 0
+    let tail = 0
+    componentQueue[tail++] = start
+    componentVisited[start] = 1
+    while (head < tail) {
+      const current = componentQueue[head++]
+      indices.push(current)
+      const x = current % width
+      const neighbors = [current - 1, current + 1, current - width, current + width]
+      neighbors.forEach((next, direction) => {
+        if (next < 0 || next >= pixels.length) return
+        if (direction === 0 && x === 0) return
+        if (direction === 1 && x === width - 1) return
+        if (assignments[next] === label && !componentVisited[next]) {
+          componentVisited[next] = 1
+          componentQueue[tail++] = next
+        }
+      })
+    }
+    components[label].push(indices)
+  }
+  return { assignments, separations, components }
 }
 
 export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]): SpatialRegionEvidence[] {

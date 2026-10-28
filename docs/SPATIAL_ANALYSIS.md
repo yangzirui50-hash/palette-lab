@@ -25,7 +25,7 @@ Palette share comes from weighted clustering. Spatial share is recomputed by nea
 
 ## Region highlighting
 
-Clicking a swatch dims other regions while preserving the selected color in the original thumbnail. Highlighting is generated locally and requires no AI call or image upload.
+Clicking a swatch dims other regions while preserving the selected color in the original thumbnail. The default view shows only the largest connected approximate-color region; users can switch to all approximate-color regions. Feathered masks soften boundaries. The interface explicitly states that these are approximate color regions, not semantic object segmentation, so similar colors on skin, books or other objects are not claimed to be one object. Highlighting is generated locally and requires no AI call or image upload.
 
 ## AI request contract
 

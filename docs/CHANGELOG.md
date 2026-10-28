@@ -2,6 +2,12 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Connected-region highlighting and semantic boundaries
+
+- Added largest/all connected-region display modes so similar colors on different objects need not appear as one undifferentiated mask.
+- Added feathered highlight masks and explicit copy that approximate color regions are not semantic object segmentation.
+- Kept isolated-noise cleanup and source-driven editorial posters; verified region toggles, actual screenshots, 55 unit tests, 15 browser workflows, ESLint and production build.
+
 ## 2026-10-28 — Source-driven poster and spatial denoising
 
 - Replaced decorative-only poster composition with source-image-driven editorial framing, metadata and responsive layout.
