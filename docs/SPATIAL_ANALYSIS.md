@@ -33,6 +33,12 @@ Clicking a swatch dims other regions while preserving the selected color in the 
 
 ROI uses the same deterministic extraction engine to create an independent local palette from opaque pixels inside the selection. The whole-image palette remains unchanged. Local shares and positions describe only the selection, and the dominant local color is selected by default rather than a more chromatic incidental accent. Clearing the selection restores the global palette and full-image evidence. Cropped evidence is not sent to AI as though it described the full image. ROI remains a manual color-analysis aid, not semantic clothing, skin or object segmentation.
 
+## Distribution evidence
+
+“散点分布” is a separate visualization for neon scenes, stars, textures and other fragmented color fields. It preserves isolated lights instead of applying region-noise cleanup. A bounded analysis grid combines three Gaussian density scales with local luminance contrast and palette chroma, then reports a weighted salient centroid, dispersion, significant hotspot count and hotspot-energy shares. Hotspot circles identify concentrations rather than object boundaries.
+
+Distribution heatmaps use the same global/local palettes and ROI coordinates as region mode. Uniform fields do not receive fabricated hotspots. These measurements describe visual evidence, not human attention guarantees, semantic recognition or aesthetic quality. Distribution evidence is currently local-only and is not added to the AI request contract.
+
 ## AI request contract
 
 `analysisRequestSchema` accepts an optional `spatial` array with the same validated evidence. DeepSeek receives the image, palette, role assignments and full-image spatial evidence together. The prompt distinguishes edge-connected backgrounds, central subjects and small salient accents without treating area as the only measure of importance.
@@ -42,9 +48,11 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 ## Verification
 
 - Center-focus, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
+- Distribution tests preserve isolated lights, prefer a high-contrast cluster, avoid uniform-field hotspots and exclude transparency
 - Real browser all-region display, pointer ROI selection, local-dominant selection, cropped-share verification and unchanged global-palette checks
+- Neon browser workflow verifies heatmap rendering, nonzero hotspots, distribution metrics, region switching and 390 px layout; local ROI also works in distribution mode
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
 - Isolated-noise removal and connected-detail preservation tests
 - Reviewed the owner's person image: all-region mode highlights both face and arms; a face ROI produces an independent palette and selects its dominant light color
-- 57 unit tests and 15 real-browser workflows pass, along with ESLint and production build
+- 61 unit tests and 16 real-browser workflows pass, along with ESLint and production build

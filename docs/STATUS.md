@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The deterministic series workflow and spatial evidence layer are implemented. Source-driven posters, isolated-noise cleanup, all-region highlighting, feathered masks and ROI analysis with independent local palettes are implemented. The UI explicitly distinguishes approximate color regions from semantic object segmentation. 57 unit tests and 15 browser workflows pass; edge-aware region refinement is the next implementation stage.
+The deterministic series workflow and dual-mode spatial evidence layer are implemented. Source-driven posters, all-region highlighting, independent local palettes and multi-scale scattered-color heatmaps are available. The UI distinguishes color regions, distribution hotspots and semantic object segmentation. 61 unit tests and 16 browser workflows pass; continuous-region edge refinement is the next implementation stage.
 
 ## Production
 
@@ -24,7 +24,7 @@ The deterministic series workflow and spatial evidence layer are implemented. So
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 57 unit tests and 15 real-browser workflow tests pass locally
+- 61 unit tests and 16 real-browser workflow tests pass locally
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures

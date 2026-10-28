@@ -39,7 +39,7 @@ export function cropSpatialPixels(pixels: readonly (RGBPixel | null)[], width: n
   return { pixels: cropped, width: cropWidth, height: cropHeight, offsetX: x, offsetY: y }
 }
 
-export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]) {
+export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[], denoise = true) {
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
   const paletteLab = palette.map((color) => oklab(color.rgb))
   const separations = new Float64Array(pixels.length)
@@ -83,7 +83,7 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     if (component.length <= 2) component.forEach((index) => smallComponents.add(index))
   }
 
-  for (let pass = 0; pass < 2; pass += 1) {
+  for (let pass = 0; denoise && pass < 2; pass += 1) {
     const next = new Uint16Array(assignments)
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {

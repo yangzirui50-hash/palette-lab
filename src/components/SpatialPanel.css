@@ -8,6 +8,9 @@
 .spatial-roi-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
 .spatial-roi-actions button { flex: 0 0 auto; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--accent); background: var(--soft); font-size: 10px; cursor: pointer; }
 .spatial-roi-actions span { color: var(--muted); font-size: 9px; }
+.spatial-view-switch { display: inline-flex; gap: 3px; margin-bottom: 14px; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--soft); }
+.spatial-view-switch button { padding: 7px 12px; border: 0; border-radius: 6px; color: var(--muted); background: transparent; font-size: 10px; cursor: pointer; }
+.spatial-view-switch button.active { color: var(--text); background: var(--swatch); box-shadow: var(--shadow); }
 .spatial-preview img { display: block; width: auto; height: auto; max-width: 100%; max-height: 480px; pointer-events: none; user-select: none; }
 .spatial-preview p { color: var(--muted); font-size: 11px; }
 .spatial-swatches { display: grid; align-content: start; gap: 8px; }

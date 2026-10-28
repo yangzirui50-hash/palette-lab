@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Multi-scale scattered-color distribution mode
+
+- Added a dedicated distribution mode for neon, stars, textures and fragmented color fields instead of forcing them through connected-region logic.
+- Preserved meaningful isolated lights, combined three density scales with local luminance contrast and chroma, and added weighted salient centroids, dispersion and hotspot evidence.
+- Added palette-colored heatmaps with hotspot markers, full ROI/local-palette support and an explicit non-semantic, non-aesthetic contract.
+- Added deterministic neon fixtures and unit/browser coverage, including mobile layout and region-mode switching.
+- Passed 61 unit tests, 16 browser workflows, ESLint and production build.
+
 ## 2026-10-28 — Independent local palettes and complete color regions
 
 - ROI now re-extracts an independent local palette with the same deterministic engine while preserving the whole-image palette.
