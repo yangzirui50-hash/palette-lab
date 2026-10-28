@@ -39,6 +39,8 @@ test('processes diverse image types sequentially without stale state or invalid 
     expect(total).toBeGreaterThan(99)
     expect(total).toBeLessThan(101)
     await expect(page.locator('.spatial-unassigned')).toContainText(/\d+\.\d%/)
+    await expect(page.locator('.spatial-facts-core')).toContainText('视觉显著度')
+    await expect(page.locator('.spatial-facts-core')).not.toContainText('NaN')
     await page.getByRole('button', { name: '散点分布', exact: true }).click()
     await expect(page.locator('.spatial-preview img')).toHaveAttribute('alt', /色彩密度热图/)
     await page.getByRole('button', { name: '连续区域', exact: true }).click()

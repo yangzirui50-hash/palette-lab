@@ -13,6 +13,7 @@ export type PaletteDistribution = {
   dispersion: number
   hotspotCount: number
   hotspotShare: number
+  significanceShare: number
   hotspots: DistributionHotspot[]
   heat: { width: number; height: number; values: Float64Array; peak: number }
 }
@@ -171,7 +172,7 @@ export function analyzePaletteDistribution(
     grids[label][cell] += 0.65 + contrast[index] * 0.45 + chroma * 0.25
   })
 
-  return palette.map((color, paletteIndex) => {
+  const distributions = palette.map((color, paletteIndex) => {
     const density = grids[paletteIndex].map((value, index) => cellSizes[index] ? value / cellSizes[index] : 0)
     const fine = blurField(density, gridWidth, gridHeight, 0.8)
     const medium = blurField(density, gridWidth, gridHeight, 1.8)
@@ -186,6 +187,7 @@ export function analyzePaletteDistribution(
         dispersion: 0,
         hotspotCount: 0,
         hotspotShare: 0,
+        energy: 0,
         hotspots: [],
         heat: { width: gridWidth, height: gridHeight, values: heat, peak },
       }
@@ -210,8 +212,14 @@ export function analyzePaletteDistribution(
       dispersion: Math.min(1, Math.sqrt(variance) / Math.sqrt(0.5)),
       hotspotCount: hotspots.count,
       hotspotShare: hotspots.share,
+      energy: total,
       hotspots: hotspots.hotspots,
       heat: { width: gridWidth, height: gridHeight, values: heat, peak },
     }
   })
+  const totalEnergy = distributions.reduce((sum, item) => sum + item.energy, 0)
+  return distributions.map(({ energy, ...item }) => ({
+    ...item,
+    significanceShare: totalEnergy > 0 ? energy / totalEnergy : 0,
+  }))
 }

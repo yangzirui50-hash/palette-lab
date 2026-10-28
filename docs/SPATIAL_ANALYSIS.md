@@ -30,7 +30,13 @@ Palette share comes from weighted clustering. Spatial share is recomputed by nea
 
 ## Region highlighting
 
-Clicking a swatch dims other regions while preserving the selected color in the original thumbnail. The default view shows all approximate-color regions so disconnected areas with the same color are not hidden; users can switch to only the largest connected region. “主要位置” uses the dominant component rather than averaging separate sides into a false center. The default panel keeps four decision-useful metrics: location, actual area, connected integrity and edge contact; advanced evidence remains internal. Feathered masks soften boundaries. The interface explicitly states that these are approximate color regions, not semantic object segmentation, so similar colors on skin, books or other objects are not claimed to be one object. Highlighting is generated locally and requires no AI call or image upload.
+Clicking a swatch dims other regions while preserving the selected color in the original thumbnail. The default view shows all approximate-color regions so disconnected areas with the same color are not hidden; users can switch to only the largest connected region. “主要位置” uses the dominant component rather than averaging separate sides into a false center. Feathered masks soften boundaries. The interface explicitly states that these are approximate color regions, not semantic object segmentation, so similar colors on skin, books or other objects are not claimed to be one object. Highlighting is generated locally and requires no AI call or image upload.
+
+## Decision metrics
+
+Core metrics are location, actual area, visual significance, connected integrity, edge contact and discrimination. Visual significance is the selected color's share of total multi-scale heat energy across the palette. Energy uses deterministic area density plus local luminance contrast and chroma; shares sum to 100% and are not aesthetic scores. This lets small high-contrast accents carry more weight than area alone without inventing absolute human-attention claims.
+
+Discrimination is the OKLab Euclidean distance from the emitted RGB swatch to its nearest other swatch, displayed with that nearest HEX. It uses no arbitrary low/medium/high rating and returns an em dash for single-color palettes. “查看结构详情” exposes center share, component count, bounding-box spatial span and mean pixel separation instead of discarding the earlier evidence.
 
 ## Region of interest
 
@@ -56,6 +62,7 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Dark-red conflict, low-chroma compatible-reassignment and explicit unassigned tests
 - Center-focus, dominant-component location, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
 - Distribution tests preserve isolated lights, prefer high contrast, avoid uniform-field hotspots, prevent edge/corner amplification and exclude transparency
+- Significance tests verify 100% normalization and greater-than-area weight for a small bright accent; discrimination tests verify nearest-HEX selection, symmetric OKLab distance and single-color fallback
 - Real browser all-region display, pointer ROI selection, local-dominant selection, cropped-share verification and unchanged global-palette checks
 - Permanent night-city regression proves red-family preservation, zero red-like pixels in deep blue, real overlay switching and ROI reset after source change
 - Eight diverse fixtures pass sequential upload, normalized-palette, dual-mode and stale-state checks in one browser session
@@ -64,4 +71,4 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Neon browser workflow verifies heatmap rendering, nonzero hotspots, distribution metrics, region switching and 390 px layout; local ROI also works in distribution mode
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
-- 68 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits
+- 71 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits

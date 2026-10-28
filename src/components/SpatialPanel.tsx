@@ -5,6 +5,7 @@ import { analyzePaletteSpatialDetailed, cropSpatialPixels } from '../lib/color/s
 import type { SpatialRegionEvidence, SpatialRoi } from '../lib/color/spatial'
 import { createDistributionOverlay, createSpatialOverlay, imageFileToSpatialData } from '../lib/color/spatialOverlay'
 import { extractPalette } from '../lib/color/extract'
+import { analyzePaletteDiscrimination } from '../lib/color/metrics'
 import type { PaletteSwatch } from '../lib/color/extract'
 import './SpatialPanel.css'
 
@@ -91,6 +92,8 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   const selected = evidence.find((region) => region.hex.toLowerCase() === selectedHex.toLowerCase())
   const displayedRoi = draftRoi ?? roi
   const selectedDistribution = distributions.find((item) => item.hex.toLowerCase() === selectedHex.toLowerCase())
+  const discrimination = analyzePaletteDiscrimination(activePalette)
+  const selectedDiscrimination = discrimination[activePalette.findIndex((color) => color.hex.toLowerCase() === selectedHex.toLowerCase())]
   const centroid = viewMode === 'distribution'
     ? selectedDistribution?.hotspots[0] ?? selectedDistribution?.centroid
     : selected?.dominantCentroid
@@ -191,12 +194,25 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
         <div className="spatial-mode"><span>热图综合多尺度颜色密度、局部明暗反差和色彩强度；圆圈标出主要热点，不代表物体边界。</span></div>
       )}
       {viewMode === 'regions' && selected && (
-        <div className="spatial-facts" aria-live="polite">
-          <div><small>主要位置</small><strong>{vertical} · {horizontal}</strong></div>
-          <div><small>实际面积</small><strong>{(selected.share * 100).toFixed(1)}%</strong></div>
-          <div><small>连续完整性</small><strong>{(selected.largestComponentShare * 100).toFixed(1)}%</strong></div>
-          <div><small>边缘接触率</small><strong>{(selected.edgeShare * 100).toFixed(1)}%</strong></div>
-        </div>
+        <>
+          <div className="spatial-facts spatial-facts-core" aria-live="polite">
+            <div><small>主要位置</small><strong>{vertical} · {horizontal}</strong></div>
+            <div><small>实际面积</small><strong>{(selected.share * 100).toFixed(1)}%</strong></div>
+            <div><small>视觉显著度</small><strong>{selectedDistribution ? `${(selectedDistribution.significanceShare * 100).toFixed(1)}%` : '—'}</strong></div>
+            <div><small>连续完整性</small><strong>{(selected.largestComponentShare * 100).toFixed(1)}%</strong></div>
+            <div><small>边缘接触率</small><strong>{(selected.edgeShare * 100).toFixed(1)}%</strong></div>
+            <div><small>区分度（OKLab）</small><strong>{selectedDiscrimination?.distance != null ? selectedDiscrimination.distance.toFixed(3) : '—'}</strong>{selectedDiscrimination?.nearestHex && <small>最近 {selectedDiscrimination.nearestHex}</small>}</div>
+          </div>
+          <details className="spatial-advanced">
+            <summary>查看结构详情</summary>
+            <div className="spatial-facts">
+              <div><small>中心区域占比</small><strong>{(selected.centerShare * 100).toFixed(1)}%</strong></div>
+              <div><small>显著区域数量</small><strong>{selected.componentCount}</strong></div>
+              <div><small>空间跨度</small><strong>{(selected.bounds.width * selected.bounds.height * 100).toFixed(1)}%</strong></div>
+              <div><small>平均像素分离度</small><strong>{selected.meanColorSeparation.toFixed(3)}</strong></div>
+            </div>
+          </details>
+        </>
       )}
       {viewMode === 'distribution' && selectedDistribution && (
         <div className="spatial-facts" aria-live="polite">

@@ -31,6 +31,13 @@ describe('palette distribution evidence', () => {
     expect(result.heat.peak).toBeGreaterThan(0)
   })
 
+  it('normalizes significance and does not reduce a bright accent to its pixel area', () => {
+    const pixels = Array.from({ length: 800 }, (_, index): RGBPixel => index < 80 ? redPixel : darkPixel)
+    const result = analyzePaletteDistribution(pixels, 40, 20, [dark, red])
+    expect(result[1].significanceShare).toBeGreaterThan(0.1)
+    expect(result.reduce((sum, item) => sum + item.significanceShare, 0)).toBeCloseTo(1, 8)
+  })
+
   it('weights a high-contrast cluster more than an equal-sized low-contrast cluster', () => {
     const width = 20
     const height = 10

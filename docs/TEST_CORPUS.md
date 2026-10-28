@@ -28,13 +28,13 @@ The corpus checks shared contracts across different images rather than tuning be
 
 ## Sequential workflow
 
-`color-corpus.spec.ts` uploads person, product, landscape, UI, poster, monochrome, transparent and tiny images in one browser session. Every image must produce a non-empty normalized palette, valid unassigned text, both spatial visualizations, no stale ROI and no runtime error.
+`color-corpus.spec.ts` uploads person, product, landscape, UI, poster, monochrome, transparent and tiny images in one browser session. Every image must produce a non-empty normalized palette, valid unassigned text, finite visual-significance evidence, both spatial visualizations, no stale ROI and no runtime error.
 
 Separate workflows check periodic red/blue family preservation, person ROI behavior and the night-city pixel-level cross-color assertion. Existing workflows cover exports, series, AI mocks and mobile layout.
 
 ## Current gate
 
-- 68 unit tests
+- 71 unit tests
 - 20 real-browser workflows
 - ESLint and production build
 

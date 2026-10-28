@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Validated significance and discrimination metrics
+
+- Added normalized visual-significance shares from deterministic area, local-contrast, chroma and multi-scale density evidence, with a small-accent regression and 100% normalization check.
+- Added nearest-swatch OKLab discrimination with the nearest HEX, symmetric-distance tests and a single-color fallback; no arbitrary qualitative rating.
+- Restored center share, component count and mean pixel separation in an expandable structure panel and added bounding-box spatial span.
+- Passed 71 unit tests and 20 browser workflows, ESLint and production build, including multi-image NaN checks.
+
 ## 2026-10-28 — Dominant-location evidence and generative poster scenes
 
 - Replaced misleading whole-color average placement with dominant-component location; distribution mode prefers the leading hotspot.
