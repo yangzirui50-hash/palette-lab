@@ -2,6 +2,12 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Series merge and production verification boundary
+
+- Merged the reviewed deterministic series workflow to `main` at `f4c1d92` and pushed successfully.
+- Confirmed the deployed page exposes the new mode switch.
+- Added a reusable production series verification script; local network timeouts currently block its completion, so interactive production verification remains pending.
+
 ## 2026-10-28 — Series unification and production exports
 
 - Added Follow Primary, Balanced and Preserve Accents strategies using existing-role medoids rather than RGB averaging, with primary/candidate role locks.

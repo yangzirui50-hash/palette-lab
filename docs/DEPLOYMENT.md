@@ -47,7 +47,15 @@ Never commit `.dev.vars`, real API keys, passwords or Cloudflare credentials. Do
 - Main analysis has a 90-second timeout and at most one retry for transient network/5xx/empty/malformed/schema failures.
 - Reference comparison remains pending Unsplash access; no mock result is presented as production AI.
 
+## Series rollout — 2026-10-28
+
+- Merged the deterministic series workflow to `main` at `f4c1d92` after 48 unit tests and 14 browser workflows passed.
+- The public page exposes the new single/series mode switch, confirming updated static assets.
+- `scripts/verify-production-series.mjs` is available for repeatable production series verification.
+- Interactive production verification is pending: the embedded browser and independent Playwright both encountered local connection timeouts. Do not mark the online series workflow as verified until this script completes.
+
 ## Remaining rollout steps
 
-1. After Unsplash approval, configure its Access Key and verify attributed search plus DeepSeek comparison.
-2. Keep local and production secret configurations separate, and monitor provider usage.
+1. Complete production series verification with `node scripts/verify-production-series.mjs` when network access is stable.
+2. After Unsplash approval, configure its Access Key and verify attributed search plus DeepSeek comparison.
+3. Keep local and production secret configurations separate, and monitor provider usage.

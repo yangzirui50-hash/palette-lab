@@ -4,7 +4,7 @@ _Last updated: 2026-10-28_
 
 ## Current phase
 
-The stable public baseline passed its stage gate. Series slices 1–3 are verified on `feat/series-consistency`: difference engine, diagnostic workflow, three unification strategies, role locks, previews and versioned exports. Optional series AI interpretation and final merge review remain. Real Unsplash verification remains deferred.
+The deterministic series workflow has passed its local stage gate and is merged to `main` at `f4c1d92`. The deployed page exposes the new mode switch, but interactive production series verification is blocked by local connection timeouts and must not be treated as complete. Optional series AI and real Unsplash verification remain deferred.
 
 ## Production
 
