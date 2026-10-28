@@ -28,7 +28,7 @@ Optional later stages:
 
 ## Implemented color engine
 
-`src/lib/color/extract.ts` accepts typed RGB pixels and returns deterministic palette swatches. It samples large inputs, builds a quantized histogram, clusters weighted samples in OKLCH space, and returns original-RGB cluster means with normalized shares, OKLCH coordinates and six-digit HEX values. The implementation is independent of the DOM and AI providers so it can run in browsers, workers, tests and future native wrappers.
+`src/lib/color/extract.ts` accepts typed RGB pixels and returns deterministic palette swatches. It samples large inputs, builds a quantized histogram and clusters weighted samples in OKLab space, with an additional salience-reserved center for sufficiently represented chromatic hue bins. Distances convert LCH hue/chroma into true OKLab channels, so hue is never subtracted as a linear degree value. Output uses original-RGB cluster means with normalized shares, OKLCH coordinates and six-digit HEX values. The implementation is independent of the DOM and AI providers so it can run in browsers, workers, tests and future native wrappers.
 
 ## Role assignment and previews
 

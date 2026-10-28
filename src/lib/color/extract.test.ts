@@ -42,6 +42,23 @@ describe('extractPalette', () => {
     palette.forEach((color) => expect(color.oklch).toHaveLength(3))
   })
 
+  it('preserves a small but visually salient red subject among dominant neutrals', () => {
+    const redSubject = Array.from({ length: 10 }, (_, index) => [190 + index * 4, 12 + index * 2, 35 + index * 2] as RGBPixel)
+    const pixels = [
+      ...solid([82, 76, 77], 800),
+      ...solid([201, 186, 166], 94),
+      ...solid([56, 36, 55], 54),
+      ...solid([79, 87, 87], 32),
+      ...solid([77, 85, 77], 16),
+      ...solid([65, 65, 73], 4),
+      ...redSubject,
+    ]
+    const palette = extractPalette(pixels, 6)
+    const salientRed = palette.find((color) => color.oklch[1] > 0.12 && color.rgb[0] > color.rgb[1] * 2)
+    expect(salientRed).toBeDefined()
+    expect(salientRed?.share).toBeGreaterThan(0.005)
+  })
+
   it('rejects empty input and invalid color counts', () => {
     expect(() => extractPalette([], 4)).toThrow('At least one pixel')
     expect(() => extractPalette(solid([0, 0, 0], 1), 1)).toThrow('between 2 and 8')

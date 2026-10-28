@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-10-28 — Salient subject-color and OKLab correction
+
+- Reproduced a user-reported case where small red subject regions disappeared from extracted palettes under dominant neutrals.
+- Added hue-bin salience protection for chromatic clusters covering at least 0.5% of sampled pixels without giving them fabricated area shares.
+- Corrected palette and series distance calculations to convert LCH hue/chroma into true OKLab coordinates instead of subtracting hue degrees as a linear channel.
+- Added saturated-subject and hue-wrap regression coverage; 50 unit tests, 14 browser workflows, ESLint, production build and 0-vulnerability audit pass.
+- Owner confirmation with the original production image is still required.
+
 ## 2026-10-28 — Series merge and production verification boundary
 
 - Merged the reviewed deterministic series workflow to `main` at `f4c1d92` and pushed successfully.

@@ -60,7 +60,7 @@ const COLOR_MATCH_THRESHOLD = 0.08
 const ROLE_DIFFERENCE_THRESHOLD = 0.02
 
 function coordinates(hex: string) {
-  const [lightness, a, b] = new Color(hex).to('oklch').coords
+  const [lightness, a, b] = new Color(hex).to('oklab').coords
   return [lightness ?? 0, a ?? 0, b ?? 0] as const
 }
 

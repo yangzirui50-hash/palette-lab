@@ -23,8 +23,16 @@ const toOklch = (rgb: RGBPixel): RGBPixel => {
   return [l ?? 0, a ?? 0, b ?? 0]
 }
 
-const distanceSquared = (a: RGBPixel, b: RGBPixel) =>
-  (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2
+const toOklab = (lch: RGBPixel): RGBPixel => {
+  const radians = lch[2] * Math.PI / 180
+  return [lch[0], lch[1] * Math.cos(radians), lch[1] * Math.sin(radians)]
+}
+
+const distanceSquared = (a: RGBPixel, b: RGBPixel) => {
+  const labA = toOklab(a)
+  const labB = toOklab(b)
+  return (labA[0] - labB[0]) ** 2 + (labA[1] - labB[1]) ** 2 + (labA[2] - labB[2]) ** 2
+}
 
 function buildSamples(pixels: readonly RGBPixel[], maxSamples = 8000): WeightedSample[] {
   const stride = Math.max(1, Math.ceil(pixels.length / maxSamples))
@@ -46,11 +54,43 @@ function buildSamples(pixels: readonly RGBPixel[], maxSamples = 8000): WeightedS
   }))
 }
 
+function findSalientCenter(samples: WeightedSample[], dominant: RGBPixel): RGBPixel | null {
+  const totalWeight = samples.reduce((sum, sample) => sum + sample.weight, 0)
+  const bins = new Map<number, { weight: number; score: number; center: RGBPixel }>()
+  for (const sample of samples) {
+    const [lightness, chroma, hue] = sample.oklch
+    if (chroma < 0.08) continue
+    const binIndex = Math.floor(hue / 30)
+    const score = sample.weight * chroma
+    const lab = toOklab(sample.oklch)
+    const bin = bins.get(binIndex) ?? { weight: 0, score: 0, center: [0, 0, 0] }
+    bin.weight += sample.weight
+    bin.score += score
+    bin.center = [
+      bin.center[0] + lightness * score,
+      bin.center[1] + lab[1] * score,
+      bin.center[2] + lab[2] * score,
+    ]
+    bins.set(binIndex, bin)
+  }
+  const salient = [...bins.values()]
+    .filter((bin) => bin.weight / totalWeight >= 0.005 && bin.score > 0)
+    .sort((a, b) => (b.score / b.weight) - (a.score / a.weight))[0]
+  if (!salient) return null
+  const lab = salient.center.map((channel) => channel / salient.score)
+  const chroma = Math.hypot(lab[1], lab[2])
+  const hue = ((Math.atan2(lab[2], lab[1]) * 180 / Math.PI) + 360) % 360
+  const center: RGBPixel = [lab[0], chroma, hue]
+  return distanceSquared(center, dominant) > 0.0064 ? center : null
+}
+
 function initialCenters(samples: WeightedSample[], count: number): RGBPixel[] {
   const remaining = [...samples]
   const centers: RGBPixel[] = []
   const first = remaining.reduce((best, sample) => sample.weight > best.weight ? sample : best)
   centers.push(first.oklch)
+  const salient = findSalientCenter(samples, first.oklch)
+  if (salient && count > 1) centers.push(salient)
 
   while (centers.length < count && remaining.length > centers.length) {
     const next = remaining.reduce((best, sample) => {

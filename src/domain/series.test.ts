@@ -29,6 +29,11 @@ const primary = image('primary', [black, green, blue], {
 })
 
 describe('series color distance and image comparison', () => {
+  it('uses OKLab distances instead of treating hue degrees as a linear channel', () => {
+    expect(seriesColorDistance('#ff0000', '#fe0000')).toBeLessThan(0.02)
+    expect(seriesColorDistance('#080808', '#090909')).toBeLessThan(0.02)
+  })
+
   it('returns no differences for identical images and keeps all colors shared', () => {
     const candidate = image('candidate', [black, green, blue], primary.roles)
     const comparison = compareSeriesImage(primary, candidate)
