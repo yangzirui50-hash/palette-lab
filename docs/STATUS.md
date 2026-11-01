@@ -4,7 +4,7 @@ _Last updated: 2026-11-01_
 
 ## Current phase
 
-The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, dominant-component placement, normalized significance and nearest-swatch OKLab discrimination are verified. Advanced structure metrics are available on demand, and Art generates complete editorial scenes without source-image pasting. 71 unit tests and 20 regular browser workflows pass. A separate 50-image dual-mode timing benchmark passed 50/50 in 56.711 seconds; higher-resolution fidelity and actionable hotspots precede continuous-region edge refinement.
+The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, dominant-component placement, normalized significance and nearest-swatch OKLab discrimination are verified. Analysis now runs at 512 pixels with eight-neighbor continuity and 0.65 px highlight feathering. 72 unit tests and 20 regular browser workflows pass. The 50-image precision benchmark passed 50/50 in 73.290 seconds; actionable hotspots and broader real-image coverage remain future stages.
 
 ## Production
 
@@ -24,7 +24,7 @@ The deterministic series workflow and dual-mode spatial evidence layer are imple
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 71 unit tests and 20 real-browser workflow tests pass locally
+- 72 unit tests and 20 real-browser workflow tests pass locally
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures

@@ -22,7 +22,7 @@ Global extraction averages hue through OKLab vectors rather than linear hue degr
 - Significant connected-component count
 - Mean distance to the next-nearest palette color
 
-Transparent pixels are excluded from shares and components. Edge calculations use normalized coordinates and work for small images. Two neighborhood passes clean only isolated components of at most two pixels, preserving connected subject regions and meaningful small details. Overlay and metrics share the same denoised assignments. There is no universal aesthetic score.
+Global palette and spatial analysis use a 512-pixel maximum edge instead of 320 to reduce resampling loss. Transparent pixels are excluded from shares and components. Connected regions use eight-neighbor connectivity so diagonal strokes remain continuous. Two neighborhood passes clean only isolated components of at most two pixels, preserving meaningful small details. Overlay and metrics share the same denoised assignments, and a 0.65 px feather limits adjacent-color bleed without claiming semantic boundaries. There is no universal aesthetic score.
 
 ## Spatial share versus palette share
 
@@ -60,7 +60,7 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 
 - Hue-wraparound, RGB/OKLCH consistency, multiple chromatic-family and constrained-center unit tests
 - Dark-red conflict, low-chroma compatible-reassignment and explicit unassigned tests
-- Center-focus, dominant-component location, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
+- Center-focus, dominant-component location, diagonal continuity, edge-background, disconnected-region, missing-color, transparent-pixel, ROI-cropping and independent-local-palette unit tests
 - Distribution tests preserve isolated lights, prefer high contrast, avoid uniform-field hotspots, prevent edge/corner amplification and exclude transparency
 - Significance tests verify 100% normalization and greater-than-area weight for a small bright accent; discrimination tests verify nearest-HEX selection, symmetric OKLab distance and single-color fallback
 - Real browser all-region display, pointer ROI selection, local-dominant selection, cropped-share verification and unchanged global-palette checks
@@ -71,4 +71,4 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Neon browser workflow verifies heatmap rendering, nonzero hotspots, distribution metrics, region switching and 390 px layout; local ROI also works in distribution mode
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
-- 71 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits
+- 72 unit tests and 20 real-browser workflows pass, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits

@@ -49,6 +49,13 @@ describe('spatial palette evidence', () => {
     expect(regions[0].largestComponentShare).toBe(0.5)
   })
 
+  it('keeps diagonal strokes connected as one continuous region', () => {
+    const pixels = [redPixel, grayPixel, grayPixel, redPixel]
+    const region = analyzePaletteSpatial(pixels, 2, 2, [red, gray])[0]
+    expect(region.componentCount).toBe(1)
+    expect(region.largestComponentShare).toBe(1)
+  })
+
   it('removes isolated salt-and-pepper assignments without erasing real regions', () => {
     const pixels = Array.from({ length: 16 }, () => grayPixel)
     pixels[5] = redPixel

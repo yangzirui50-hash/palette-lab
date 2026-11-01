@@ -10,7 +10,7 @@ export type ProcessedImage = {
   height: number
 }
 
-export async function imageFileToPixels(file: File, maxEdge = 320): Promise<ProcessedImage> {
+export async function imageFileToPixels(file: File, maxEdge = 512): Promise<ProcessedImage> {
   if (!supportedTypes.includes(file.type)) throw new Error('请选择 PNG、JPG 或 WebP 图片')
   if (file.size === 0) throw new Error('图片文件为空，请重新选择')
   if (file.size > maxFileSize) throw new Error('图片不能超过 15 MB')

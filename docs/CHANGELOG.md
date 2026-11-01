@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-01 — Spatial precision and continuity optimization
+
+- Increased global and spatial analysis from 320 to 512 pixels, adopted eight-neighbor connectivity for diagonal strokes and reduced highlight feathering to 0.65 px.
+- Preserved zero red-like pixels in the night-city deep-blue selection and added a diagonal-continuity regression.
+- Reused compatible analysis where safe, but found no meaningful measured speed improvement and do not claim a performance win.
+- Re-ran all 50 benchmark images: mean time increased from 1.030 to 1.463 seconds; person/neon unassigned fell, while night-city unassigned rose to 22.9% and remains explicit rather than forced.
+- Passed 72 unit tests and 20 regular browser workflows; detailed trade-offs are recorded in `docs/REVIEWS/2026-11-01-spatial-precision-optimization.md`.
+
 ## 2026-11-01 — Fifty-image timing and stability benchmark
 
 - Added an opt-in `BENCHMARK=1` browser workflow covering 50 images in one session, including two real images and 48 deterministic synthetic fixtures.

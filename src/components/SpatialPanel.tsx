@@ -18,6 +18,8 @@ type SpatialPanelProps = {
 export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
+  const [components, setComponents] = useState<number[][][]>([])
+  const [completedAnalysisKey, setCompletedAnalysisKey] = useState('')
   const [unassignedShare, setUnassignedShare] = useState(0)
   const [localPalette, setLocalPalette] = useState<PaletteSwatch[]>([])
   const [selectedHex, setSelectedHex] = useState('')
@@ -33,6 +35,11 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   const previewRef = useRef<HTMLDivElement>(null)
 
   const activePalette = roi ? localPalette : palette
+  const analysisKey = [
+    `${sourceFile.name}:${sourceFile.lastModified}:${sourceFile.size}`,
+    activePalette.map((color) => color.hex).join(','),
+    roi ? `${roi.x},${roi.y},${roi.width},${roi.height}` : 'full',
+  ].join('|')
   const overlayKey = [
     `${sourceFile.name}:${sourceFile.lastModified}:${sourceFile.size}`,
     viewMode,
@@ -58,6 +65,8 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
       setEvidence(result.regions)
       setUnassignedShare(result.unassignedShare)
       setDistributions(distributionResult)
+      setComponents(result.components)
+      setCompletedAnalysisKey(analysisKey)
       // A cropped region must not be presented to AI as evidence about the full image.
       onEvidenceChange?.(roi ? [] : result.regions)
       const salient = [...nextPalette].sort((a, b) => b.oklch[1] - a.oklch[1])[0]
@@ -73,21 +82,22 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
       setLoading(false)
     })
     return () => { active = false }
-  }, [sourceFile, palette, onEvidenceChange, roi])
+  }, [sourceFile, palette, onEvidenceChange, roi, analysisKey])
 
   useEffect(() => {
     if (!selectedHex || activePalette.length === 0) return
     let active = true
+    const useCache = completedAnalysisKey === analysisKey
     const request = viewMode === 'distribution'
-      ? createDistributionOverlay(sourceFile, activePalette, selectedHex, 320, roi ?? undefined)
-      : createSpatialOverlay(sourceFile, activePalette, selectedHex, 320, mode, roi ?? undefined)
+      ? createDistributionOverlay(sourceFile, activePalette, selectedHex, 512, roi ?? undefined, useCache ? distributions : undefined)
+      : createSpatialOverlay(sourceFile, activePalette, selectedHex, 512, mode, roi ?? undefined, useCache ? components : undefined)
     void request.then((url) => {
       if (active) setOverlay({ url, key: overlayKey })
     }).catch((reason: unknown) => {
       if (active) setError(reason instanceof Error ? reason.message : '空间可视化失败')
     })
     return () => { active = false }
-  }, [sourceFile, activePalette, selectedHex, mode, roi, viewMode, overlayKey])
+  }, [sourceFile, activePalette, selectedHex, mode, roi, viewMode, overlayKey, completedAnalysisKey, analysisKey, distributions, components])
 
   const selected = evidence.find((region) => region.hex.toLowerCase() === selectedHex.toLowerCase())
   const displayedRoi = draftRoi ?? roi

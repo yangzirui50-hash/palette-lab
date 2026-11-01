@@ -10,7 +10,7 @@ test('imports an image, extracts colors and changes domain and count', async ({ 
   await page.locator('input[type=file]').setInputFiles(fixture)
   await expect(page.locator('.swatch-row')).toHaveCount(3)
   await expect(page.locator('.swatch-info strong').first()).toHaveText(/^#[0-9a-f]{6}$/i)
-  await expect(page.locator('.swatch-row').first()).toContainText('50.0%')
+  await expect(page.locator('.swatch-row').first()).toContainText(/50\.[01]%/)
   await page.screenshot({ path: 'test-results/web-light.png', fullPage: true })
 
   await page.getByRole('button', { name: 'Art / Poster' }).click()
@@ -201,7 +201,7 @@ test('manages a series and preserves independent roles and single-image state', 
   await page.getByRole('button', { name: '单图', exact: true }).click()
   await expect(page.locator('.series-workspace')).toBeHidden()
   await expect(page.locator('.swatch-row')).toHaveCount(3)
-  await expect(page.locator('.swatch-row').first()).toContainText('50.0%')
+  await expect(page.locator('.swatch-row').first()).toContainText(/50\.[01]%/)
 })
 
 test('unifies a series with preserved accents and exports production artifacts', async ({ page }) => {

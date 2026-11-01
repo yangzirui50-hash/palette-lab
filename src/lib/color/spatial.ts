@@ -24,6 +24,20 @@ function distanceSquared(a: readonly number[], b: readonly number[]) {
   return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2
 }
 
+function forEachNeighbor(index: number, width: number, height: number, callback: (next: number) => void) {
+  const x = index % width
+  const y = Math.floor(index / width)
+  for (let dy = -1; dy <= 1; dy += 1) {
+    for (let dx = -1; dx <= 1; dx += 1) {
+      if (dx === 0 && dy === 0) continue
+      const nx = x + dx
+      const ny = y + dy
+      if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue
+      callback(ny * width + nx)
+    }
+  }
+}
+
 export type SpatialRoi = { x: number; y: number; width: number; height: number }
 
 export function cropSpatialPixels(pixels: readonly (RGBPixel | null)[], width: number, height: number, roi: SpatialRoi) {
@@ -96,12 +110,7 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     while (head < tail) {
       const current = queue[head++]
       component.push(current)
-      const x = current % width
-      const neighbors = [current - 1, current + 1, current - width, current + width]
-      neighbors.forEach((next, direction) => {
-        if (next < 0 || next >= pixels.length) return
-        if (direction === 0 && x === 0) return
-        if (direction === 1 && x === width - 1) return
+      forEachNeighbor(current, width, height, (next) => {
         if (assignments[next] === label && !visited[next]) {
           visited[next] = 1
           queue[tail++] = next
@@ -147,12 +156,7 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     while (head < tail) {
       const current = componentQueue[head++]
       indices.push(current)
-      const x = current % width
-      const neighbors = [current - 1, current + 1, current - width, current + width]
-      neighbors.forEach((next, direction) => {
-        if (next < 0 || next >= pixels.length) return
-        if (direction === 0 && x === 0) return
-        if (direction === 1 && x === width - 1) return
+      forEachNeighbor(current, width, height, (next) => {
         if (assignments[next] === label && !componentVisited[next]) {
           componentVisited[next] = 1
           componentQueue[tail++] = next
@@ -166,7 +170,7 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
 
 export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]) {
   if (pixels.length !== width * height) throw new Error('Pixel count must match spatial dimensions')
-  if (palette.length === 0) return { regions: [], unassignedShare: pixels.some(Boolean) ? 1 : 0 }
+  if (palette.length === 0) return { regions: [], unassignedShare: pixels.some(Boolean) ? 1 : 0, assignments: new Uint16Array(pixels.length).fill(65535), components: [] }
   const opaqueCount = pixels.filter(Boolean).length
   const { assignments, separations, components } = buildSpatialAssignments(pixels, width, height, palette)
   const states = palette.map(() => ({
@@ -238,12 +242,7 @@ export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)
       while (head < tail) {
         const current = queue[head++]
         size += 1
-        const x = current % width
-        const neighbors = [current - 1, current + 1, current - width, current + width]
-        neighbors.forEach((next, direction) => {
-          if (next < 0 || next >= pixels.length) return
-          if (direction === 0 && x === 0) return
-          if (direction === 1 && x === width - 1) return
+        forEachNeighbor(current, width, height, (next) => {
           if (mask[next] && !visited[next]) {
             visited[next] = 1
             queue[tail++] = next
@@ -281,7 +280,7 @@ export function analyzePaletteSpatialDetailed(pixels: readonly (RGBPixel | null)
     }
   })
   const unassignedCount = pixels.reduce((count, pixel, index) => count + (pixel && assignments[index] === 65535 ? 1 : 0), 0)
-  return { regions, unassignedShare: opaqueCount ? unassignedCount / opaqueCount : 0 }
+  return { regions, unassignedShare: opaqueCount ? unassignedCount / opaqueCount : 0, assignments, components }
 }
 
 export function analyzePaletteSpatial(pixels: readonly (RGBPixel | null)[], width: number, height: number, palette: PaletteSwatch[]): SpatialRegionEvidence[] {

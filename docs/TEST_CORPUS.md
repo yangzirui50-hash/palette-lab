@@ -34,11 +34,11 @@ Separate workflows check periodic red/blue family preservation, person ROI behav
 
 ## Timed 50-image benchmark
 
-`benchmark-50.spec.ts` is an opt-in `BENCHMARK=1` workflow covering the permanent fixtures plus 39 additional deterministic images. It passed 50/50 in 56.711 seconds with a 1.030-second mean and 1.389-second 95th percentile. Only two images are real; this benchmark measures stability and timing, not broad real-world quality. See `docs/REVIEWS/2026-11-01-benchmark-50.md`.
+`benchmark-50.spec.ts` is an opt-in `BENCHMARK=1` workflow covering the permanent fixtures plus 39 additional deterministic images. The 320 px baseline passed 50/50 in 56.711 seconds; the 512 px precision update passed 50/50 in 73.290 seconds with a 1.463-second mean and 2.373-second 95th percentile. Only two images are real; this benchmark measures stability and timing, not broad real-world quality. See `docs/REVIEWS/2026-11-01-benchmark-50.md` and `docs/REVIEWS/2026-11-01-spatial-precision-optimization.md`.
 
 ## Current gate
 
-- 71 unit tests
+- 72 unit tests
 - 20 real-browser workflows
 - ESLint and production build
 

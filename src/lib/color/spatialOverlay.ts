@@ -1,4 +1,5 @@
 import { analyzePaletteDistribution } from './distribution'
+import type { PaletteDistribution } from './distribution'
 import { buildSpatialAssignments, cropSpatialPixels } from './spatial'
 import type { SpatialRoi } from './spatial'
 import type { PaletteSwatch, RGBPixel } from './extract'
@@ -38,19 +39,19 @@ async function loadSpatialImage(file: File, maxEdge: number): Promise<SpatialIma
   }
 }
 
-export async function imageFileToSpatialData(file: File, maxEdge = 320): Promise<SpatialImageData> {
+export async function imageFileToSpatialData(file: File, maxEdge = 512): Promise<SpatialImageData> {
   const { pixels, width, height } = await loadSpatialImage(file, maxEdge)
   return { pixels, width, height }
 }
 
-export async function createSpatialOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 320, mode: 'largest' | 'all' = 'largest', roi?: SpatialRoi) {
+export async function createSpatialOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 512, mode: 'largest' | 'all' = 'largest', roi?: SpatialRoi, precomputedComponents?: number[][][]) {
   const { canvas, pixels } = await loadSpatialImage(file, maxEdge)
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('无法生成空间高亮')
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
   const originalData = new Uint8ClampedArray(imageData.data)
   const crop = roi ? cropSpatialPixels(pixels, canvas.width, canvas.height, roi) : null
-  const { components } = buildSpatialAssignments(crop?.pixels ?? pixels, crop?.width ?? canvas.width, crop?.height ?? canvas.height, palette)
+  const components = precomputedComponents ?? buildSpatialAssignments(crop?.pixels ?? pixels, crop?.width ?? canvas.width, crop?.height ?? canvas.height, palette).components
   const selectedIndex = Math.max(0, palette.findIndex((color) => color.hex.toLowerCase() === selectedHex.toLowerCase()))
   const largest = [...components[selectedIndex]].sort((a, b) => b.length - a.length)[0]
   const localize = (indices: number[]) => indices.map((index) => crop
@@ -84,7 +85,7 @@ export async function createSpatialOverlay(file: File, palette: PaletteSwatch[],
   const drawMask = (indices: number[]) => indices.forEach((index) => maskContext.fillRect(index % canvas.width, Math.floor(index / canvas.width), 1, 1))
   if (allowed) drawMask([...allowed])
   else components[selectedIndex].forEach(drawMask)
-  selectedContext.filter = 'blur(1px)'
+  selectedContext.filter = 'blur(0.65px)'
   selectedContext.globalCompositeOperation = 'destination-in'
   selectedContext.drawImage(mask, 0, 0)
   selectedContext.filter = 'none'
@@ -98,7 +99,7 @@ export async function createSpatialOverlay(file: File, palette: PaletteSwatch[],
   return canvas.toDataURL('image/png')
 }
 
-export async function createDistributionOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 320, roi?: SpatialRoi) {
+export async function createDistributionOverlay(file: File, palette: PaletteSwatch[], selectedHex: string, maxEdge = 512, roi?: SpatialRoi, analysis?: PaletteDistribution[]) {
   const { canvas, pixels } = await loadSpatialImage(file, maxEdge)
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('无法生成分布热图')
@@ -106,7 +107,7 @@ export async function createDistributionOverlay(file: File, palette: PaletteSwat
   const scopedPixels = crop?.pixels ?? pixels
   const scopedWidth = crop?.width ?? canvas.width
   const scopedHeight = crop?.height ?? canvas.height
-  const distributions = analyzePaletteDistribution(scopedPixels, scopedWidth, scopedHeight, palette)
+  const distributions = analysis ?? analyzePaletteDistribution(scopedPixels, scopedWidth, scopedHeight, palette)
   const selected = distributions.find((item) => item.hex.toLowerCase() === selectedHex.toLowerCase()) ?? distributions[0]
   const selectedColor = palette.find((color) => color.hex === selected?.hex)
   if (!selected || !selectedColor) return canvas.toDataURL('image/png')
