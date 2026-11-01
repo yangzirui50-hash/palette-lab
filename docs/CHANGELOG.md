@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-01 — Comprehensive local acceptance plan
+
+- Established a product-specific layered plan covering algorithms, complete workflows, accessibility, reliability, performance, compatibility, security and deployment boundaries in `docs/TEST_PLAN.md`.
+- Added empty/oversized/unsupported recovery, repeated source/mode changes, keyboard and 320/390/768 layout checks, real Art PNG export review and cross-resolution family stability.
+- Passed 72 unit tests and 25 regular browser workflows with zero failures; the opt-in 50-image benchmark also passed 50/50.
+- Confirmed Chromium coverage, 0 production dependency vulnerabilities and no real secrets in Git. Firefox/WebKit, production and broader real-world generalization remain explicitly unverified.
+- Recorded results in `docs/REVIEWS/2026-11-01-comprehensive-test-report.md`.
+
 ## 2026-11-01 — Spatial precision and continuity optimization
 
 - Increased global and spatial analysis from 320 to 512 pixels, adopted eight-neighbor connectivity for diagonal strokes and reduced highlight feathering to 0.65 px.

@@ -39,7 +39,7 @@ Separate workflows check periodic red/blue family preservation, person ROI behav
 ## Current gate
 
 - 72 unit tests
-- 20 real-browser workflows
+- 25 real-browser workflows
 - ESLint and production build
 
 ## Limits
