@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-01 — Fifty-image timing and stability benchmark
+
+- Added an opt-in `BENCHMARK=1` browser workflow covering 50 images in one session, including two real images and 48 deterministic synthetic fixtures.
+- Recorded per-image/category timing, palette counts, unassigned evidence and failures; all 50 passed with normalized palettes, finite significance, both spatial modes and no stale ROI.
+- Completed the benchmark in 56.711 seconds with a 1.030-second mean and 1.389-second 95th percentile; the measured mean implies about 17.2 minutes for 1000 similar runs before downloads and review.
+- Documented results and limits in `docs/REVIEWS/2026-11-01-benchmark-50.md`; this is not a 50-real-image generalization claim.
+
 ## 2026-10-28 — Validated significance and discrimination metrics
 
 - Added normalized visual-significance shares from deterministic area, local-contrast, chroma and multi-scale density evidence, with a small-accent regression and 100% normalization check.

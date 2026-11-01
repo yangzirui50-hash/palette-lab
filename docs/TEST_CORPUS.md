@@ -32,6 +32,10 @@ The corpus checks shared contracts across different images rather than tuning be
 
 Separate workflows check periodic red/blue family preservation, person ROI behavior and the night-city pixel-level cross-color assertion. Existing workflows cover exports, series, AI mocks and mobile layout.
 
+## Timed 50-image benchmark
+
+`benchmark-50.spec.ts` is an opt-in `BENCHMARK=1` workflow covering the permanent fixtures plus 39 additional deterministic images. It passed 50/50 in 56.711 seconds with a 1.030-second mean and 1.389-second 95th percentile. Only two images are real; this benchmark measures stability and timing, not broad real-world quality. See `docs/REVIEWS/2026-11-01-benchmark-50.md`.
+
 ## Current gate
 
 - 71 unit tests

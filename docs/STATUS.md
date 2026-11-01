@@ -1,10 +1,10 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-10-28_
+_Last updated: 2026-11-01_
 
 ## Current phase
 
-The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, dominant-component placement, normalized significance and nearest-swatch OKLab discrimination are verified. Advanced structure metrics are available on demand, and Art generates complete editorial scenes without source-image pasting. 71 unit tests and 20 browser workflows pass; higher-resolution fidelity and actionable hotspots precede continuous-region edge refinement.
+The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, dominant-component placement, normalized significance and nearest-swatch OKLab discrimination are verified. Advanced structure metrics are available on demand, and Art generates complete editorial scenes without source-image pasting. 71 unit tests and 20 regular browser workflows pass. A separate 50-image dual-mode timing benchmark passed 50/50 in 56.711 seconds; higher-resolution fidelity and actionable hotspots precede continuous-region edge refinement.
 
 ## Production
 

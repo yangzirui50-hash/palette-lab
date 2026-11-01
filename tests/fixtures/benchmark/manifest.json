@@ -1,0 +1,236 @@
+[
+  {
+    "file": "benchmark-01-gradient.png",
+    "category": "gradient",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-02-gradient.png",
+    "category": "gradient",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-03-gradient.png",
+    "category": "gradient",
+    "width": 240,
+    "height": 480
+  },
+  {
+    "file": "benchmark-04-gradient.png",
+    "category": "gradient",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "benchmark-05-gradient.png",
+    "category": "gradient",
+    "width": 180,
+    "height": 120
+  },
+  {
+    "file": "benchmark-06-gradient.png",
+    "category": "gradient",
+    "width": 900,
+    "height": 300
+  },
+  {
+    "file": "benchmark-07-gradient.png",
+    "category": "gradient",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-08-noise.png",
+    "category": "noise",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-09-noise.png",
+    "category": "noise",
+    "width": 240,
+    "height": 480
+  },
+  {
+    "file": "benchmark-10-noise.png",
+    "category": "noise",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "benchmark-11-noise.png",
+    "category": "noise",
+    "width": 180,
+    "height": 120
+  },
+  {
+    "file": "benchmark-12-noise.png",
+    "category": "noise",
+    "width": 900,
+    "height": 300
+  },
+  {
+    "file": "benchmark-13-noise.png",
+    "category": "noise",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-14-geometric.png",
+    "category": "geometric",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-15-geometric.png",
+    "category": "geometric",
+    "width": 240,
+    "height": 480
+  },
+  {
+    "file": "benchmark-16-geometric.png",
+    "category": "geometric",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "benchmark-17-geometric.png",
+    "category": "geometric",
+    "width": 180,
+    "height": 120
+  },
+  {
+    "file": "benchmark-18-geometric.png",
+    "category": "geometric",
+    "width": 900,
+    "height": 300
+  },
+  {
+    "file": "benchmark-19-geometric.png",
+    "category": "geometric",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-20-periodic.png",
+    "category": "periodic",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-21-periodic.png",
+    "category": "periodic",
+    "width": 240,
+    "height": 480
+  },
+  {
+    "file": "benchmark-22-periodic.png",
+    "category": "periodic",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "benchmark-23-periodic.png",
+    "category": "periodic",
+    "width": 180,
+    "height": 120
+  },
+  {
+    "file": "benchmark-24-periodic.png",
+    "category": "periodic",
+    "width": 900,
+    "height": 300
+  },
+  {
+    "file": "benchmark-25-low-contrast.png",
+    "category": "low-contrast",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-26-low-contrast.png",
+    "category": "low-contrast",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-27-low-contrast.png",
+    "category": "low-contrast",
+    "width": 240,
+    "height": 480
+  },
+  {
+    "file": "benchmark-28-low-contrast.png",
+    "category": "low-contrast",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "benchmark-29-low-contrast.png",
+    "category": "low-contrast",
+    "width": 180,
+    "height": 120
+  },
+  {
+    "file": "benchmark-30-transparent.png",
+    "category": "transparent",
+    "width": 900,
+    "height": 300
+  },
+  {
+    "file": "benchmark-31-transparent.png",
+    "category": "transparent",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-32-transparent.png",
+    "category": "transparent",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-33-transparent.png",
+    "category": "transparent",
+    "width": 240,
+    "height": 480
+  },
+  {
+    "file": "benchmark-34-transparent.png",
+    "category": "transparent",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "benchmark-35-aspect.png",
+    "category": "aspect",
+    "width": 180,
+    "height": 120
+  },
+  {
+    "file": "benchmark-36-aspect.png",
+    "category": "aspect",
+    "width": 900,
+    "height": 300
+  },
+  {
+    "file": "benchmark-37-aspect.png",
+    "category": "aspect",
+    "width": 320,
+    "height": 240
+  },
+  {
+    "file": "benchmark-38-aspect.png",
+    "category": "aspect",
+    "width": 480,
+    "height": 320
+  },
+  {
+    "file": "benchmark-39-aspect.png",
+    "category": "aspect",
+    "width": 240,
+    "height": 480
+  }
+]
