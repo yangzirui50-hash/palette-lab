@@ -1,6 +1,6 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-11-01_
+_Last updated: 2026-11-02_
 
 ## Current phase
 
@@ -68,13 +68,15 @@ The deterministic series workflow and dual-mode spatial evidence layer are imple
 - Local key setup uses hidden input or clipboard transfer without displaying secrets; `.dev.vars` remains excluded from Git
 - `test:env` now proves real configs are preserved and mock files are removed only when explicitly marked
 - Remote: https://github.com/yangzirui50-hash/palette-lab
+- The November 2 reconciliation maps all ten previously unpushed commits, from `429f7a7` through `a2b34ca`, to the October 28–November 1 conversation and checked-in code/tests/reports. See `docs/REVIEWS/2026-11-02-github-sync.md` for scope, verification and the distinction between repository synchronization and production acceptance.
 
 ## Not implemented yet
 
-- Multi-image consistency
 - Ambient background mode and adaptive accent generation
 - Real Unsplash access while the owner's application is under review
+- Clickable distribution hotspots that generate local palettes
+- Interactive semantic object masks and further region-edge refinement
 
 ## Next action
 
-Start the multi-image consistency phase from the reviewed stable baseline. After Unsplash approval, separately configure its Access Key and verify real attributed search plus comparison.
+Expand the independent real-image corpus and complete Firefox/WebKit and deployed-revision acceptance. Then implement actionable distribution hotspots and continue region-edge and precision/performance work. After Unsplash approval, separately configure its Access Key and verify real attributed search plus comparison. Deterministic multi-image comparison and unification are already implemented.

@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-02 — Reconcile conversation changes for GitHub synchronization
+
+- Matched the October 28–November 1 conversation to all ten local commits after the previous GitHub baseline `de78279`; the implemented changes and historical test reports are already committed.
+- Updated README and status to reflect implemented series comparison/unification rather than listing multi-image consistency as future work.
+- Updated spatial/corpus verification dates and separated remaining hotspot, semantic-mask, real-image and production acceptance work from completed changes.
+- Added `docs/REVIEWS/2026-11-02-github-sync.md` with the commit map and fresh verification results; production deployment acceptance remains separate.
+
 ## 2026-11-01 — Comprehensive local acceptance plan
 
 - Established a product-specific layered plan covering algorithms, complete workflows, accessibility, reliability, performance, compatibility, security and deployment boundaries in `docs/TEST_PLAN.md`.

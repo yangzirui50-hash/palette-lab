@@ -1,6 +1,6 @@
 # Multi-image Color Test Corpus
 
-_Last verified: 2026-10-28_
+_Latest feature acceptance: 2026-11-01. Documentation reconciled: 2026-11-02._
 
 ## Purpose
 
@@ -44,4 +44,4 @@ Separate workflows check periodic red/blue family preservation, person ROI behav
 
 ## Limits
 
-Synthetic fixtures cover algorithmic mechanisms but do not prove universal real-world quality. More independent real photography, portraits, products and complex scenes are still required before making a broad production-generalization claim. Higher-resolution fidelity and actionable hotspots remain separate acceptance stages.
+Synthetic fixtures cover algorithmic mechanisms but do not prove universal real-world quality. More independent real photography, portraits, products and complex scenes are still required before making a broad production-generalization claim. Analysis has already increased from 320 to 512 pixels; fidelity beyond that baseline and actionable hotspots remain separate acceptance stages.
