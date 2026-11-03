@@ -34,7 +34,7 @@ function supportPath(cells: readonly number[], width: number) {
 export default function AttentionEstimate({ attention, imageUrl, sourceImageUrl, local }: { attention: AttentionEvidence; imageUrl: string; sourceImageUrl: string; local: boolean }) {
   const [showEvidence, setShowEvidence] = useState(false)
   return <details className="attention-panel" data-focus-reason={attention.reason} data-focus-version={attention.version} data-focus-scope={attention.scope}>
-    <summary>{local ? '局部' : '整图'}视觉重点参考 · {labels[attention.state]}</summary>
+    <summary>{local ? '局部' : '整图'}颜色反差参考 · {labels[attention.state]}</summary>
     <p>{explanations[attention.reason]}</p>
     <p>这里依据颜色反差提供参考，尚未判断人物、物体含义或你的关注顺序。“没有稳定位置”不等于“画面没有重点”。</p>
     <div className="attention-view-control"><button type="button" aria-pressed={showEvidence} onClick={() => setShowEvidence(value => !value)}>{showEvidence ? '收起反差证据' : '显示反差证据'}</button><span>{showEvidence ? '证据叠层仅供核对，可随时收起。' : '默认查看原图，避免着色覆盖画面。'}</span></div>

@@ -22,6 +22,18 @@ const requestBody = {
 }
 
 describe('analysis API', () => {
+  it('validates and rate-limits the independent paid focus task',async()=>{
+    const body={image:requestBody.image,measurements:{scope:'source',palette:[],spatial:[],sampleWidth:64,sampleHeight:64,notes:'Synthetic API contract.'}}
+    const response=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{AI_PROVIDER:'mock'})
+    expect(response.status).toBe(200);expect((await response.json()).focus.dominance).toBe('ranked')
+    const invalid=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,measurements:{...body.measurements,scope:'roi'}})},{AI_PROVIDER:'mock'})
+    expect(invalid.status).toBe(400)
+    const limit=vi.fn().mockResolvedValue({success:false})
+    const limited=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json','cf-connecting-ip':'203.0.113.10'},body:JSON.stringify(body)},{AI_PROVIDER:'mock',AI_RATE_LIMITER:{limit}})
+    expect(limited.status).toBe(429);expect(limit).toHaveBeenCalledWith({key:'/api/focus:203.0.113.10'})
+    const unavailable=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{})
+    expect(unavailable.status).toBe(501)
+  })
   it('forwards ROI scope to the provider without relabeling local shares as full-image area', async () => {
     const { mockAnalysisProvider } = await import('./providers/mock')
     const report = await mockAnalysisProvider.analyze(requestBody)

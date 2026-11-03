@@ -3,10 +3,13 @@ import type { SpatialRegionEvidence, SpatialRoi } from './spatial'
 import type { PaletteDistribution } from './distribution'
 import type { AttentionEvidence } from './attention'
 import type { ImagePaletteResult } from './palettePipeline'
+import type { FocusMeasurements } from '../../domain/focus'
+export type { FocusMeasurements }
 
 type Scope = { file: File; palette: PaletteSwatch[]; roi?: SpatialRoi }
 export type ColorTask =
   | { kind: 'palette'; file: File; count: number }
+  | { kind: 'focus-input'; file:File }
   | ({ kind: 'spatial' } & Scope)
   | ({ kind: 'render'; hex: string; mode: 'largest' | 'all'; view: 'regions' | 'distribution' } & Scope)
 export type PaletteResult = ImagePaletteResult

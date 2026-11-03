@@ -24,7 +24,7 @@ import ProjectControls from '../lib/project/ProjectControls'
 import { useProject } from '../lib/project/context'
 import { loadProject } from '../lib/project/storage'
 import { useObjectUrls } from '../lib/project/useObjectUrls'
-import type { ProjectRecord, ProjectSource, ReportContext } from '../lib/project/model'
+import type { FocusSnapshot,ProjectRecord, ProjectSource, ReportContext } from '../lib/project/model'
 import { reportContextKey } from '../lib/project/model'
 import { retainedSwatch } from '../lib/color/hex'
 import { sourceCoordinates } from '../lib/color/coordinates'
@@ -95,6 +95,9 @@ function HomeWorkspace() {
     updateSingle(current => ({ ...current, snapshots: [...current.snapshots, snapshot].slice(-20) }))
     setSelectedSnapshotId(snapshot.id)
   }, [updateSingle])
+  const saveFocus=useCallback((snapshot:FocusSnapshot)=>{
+    updateSingle(current=>current.source?.id===snapshot.sourceId?{...current,focusSnapshots:[...current.focusSnapshots,snapshot].slice(-10)}:current)
+  },[updateSingle])
   const changeRoi = useCallback((roi: SpatialRoi | null) => {
     updateSingle(current => ({ ...current, roi }), false)
   }, [updateSingle])
@@ -180,7 +183,7 @@ function HomeWorkspace() {
         width: processed.width, height: processed.height, file, analysis: processed.analysis, palette: processed.palette,
       }
       sourceRef.current = nextSource
-      updateSingle(current => ({ ...current, source: nextSource, roleOverrides: sameSource ? current.roleOverrides : {}, roi: sameSource ? current.roi : null, workingColors: sameSource ? current.workingColors : [] }))
+      updateSingle(current => ({ ...current, source: nextSource, roleOverrides: sameSource ? current.roleOverrides : {}, roi: sameSource ? current.roi : null, workingColors: sameSource ? current.workingColors : [],focusSnapshots:sameSource?current.focusSnapshots:[] }))
     } catch (reason) {
       if (requestId === uploadRequestRef.current) {
         latestFile.current = sourceRef.current?.file ?? null
@@ -354,7 +357,7 @@ function HomeWorkspace() {
             <DomainPreview domain={domain} assignments={assignments} spatial={previewEvidence} renderRef={setPreviewTarget} contrastReport={contrastReport} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} analysis={source.analysis} renderTarget={previewTarget} contrastReport={contrastReport} />
             </div></div>
-            <SpatialPanel key={source.id} sourceFile={source.file} palette={palette} roi={single.roi} onRoiChange={changeRoi} onEvidenceChange={recordEvidence} onAddColor={addLocalColor} retainedHexes={retainedHexes} />
+            <SpatialPanel key={source.id} sourceFile={source.file} sourceUrl={source.url} sourceId={source.id} focusSnapshots={single.focusSnapshots} onFocusResult={saveFocus} palette={palette} roi={single.roi} onRoiChange={changeRoi} onEvidenceChange={recordEvidence} onAddColor={addLocalColor} retainedHexes={retainedHexes} />
             {analysisContext && <AnalysisPanel sourceFile={source.file} context={analysisContext} snapshots={activeSnapshots} selectedSnapshotId={selectedSnapshotId} onSelectSnapshot={setSelectedSnapshotId} onReportChange={saveAnalysis} />}
             <InspirationPanel analysis={analysisReport} historical={Boolean(selectedSnapshot && analysisContext && reportContextKey(selectedSnapshot.context) !== reportContextKey(analysisContext))} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
           </div>

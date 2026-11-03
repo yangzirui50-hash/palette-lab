@@ -1,0 +1,21 @@
+.semantic-focus { padding: 16px; margin: 14px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.semantic-focus-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.semantic-focus-heading h3 { margin: 0; font-size: 14px; }
+.semantic-focus-heading > span { color: var(--accent); font-size: 11px; }
+.semantic-focus-summary { font-size: 12px; line-height: 1.8; }
+.semantic-focus-targets { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit,minmax(min(230px,100%),1fr)); gap: 10px; }
+.semantic-focus-targets > li { padding: 12px; border: 1px solid var(--line); border-radius: 9px; min-width: 0; overflow-wrap: anywhere; }
+.semantic-focus-tier { display: block; color: var(--accent); font-size: 10px; margin-bottom: 6px; }
+.semantic-focus-targets strong { font-size: 13px; }
+.semantic-focus-targets p,.semantic-focus-targets small { font-size: 11px; line-height: 1.7; color: var(--muted); }
+.semantic-focus button { border: 1px solid var(--line); border-radius: 7px; padding: 7px 10px; font: inherit; font-size: 11px; color: var(--accent); background: var(--panel); cursor: pointer; }
+.semantic-focus button[aria-pressed="true"] { background: var(--soft); }
+.semantic-focus-estimate { margin: 14px 0; }
+.semantic-focus-image { position: relative; width: fit-content; max-width: 100%; margin: auto; }
+.semantic-focus-image img { display: block; max-width: 100%; max-height: 420px; }
+.semantic-focus-bound { position: absolute; border: 2px solid white; box-shadow: 0 0 0 1px #111,inset 0 0 0 1px #111; background: transparent; pointer-events: none; }
+.semantic-focus-estimate figcaption,.semantic-focus-source,.semantic-focus-details { font-size: 10px; line-height: 1.8; color: var(--muted); overflow-wrap: anywhere; }
+.semantic-focus-details { margin: 10px 0; }
+.semantic-focus-details summary { cursor: pointer; color: var(--accent); }
+.semantic-focus-details ul { padding-left: 20px; }
+.semantic-focus-source { margin-bottom: 0; }

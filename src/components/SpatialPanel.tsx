@@ -8,9 +8,15 @@ import { analyzePaletteDiscrimination } from '../lib/color/metrics'
 import type { PaletteSwatch } from '../lib/color/extract'
 import './SpatialPanel.css'
 import AttentionEstimate from './AttentionEstimate'
+import FocusAnalysis from './FocusAnalysis'
+import type { FocusSnapshot } from '../lib/project/model'
 
 type SpatialPanelProps = {
   sourceFile: File
+  sourceUrl?:string
+  sourceId:string
+  focusSnapshots:FocusSnapshot[]
+  onFocusResult:(snapshot:FocusSnapshot)=>void
   palette: PaletteSwatch[]
   onEvidenceChange?: (evidence: SpatialRegionEvidence[]) => void
   roi?: SpatialRoi | null
@@ -19,7 +25,7 @@ type SpatialPanelProps = {
   onAddColor?: (color: PaletteSwatch, roi: SpatialRoi) => 'added' | 'exists' | 'full'
 }
 
-export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, roi: controlledRoi, onRoiChange, retainedHexes = [], onAddColor }: SpatialPanelProps) {
+export default function SpatialPanel({ sourceFile, sourceUrl='', sourceId,focusSnapshots,onFocusResult, palette, onEvidenceChange, roi: controlledRoi, onRoiChange, retainedHexes = [], onAddColor }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
   const [attentionResult, setAttentionResult] = useState<Pick<SpatialResult, 'attention' | 'attentionUrl' | 'attentionSourceUrl'> | null>(null)
@@ -156,6 +162,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
     <section className="spatial-panel" aria-labelledby="spatial-title">
       <div className="panel-heading"><span>06</span><h2 id="spatial-title">视觉重心与色彩地图</h2><small>SPATIAL EVIDENCE</small></div>
       <p className="spatial-intro">连续区域查看颜色边界，散点分布查看密度与显著中心；所有指标都是视觉证据，不是美观评分。</p>
+      <FocusAnalysis sourceFile={sourceFile} sourceId={sourceId} sourceUrl={sourceUrl} snapshots={focusSnapshots} onResult={onFocusResult}/>
       {!loading && !error && completedAnalysisKey === analysisKey && attentionResult && (
         <AttentionEstimate attention={attentionResult.attention} imageUrl={attentionResult.attentionUrl} sourceImageUrl={attentionResult.attentionSourceUrl} local={Boolean(roi)} />
       )}

@@ -13,6 +13,16 @@ describe('versioned project model', () => {
     const project = emptyProject()
     const legacySingle = { source: null, roleOverrides: {}, snapshots: [], roi: null }
     expect(projectSchema.parse({ ...project, core: { ...project.core, single: legacySingle } }).core.single.workingColors).toEqual([])
+    expect(projectSchema.parse({ ...project, core: { ...project.core, single: legacySingle } }).core.single.focusSnapshots).toEqual([])
+  })
+  it('ties cached semantic judgments to the source and rejects invalid target structure',()=>{
+    const project=emptyProject();project.core.single.source=source()
+    project.core.single.focusSnapshots=[{id:'focus',createdAt:'2026-11-03T00:00:00.000Z',sourceId:'source',provider:'synthetic',model:'fixture',run:{promptVersion:'test',scope:'source',actualModel:null,durationMs:0,attempts:1},focus:{schemaVersion:1,dominance:'none',summary:'合成无主导测试。',entities:[],priorities:[],uncertainties:[]}}]
+    expect(projectSchema.safeParse(project).success).toBe(true)
+    project.core.single.focusSnapshots[0].sourceId='other'
+    expect(projectSchema.safeParse(project).success).toBe(false)
+    project.core.single.focusSnapshots[0].sourceId='source';project.core.single.focusSnapshots[0].focus.dominance='ranked'
+    expect(projectSchema.safeParse(project).success).toBe(false)
   })
   it('keeps ROI candidates separate from global measured shares and tied to their source', () => {
     const project = emptyProject(); project.core.single.source = source()

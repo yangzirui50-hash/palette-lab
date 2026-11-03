@@ -11,7 +11,7 @@ import { analyzeImagePalette } from './palettePipeline'
 
 let cached: { key: string; result: SpatialResult; render: SpatialRenderCache } | null = null
 
-async function scope(task: Exclude<ColorTask, { kind: 'palette' }>) {
+async function scope(task: Exclude<ColorTask, { kind: 'palette' | 'focus-input' }>) {
   const key = `${task.file.name}:${task.file.size}:${task.file.lastModified}|${task.palette.map(color => color.hex).join(',')}|${JSON.stringify(task.roi)}`
   if (cached?.key === key) return cached
   const frame = await loadRaster(task.file, 512, task.roi)
@@ -46,6 +46,10 @@ worker.onmessage = async ({ data: { id, task } }) => {
     validateImageFile(task.file)
     if (task.kind === 'palette') {
       worker.postMessage({ id, result: await analyzeImagePalette(task.file, task.count) })
+    } else if(task.kind==='focus-input') {
+      const palette=await analyzeImagePalette(task.file,6),frame=await loadRaster(task.file,512)
+      const spatial=analyzePaletteSpatialDetailed(frame.pixels,frame.width,frame.height,palette.palette)
+      worker.postMessage({id,result:{scope:'source',palette:palette.palette.map(({hex,share})=>({hex,share})),spatial:spatial.regions,sampleWidth:frame.width,sampleHeight:frame.height,notes:'Fixed six-color configuration and sampled opaque-pixel evidence; not semantic object boxes or attention probabilities.'}})
     } else {
       const analysis = await scope(task)
       const result = task.kind === 'spatial' ? analysis.result : await renderSpatialViews(task.file, analysis.result.palette, task.hex, 512, task.mode, task.roi, task.view, analysis.render)
