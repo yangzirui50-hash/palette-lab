@@ -28,6 +28,14 @@ Validated by `analysisReportSchema`:
 
 Invalid provider output is rejected instead of being rendered as trusted content. Each recommendation has the exact string fields `title`, `rationale` and `action`. The provider prompt names these fields explicitly. For an observed legacy compatible-provider reply, a string `actionable` is accepted as an alias only when `action` is absent; the normalized record still passes the complete report schema. Existing `action` values are never replaced by the alias, and an invalid explicit value still fails validation. This bounded compatibility conversion does not invent advice or accept a malformed report.
 
+## Independent semantic-focus candidate
+
+`POST /api/focus` is an explicitly requested task separate from the aesthetics report. It receives a maximum-1024px image copy and fixed full-source measurements (six representative colors, maximum-512px spatial raster), independent of edited roles, palette count, application domain and ROI browsing. The versioned semantic graph represents subjects/parts/groups/contours/color relationships and primary/secondary/weak priorities, with ranked/shared/distributed/no-dominant/uncertain outcomes. Runtime validation checks references, hierarchy cycles, bounds and contradictory primary labels.
+
+The default DeepSeek focus task disables thinking and caps output at 4096 tokens, with at most two attempts and no automatic 401/429 retry. A provider-specific image detail option is sent only to DeepSeek. Up to ten source-owned records persist in project state and backups. Source replacement aborts the client request and rejects stale results; this does not guarantee that an already dispatched server/provider request incurs no charge. Refresh is explicit, failed refresh retains a valid prior record, and ordinary editing does not trigger another focus call.
+
+The presentation review accepted the text hierarchy, not the model's ranking or boxes. No automatic deeper-thinking or self-review call is enabled by the external comparison experiment. Semantic results currently advise the user; they do not automatically change role colors or repair the independent aesthetics report. See `REVIEWS/2026-11-03-semantic-focus.md` and the subsequent priority comparison record.
+
 ## Providers
 
 ### Mock

@@ -188,3 +188,19 @@
 - **Decision:** Retain existing heat, grow strong seeds through weaker measured support, preserve independently qualified strong cores, and require supported positions or abstention. Expose uncertainty and reasons instead of calling every candidate failure distributed. Version the focus model separately from palette preprocessing.
 - **Reason:** Text-like strokes can be individually below the energy gate even when their combined local response is meaningful. Simply lowering candidate energy or joining every nearby fragment risks noise and merged subjects. Uncertainty in the model is not evidence of a dispersed real-world scene.
 - **Tradeoffs:** 35% support is a conservative development choice, not a learned optimum. Adjacent sub-threshold structures may still merge and semantically important content may remain undetected. Global prototypes that made every development image a localized target were not selected merely for higher coverage. Human drafts and verbal feedback are diagnosis inputs, not qualifying spatial ground truth; review precedes merging this algorithm candidate into production.
+
+## ADR-027 — Separate cached semantic focus from application design reports
+
+- **Status:** Implemented as review candidate; text presentation accepted, semantic qualification pending
+- **Date:** 2026-11-03
+- **Decision:** Keep full-source subject/part/priority analysis as an explicit bounded task through the existing DeepSeek connection. Preserve at most ten source-owned records, independent of edited colors, use case and ROI browsing. Keep local color evidence separate, display approximate bounds only on request, and reject stale source completions.
+- **Reason:** A combined aesthetics/focus request introduced schema conflicts and latency. Reinterpreting every palette edit as a new original-image task wastes calls and can mix unrelated states. Readable hierarchy can help without pretending a model rectangle is a verified focus point.
+- **Tradeoffs:** Model ranking remains fallible and source-owned cache does not establish a fixed underlying model revision. Semantic advice currently does not change role assignments. Source cancellation cannot guarantee upstream billing cancellation. A string-only legacy recommendation alias is normalized before the complete independent report validation; other malformed values remain invalid.
+
+## ADR-028 — Do not enable extra reasoning or draft review from this experiment
+
+- **Status:** Accepted implementation boundary; future alternatives remain open
+- **Date:** 2026-11-03
+- **Decision:** Retain the current bounded default and accepted presentation. Do not automatically add high-effort thinking, a self-review call or a local model. Preserve frozen failures and request four fresh judgments before another ranking selection.
+- **Reason:** Sixteen deeper attempts produced eleven strict-valid results at an observed 35.6-second median, with mixed semantic improvements/regressions. Fifteen valid reviews retained the same dominance and target-tier edges as their drafts. More calls did not demonstrate a stable ranking benefit.
+- **Tradeoffs:** This decision does not prove reasoning or review generally ineffective. The comparison is development evidence with four unannotated fresh-to-project images and no attention accuracy metric. Output-structure reliability and an unanchored competing-cue ranking task remain separate next investigations.

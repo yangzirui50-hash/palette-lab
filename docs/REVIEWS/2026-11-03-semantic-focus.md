@@ -1,5 +1,7 @@
 # Dedicated semantic focus candidate
 
+Subsequent follow-up: the owner accepted the text presentation only, the observed legacy recommendation alias was repaired, and a bounded comparison did not justify automatic deeper/review calls. See [the later comparison record](2026-11-03-priority-comparison.md). The original experiment and remaining-work record below describes the earlier candidate stage; its legacy report-field issue is no longer an unrepaired item on the follow-up branch.
+
 The contrast prototype cannot distinguish a face from a collar or rank a color relationship against a depicted person. This candidate adds an explicit **Analyze subjects and priorities** action backed by the existing configured DeepSeek connection. Deterministic palette and spatial measurements remain local; they do not become semantic object masks or fixation probabilities. No local model or new dependency is required.
 
 ## Product and data flow

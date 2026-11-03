@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Accept readable hierarchy and evaluate bounded priority alternatives
+
+- Recorded presentation acceptance separately from semantic-rank/region qualification and retained source-owned focus history and clean imagery.
+- Compared current prompts, a deeper single pass and one fallible-draft review on twelve reused development images plus four fresh licensed sources, preserving all six failed attempts and one skipped review externally.
+- Rejected automatic extra reasoning/review calls: deeper outputs were slower and less structurally reliable; all fifteen reviews retained the draft's dominance and target-tier edges.
+- Prepared four new original-image judgments with model answers initially collapsed; did not recollect the prior thirty-image preferences, invent human regions or claim attention accuracy.
+- Synchronized product, provider and architecture documentation to the actual candidate boundaries. Production main and the accepted presentation remain unchanged.
+
 ## 2026-11-03 — Preserve valid recommendation text from legacy provider replies
 
 - Replaced ambiguous recommendation wording with the exact `title`, `rationale`, `action` string fields.

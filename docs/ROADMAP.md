@@ -1,5 +1,9 @@
 # Palette Lab — Delivery Roadmap
 
+## Current semantic candidate gate (2026-11-03)
+
+The readable text hierarchy is accepted; individual ranks, approximate boxes and production merge are not. Preserve the local measurement/color-editing workflow and separate source-owned focus cache. A frozen comparison did not justify automatic deep thinking or automatic draft review, so neither is added by default. Repair the independently observed report-action alias, then obtain only the four fresh-image judgments already prepared. Strengthen output-structure guidance separately from ranking quality; require evidence on fresh images before adopting an unanchored ranking contender or targeted localization component. Existing thirty-image development opinions remain valid inputs and are not new qualifying annotations. See `REVIEWS/2026-11-03-priority-comparison.md`.
+
 ## Phase 0 — Foundation
 
 - Freeze product and domain contracts

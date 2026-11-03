@@ -1,5 +1,13 @@
 # Palette Lab — Architecture
 
+## Source-owned semantic focus, separate from design reports
+
+The review candidate adds `focus.ts` domain validation and a dedicated `/api/focus` provider task. A separate color Worker client prepares immutable full-source facts using six-color extraction and a 512px raster, paired with a maximum-1024px JPEG. Domain, role, count and ROI changes cannot redefine this request as a different original-image judgment. The Hono route shares the existing rate limiter and sanitized error boundary; no additional model or dependency is installed.
+
+`SingleDraft.focusSnapshots` defaults to an empty array in version-one records, validates ownership against the active source and retains at most ten unique records. Records carry prompt version, model alias/returned model metadata, scope, duration, attempts and successful-response token counts. `FocusAnalysis` guards asynchronous completions with request identity, abort state and a second source-ownership check at save time. Cancellation prevents stale client application, without promising cancellation or zero billing for work already dispatched upstream.
+
+`SemanticFocusPanel` keeps subjects and meaningful independent secondary targets readable, nests same-subject details, and displays at most one optional transparent estimated box. It never converts a model box into a center point or a validated segmentation boundary. Presentation acceptance is separate from semantic qualification. The existing local contrast reference and the independent aesthetics-report snapshots remain separate. No ranking alternative from an external experiment is automatically enabled, and no semantic report silently changes design roles.
+
 ## Structural evidence prototype 1.2.0
 
 Clean-view follow-up adds an unpainted `attentionSourceUrl` from the same raster used for analysis, including ROI cropping. Source and evidence PNG encoding share immutable canvases and run concurrently in the Worker. The component uses the source by default; the heat image and SVG support mask are only mounted after an explicit toggle. Reanalysis unmounts the result while loading, returning new source/ROI results to evidence-off. Neither attention math nor source palettes, saved projects or AI requests changes.

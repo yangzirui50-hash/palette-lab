@@ -68,3 +68,5 @@ A user can turn visual inspiration into a usable, explainable design color syste
 ## Focus evidence acceptance (2026-11-03)
 
 The visual-center feature must distinguish selected-color location from whole-image focus. It must support multiple candidates, no-focus results, original-source ROI detail and palette-count invariance. Local processing and editable color roles remain core requirements. Human attention accuracy is gated on independent annotations; see `ATTENTION_EVALUATION.md`.
+
+The semantic-focus candidate's readable subject/part/priority presentation has passed owner review. This acceptance does not approve individual ranks, approximate regions, or production release. Keep the original image clear, preserve no-dominant/uncertain outcomes and existing human judgments, and make any new AI call explicit. Subject understanding should ultimately help a usable design decision; the current candidate still displays semantic advice separately and must not be described as already selecting better design roles from it.
