@@ -2,6 +2,10 @@
 
 _Last updated: 2026-11-03_
 
+## Structural response prototype 1.2.0
+
+See `FOCUS_OUTPUT_CONTRACT.md` and `REVIEWS/2026-11-03-focus-structure.md`. Validation: 230 unit tests/26 files, seven pilot CLI/server tests, 73 complete browser tests (70 regular plus 50-image benchmark, 30-image count/view matrix and 30-image structural probe), and nine final focused browser tests passed. Independent perceived-focus qualification is skipped: the machine-readable contrast-only capability cannot be scored as semantic state/priority by the legacy harness. Type, lint, environment safety, production build, real built-Worker smoke and self-contained 60-image report/mobile checks are recorded in the external dated archive. Output counts, repeated rotations/crops and fewer markers are not accuracy gains. Human comments, image/model bytes and simulated scope-guard parameters stay outside Git.
+
 ## 1. Product-specific quality goals
 
 Palette Lab is not only an image picker. It is a local-first color-system workspace with palette extraction, spatial evidence, local ROI analysis, role editing, Web/Art previews, AI analysis, inspiration, series workflows and production exports. Tests must prove complete user workflows and algorithmic contracts, not just page rendering.

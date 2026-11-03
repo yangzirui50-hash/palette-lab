@@ -1,11 +1,12 @@
 import Color from 'colorjs.io'
 import type { RGBPixel } from './extract'
-import { ATTENTION_MODEL_VERSION, selectAttentionRegions } from './attentionRegions'
+import { ATTENTION_MODEL_VERSION, ATTENTION_SCOPE, selectAttentionRegions } from './attentionRegions'
 import type { AttentionRegionResult } from './attentionRegions'
 
 export type { AttentionFocus } from './attentionRegions'
 export type AttentionEvidence = AttentionRegionResult & {
   version: string
+  scope: typeof ATTENTION_SCOPE
   centroid: { x: number; y: number } | null
   contrast: number
   heat: { width: number; height: number; values: Float64Array; peak: number }
@@ -75,11 +76,11 @@ export function analyzeAttention(pixels: readonly (RGBPixel | null)[], width: nu
   const heat = { width: w, height: h, values, peak }
   if (!opaque || peak < .018) {
     values.fill(0); heat.peak = 0
-    return { ...selectAttentionRegions(heat, counts), version: ATTENTION_MODEL_VERSION, centroid: null, contrast: peak, heat }
+    return { ...selectAttentionRegions(heat, counts), version: ATTENTION_MODEL_VERSION, scope: ATTENTION_SCOPE, centroid: null, contrast: peak, heat }
   }
   const total = values.reduce((sum, value, i) => sum + value * counts[i], 0)
   let cx = 0, cy = 0
   values.forEach((value, i) => { const mass = value * counts[i]; cx += (i % w + .5) / w * mass; cy += (Math.floor(i / w) + .5) / h * mass })
   const centroid = { x: cx / total, y: cy / total }
-  return { ...selectAttentionRegions(heat, counts), version: ATTENTION_MODEL_VERSION, centroid, contrast: peak, heat }
+  return { ...selectAttentionRegions(heat, counts), version: ATTENTION_MODEL_VERSION, scope: ATTENTION_SCOPE, centroid, contrast: peak, heat }
 }

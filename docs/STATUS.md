@@ -4,6 +4,8 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
+Local review branch `fix/focus-structure-prototype` now carries `1.2.0-prototype`, based on published daily reliability plus the prior focus candidate. The full verbal review has been received and archived privately; it identified unresolved subject, ordering, missing-region and over-localization problems. The current unit removes nearest-supported-cell projection, preserves measured response masks, groups connected parent support and separates contrast evidence from perceived-focus claims. See `FOCUS_OUTPUT_CONTRACT.md`. No semantic focus acceptance or production merge is implied. The previous release and candidate records below are historical.
+
 Independent daily-operation follow-up: newer count intent survives interleaved analysis commits; clipboard denial is recoverable; all six series exceptions and long names fit the PNG; blocked downloads clean up and retry. Local verification is 212 unit tests, seven pilot CLI/server tests and 67 regular browser workflows, plus type/lint/environment safety and production-build checks recorded separately. The image/focus algorithm is unchanged. Candidate 1.1.0 remains on `fix/focus-region-evidence` awaiting the owner's later per-image feedback; it is not included in this release.
 Review candidate `fix/focus-region-evidence` implements focus model 1.1.0: measured-support region growth, protected strong targets, supported positions, explicit uncertainty/reasons and response bounds. It also repairs count intent being overwritten by interleaved analysis completion. See `REVIEWS/2026-11-03-focus-regions.md`. This algorithm candidate is separate from published main; no human focus-accuracy acceptance is claimed.
 

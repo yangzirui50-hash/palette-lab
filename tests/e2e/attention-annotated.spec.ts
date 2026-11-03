@@ -2,12 +2,14 @@ import { expect, test } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
+import { ATTENTION_SCOPE } from '../../src/lib/color/attentionRegions'
 
 type Annotation = { file: string; sha256: string; source: string; license: string; category: string; state: string; targets: Array<{ x: number; y: number; width: number; height: number }> }
 
 test('evaluates frozen focus predictions against independent held-out region annotations', async ({ page }) => {
   const manifestPath = process.env.ATTENTION_MANIFEST
   test.skip(!manifestPath, 'Needs independent human region annotations; unannotated images cannot measure focus accuracy')
+  test.skip(ATTENTION_SCOPE === 'contrast-only', 'Contrast-only evidence has no semantic state or priority output; the legacy point/state harness cannot qualify perceived-focus accuracy')
   test.setTimeout(600_000)
   const manifest = JSON.parse(fs.readFileSync(manifestPath!, 'utf8')) as { split: string; annotationMethod: string; annotators: string[]; entries: Annotation[] }
   if (manifest.split !== 'held-out' || manifest.annotationMethod !== 'independent-human-regions' || manifest.annotators.length < 2) throw new Error('Use held-out regions independently reviewed by at least two annotators')

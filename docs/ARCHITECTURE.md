@@ -1,5 +1,13 @@
 # Palette Lab — Architecture
 
+## Structural evidence prototype 1.2.0
+
+The contrast heat and energy/seed/growth gates remain unchanged. `attentionRegions.ts` now retains measured connected-parent cells and reports compact, extended, unsupported-center outline, or frame-like geometry. A weighted center outside measured support is no longer projected onto a nearby pixel. Eligible compact centers stay as positions; extended support can remain without a dot. Connected parent masks are shown once, with qualified independent cores still distinguished. This is evidence grouping, not semantic deduplication.
+
+The Worker transports sorted grid cells to `AttentionEstimate`; SVG row runs preserve measured holes/alpha gaps and replace misleading full bounding-rectangle fills. UI labels call low contrast unresolved focus, not semantic no-focus. Marker count and energy order are explicitly distinct from subject count and perceived priority. No project format, AI request, source-palette or role-assignment change is introduced. See `FOCUS_OUTPUT_CONTRACT.md` for geometry rules, unsupported claims and staged acceptance.
+
+An external local face-location feasibility probe tested official short/full-range models at fixed rotations/crops. Its resources, images, human comments and output stay outside Git. It is not a production dependency and cannot set attention priority. Extra detections came with non-face false positives and subject omissions; model confidence was not repurposed as attention weight. Browser requests outside the loopback probe were blocked, including attempted runtime telemetry. No automatic detector integration was accepted in this unit.
+
 ## Daily-operation failure recovery
 
 Requested color count is an input cursor; completed source metadata is evidence. Ordinary completion effects update source references without resetting newer intent. Project replacement/undo/redo explicitly restores the cursor through the project epoch. Clipboard access/permission and legacy-command exceptions fall back safely, with temporary textarea cleanup and best-effort focus/selection restoration.

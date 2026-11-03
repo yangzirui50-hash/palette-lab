@@ -55,22 +55,25 @@ describe('focus region evidence', () => {
     expect(broad.run()).toMatchObject({ state: 'distributed', reason: 'broad-response', foci: [] })
   })
 
-  it('does not put a symmetric ring candidate in its unsupported empty center', () => {
+  it('preserves a ring as measured outline without choosing its empty center or one arbitrary side', () => {
     const scene = grid()
     scene.rect(8, 8, 16, 1, 1); scene.rect(8, 23, 16, 1, 1); scene.rect(8, 8, 1, 16, 1); scene.rect(23, 8, 1, 16, 1)
-    expect(scene.run()).toMatchObject({ state: 'uncertain', reason: 'ambiguous-location', foci: [] })
+    const result = scene.run()
+    expect(result).toMatchObject({ state: 'regions', reason: 'extended-response', foci: [] })
+    expect(result.regions[0].geometry).toBe('outline')
+    expect(result.regions[0].cells).not.toContain(16 * 32 + 16)
   })
 
-  it('projects an irregular region onto measured support and preserves horizontal mirrors', () => {
+  it('keeps an irregular contour instead of projecting a point and preserves horizontal mirrors', () => {
     const scene = grid(); scene.rect(6, 5, 3, 18, 1); scene.rect(6, 20, 16, 3, .8)
     const original = scene.run()
-    expect(original.state).toBe('single')
-    const focus = original.foci[0]
-    expect(scene.values[Math.floor(focus.y * 32) * 32 + Math.floor(focus.x * 32)]).toBeGreaterThan(0)
+    expect(original.state).toBe('regions')
+    expect(original.foci).toEqual([])
     const mirrored = grid()
     for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) mirrored.values[y * 32 + 31 - x] = scene.values[y * 32 + x]
-    expect(mirrored.run().foci[0].x + focus.x).toBeCloseTo(1, 10)
-    expect(mirrored.run().foci[0].y).toBeCloseTo(focus.y, 10)
+    const reflection = mirrored.run()
+    expect(reflection.state).toBe(original.state)
+    expect(reflection.regions[0].cells).toEqual(original.regions[0].cells.map(i => Math.floor(i / 32) * 32 + 31 - i % 32).sort((a,b) => a-b))
   })
 
   it('normalizes support and energy over opaque pixels with unequal cell populations', () => {
@@ -86,5 +89,41 @@ describe('focus region evidence', () => {
     expect(scene.run()).toMatchObject({ state: 'uniform', reason: 'low-contrast' })
     scene.counts.fill(0); expect(scene.run()).toMatchObject({ state: 'empty', reason: 'no-opaque-pixels' })
     expect(() => selectAttentionRegions({ width: 2, height: 2, values: new Float64Array(3), peak: 0 }, new Float64Array(4))).toThrow('grid')
+  })
+
+  it('keeps full-frame outlines without converting an asymmetric border into a focus', () => {
+    const scene = grid()
+    scene.rect(0, 0, 32, 1, .8); scene.rect(0, 31, 32, 1, 1)
+    scene.rect(0, 0, 1, 32, 1); scene.rect(31, 0, 1, 32, .8)
+    const result = scene.run()
+    expect(result).toMatchObject({ state:'regions', foci:[] })
+    expect(result.regions[0].geometry).toBe('frame')
+    expect(result.regions[0].cells).toHaveLength(124)
+  })
+
+  it('retains compact targets touching edges, without a blanket edge penalty', () => {
+    const scene = grid(); scene.rect(0, 8, 4, 8, 1)
+    const result = scene.run()
+    expect(result.state).toBe('single'); expect(result.foci[0].x).toBeCloseTo(2/32)
+    expect(result.regions[0].geometry).toBe('compact')
+  })
+
+  it('groups connected response support while preserving independent strong positions', () => {
+    const scene = grid()
+    scene.rect(3, 12, 5, 6, 1); scene.rect(24, 12, 5, 6, 1); scene.rect(8, 14, 16, 2, .4)
+    const result = scene.run()
+    expect(result.regions).toHaveLength(1); expect(result.regions[0].coreCount).toBe(2)
+    expect(result.foci).toHaveLength(2)
+    expect(result.regions[0].cells.every(i => scene.values[i] >= .35 && scene.counts[i] > 0)).toBe(true)
+    expect(result.regions[0].cells).not.toContain(0)
+  })
+
+  it('never fills transparent response gaps and returns bounded supported points', () => {
+    const scene = grid(); scene.rect(3, 12, 5, 6, 1); scene.rect(24, 12, 5, 6, 1); scene.rect(8, 14, 16, 2, .4)
+    for (let y=0;y<32;y++) scene.counts[y*32+16]=0
+    const result = scene.run()
+    expect(result.regions).toHaveLength(2)
+    expect(result.regions.flatMap(region=>region.cells).every(i=>scene.counts[i]>0)).toBe(true)
+    for (const focus of result.foci) expect(scene.values[Math.floor(focus.y*32)*32+Math.floor(focus.x*32)]).toBeGreaterThan(0)
   })
 })

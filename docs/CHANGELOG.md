@@ -2,6 +2,16 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Structural response prototype 1.2.0 (local review)
+
+- Defined measured contrast, geometric presentation and perceived focus as separate layers, with explicit unsupported subject/priority/no-dominant claims.
+- Replaced projected unsupported centers with measured support regions and hollow outlines; retained compact edge targets and independent strong cores.
+- Rendered connected response parents once using SVG row runs; removed filled bounding boxes that could imply whole-object coverage.
+- Clarified that multiple markers are not multiple subjects, energy order is not human priority, and low contrast does not establish no semantic focus.
+- Added geometry/alpha/mirror/Worker/mobile regression and a hash-verified development probe that preserves heat, records all changed point counts and emits no human accuracy.
+- Used the active Node runtime directly to launch E2E Vite, avoiding an unnecessary npm executable requirement.
+- Kept human feedback and experimental face models outside Git; no semantic detector or algorithm candidate was released to production.
+
 ## 2026-11-03 — Independent daily-operation reliability
 
 - Prevented completed image analysis from overwriting newer color-count intent; project history/import still restores the processed count explicitly.

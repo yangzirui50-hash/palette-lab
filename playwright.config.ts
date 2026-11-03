@@ -10,7 +10,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'node scripts/prepare-test-env.mjs && npm run dev:full -- --host 127.0.0.1 --port 7101',
+    command: `"${process.execPath}" scripts/prepare-test-env.mjs && "${process.execPath}" node_modules/vite/bin/vite.js --host 127.0.0.1 --port 7101`,
     url: 'http://127.0.0.1:7101',
     reuseExistingServer: false,
     env: { AI_PROVIDER: 'mock' },
