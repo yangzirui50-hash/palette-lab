@@ -1,4 +1,5 @@
 import type { CSSProperties, Ref } from 'react'
+import { useId } from 'react'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { SpatialRegionEvidence } from '../lib/color/spatial'
@@ -13,15 +14,17 @@ type DomainPreviewProps = {
   spatial?: SpatialRegionEvidence[]
   renderRef?: Ref<HTMLDivElement>
   contrastReport?: ContrastReport
+  step?: string
 }
 
-export default function DomainPreview({ domain, assignments, spatial = [], renderRef, contrastReport }: DomainPreviewProps) {
+export default function DomainPreview({ domain, assignments, spatial = [], renderRef, contrastReport, step = '04' }: DomainPreviewProps) {
+  const id = useId()
   const report = contrastReport ?? getContrastReport(domain, assignments)
 
   return (
-    <section className="domain-preview" aria-labelledby="domain-preview-title">
+    <section className="domain-preview" aria-labelledby={id}>
       <div className="panel-heading">
-        <span>04</span><h2 id="domain-preview-title">场景预览</h2><small>{domain === 'web-ui' ? 'WEB / UI' : 'ART / POSTER'}</small>
+        <span>{step}</span><h2 id={id}>场景预览</h2><small>{domain === 'web-ui' ? 'WEB / UI' : 'ART / POSTER'}</small>
       </div>
       <ContrastAudit report={report} className="contrast-report" live />
       <div className="preview-render-target" ref={renderRef}>
@@ -69,7 +72,7 @@ function PosterPreview({ assignments, spatial }: { assignments: RoleAssignments;
     ? assignments.secondaryVisual === assignments.canvas ? assignments.accent : assignments.secondaryVisual
     : assignments.primaryVisual
   const position = (hex: string, fallback: { x: number; y: number }) => {
-    const point = spatial.find((region) => region.hex.toLowerCase() === hex.toLowerCase())?.dominantCentroid ?? fallback
+    const point = spatial.find((region) => region.pixelCount > 0 && region.hex.toLowerCase() === hex.toLowerCase())?.dominantCentroid ?? fallback
     const clamp = (value: number) => Math.max(0.18, Math.min(0.82, value))
     return { x: `${clamp(point.x) * 100}%`, y: `${clamp(point.y) * 100}%` }
   }

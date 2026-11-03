@@ -21,9 +21,13 @@ export type ReportContext = {
   spatialEvidence: SpatialRegionEvidence[]; roi: SpatialRoi | null
 }
 export type ReportSnapshot = { id: string; createdAt: string; context: ReportContext; report: AnalysisReport }
+export type WorkingColor = {
+  color: PaletteSwatch; origin: 'roi' | 'manual'; sourceId: string
+  roi: SpatialRoi | null; localShare: number | null
+}
 export type SingleDraft = {
   source: ProjectSource | null; roleOverrides: RoleDrafts
-  snapshots: ReportSnapshot[]; roi: SpatialRoi | null
+  snapshots: ReportSnapshot[]; roi: SpatialRoi | null; workingColors: WorkingColor[]
 }
 export type SeriesSource = ProjectSource & { rolesByDomain: Record<DomainId, RoleAssignments>; lockedRoles: string[] }
 export type SeriesDraft = {
@@ -41,14 +45,14 @@ const strategySchema = z.enum(['follow-primary', 'balanced', 'preserve-accents']
 const hexSchema = z.string().regex(/^#[0-9a-fA-F]{6}$/)
 const idSchema = z.string().min(1).max(100)
 const channelSchema = z.number().int().min(0).max(255)
-const paletteSchema: z.ZodType<PaletteSwatch[]> = z.array(z.object({
+const swatchSchema: z.ZodType<PaletteSwatch> = z.object({
   hex: hexSchema,
   rgb: z.tuple([channelSchema, channelSchema, channelSchema]),
   oklch: z.tuple([z.number().min(0).max(1), z.number().min(0).max(1), z.number().min(0).max(360)]),
   share: z.number().min(0).max(1),
-})).min(1).max(8)
+}).refine(color => color.hex.toLowerCase() === `#${color.rgb.map(channel => channel.toString(16).padStart(2, '0')).join('')}`, '色板 RGB 与 HEX 不一致')
+const paletteSchema = z.array(swatchSchema).min(1).max(8)
   .refine(colors => Math.abs(colors.reduce((sum, color) => sum + color.share, 0) - 1) < 0.001, '色板占比无效')
-  .refine(colors => colors.every(color => color.hex.toLowerCase() === `#${color.rgb.map(channel => channel.toString(16).padStart(2, '0')).join('')}`), '色板 RGB 与 HEX 不一致')
 
 const analysisSchema: z.ZodType<ImageAnalysisMetadata> = z.object({
   version: z.string().min(1).max(40), maxEdge: z.number().int().min(1).max(4096),
@@ -81,10 +85,15 @@ const reportContextSchema: z.ZodType<ReportContext> = z.object({
 const snapshotSchema: z.ZodType<ReportSnapshot> = z.object({
   id: idSchema, createdAt: z.iso.datetime(), context: reportContextSchema, report: analysisReportSchema,
 })
+const workingColorSchema: z.ZodType<WorkingColor> = z.object({
+  color: swatchSchema.refine(color => color.share === 0, '候选色不能冒充整图占比'),
+  origin: z.enum(['roi', 'manual']), sourceId: idSchema, roi: roiSchema.nullable(), localShare: z.number().min(0).max(1).nullable(),
+}).refine(candidate => candidate.origin === 'roi' ? candidate.roi !== null && candidate.localShare !== null : candidate.roi === null && candidate.localShare === null, '候选颜色来源无效')
 const singleSchema: z.ZodType<SingleDraft> = z.object({
   source: sourceSchema.nullable(), roleOverrides: roleDraftsSchema,
   snapshots: z.array(snapshotSchema).max(20), roi: roiSchema.nullable(),
-})
+  workingColors: z.array(workingColorSchema).max(24).default([]),
+}).refine(single => single.workingColors.every(candidate => candidate.sourceId === single.source?.id), '候选色不属于当前图片')
 const seriesSourceSchema: z.ZodType<SeriesSource> = z.object({
   ...sourceShape,
   rolesByDomain: z.object({ 'web-ui': roleSchema('web-ui'), 'art-poster': roleSchema('art-poster') }),
@@ -114,7 +123,7 @@ export function emptyProject(): Project {
   return {
     ui: { domain: 'web-ui', mode: 'single' },
     core: {
-      single: { source: null, roleOverrides: {}, snapshots: [], roi: null },
+      single: { source: null, roleOverrides: {}, snapshots: [], roi: null, workingColors: [] },
       series: { images: [], primaryId: '', selectedId: '', view: 'overview', strategiesByDomain: {}, unifiedDrafts: {} },
     },
   }

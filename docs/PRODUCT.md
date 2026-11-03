@@ -2,6 +2,8 @@
 
 ## Product promise
 
+The daily workflow keeps extraction evidence separate from design choices. Native-ROI colors can be retained as working candidates and all role editors accept validated HEX. Added candidates have no invented source-image area. A portable palette-card PNG records source colors/approximate shares alongside the applied roles. Wide screens keep editing beside preview/export; phone navigation jumps directly to each task without removing access to detailed evidence.
+
 Palette Lab turns image color into editable, testable and exportable design decisions. It is a color-system workspace, not a generic image-captioning agent.
 
 ## Target users

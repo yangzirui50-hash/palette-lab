@@ -37,7 +37,7 @@ export default function SeriesExportPanel({ unified, assignments, comparison, im
 
   return (
     <section className="series-export" aria-labelledby="series-export-title">
-      <div className="panel-heading"><span>06</span><h3 id="series-export-title">导出系列成果</h3><small>PRODUCTION OUTPUT</small></div>
+      <div className="panel-heading"><span>07</span><h3 id="series-export-title">导出系列成果</h3><small>PRODUCTION OUTPUT</small></div>
       <ContrastAudit report={contrastReport} className="series-export-audit" exporting />
       <div className="series-export-actions">
         <button onClick={() => downloadText(`palette-lab-series-${unified.strategy}.css`, createCssVariables(unified.domain, assignments), 'text/css;charset=utf-8')}><strong>CSS</strong><span>统一语义变量</span></button>

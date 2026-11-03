@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Deliver local colors through editing, previews and exports
+
+- Added recoverable ROI/manual working candidates without changing source palette shares; role HEX editing accepts normalized three/six-digit values in single and series flows.
+- Moved single preview/export beside role editing on wide screens, added phone/desktop task navigation and a standalone 1200×720 palette-card PNG.
+- Kept valid ROI evidence after undo/redo, mapped local positions to source coordinates and transmitted explicit ROI-relative area scope to the provider.
+- Used the displayed report snapshot for actual reference requests, with historical-context guidance.
+- Separated stable validation code for client caching without hiding or increasing the chunk-warning threshold. The image-analysis Worker is unchanged.
+
 ## 2026-11-03 — Recoverable local projects and analysis snapshots
 
 - Added validated local project loading before workspace mount, debounced/revision-checked IndexedDB saving and clear save/error/conflict states.

@@ -172,3 +172,11 @@
 - **Decision:** Read the saved project before mounting shared state; keep source Files and evidence with overrides/series settings; derive transient URLs; serialize revision-checked IndexedDB writes; provide hashed, validated project backups and a bounded in-page undo history. Store reports as captured-input snapshots instead of deleting them when users browse ROI/roles.
 - **Reason:** A screenshot or tokens file cannot restore the complete workspace. Persistence added to scattered effects could overwrite saved data with the initial empty render, lose concurrent-window work or save URLs that die on reload. Reports need an explicit relationship to their original inputs.
 - **Tradeoffs:** Local browser data is not cloud sync. Pending writes can still be lost by closing before completion; the saved badge reflects completed storage. History is limited to 30 in-page edits and reports to 20 snapshots. Unknown stored versions are protected rather than guessed/migrated. The frontend validation/backup code increases the main bundle to about 531kB before gzip; the build warning remains visible and a later delivery can separate stable validation code for caching.
+
+## ADR-025 — Carry explicit design choices through local evidence and delivery
+
+- **Status:** Accepted and implemented
+- **Date:** 2026-11-03
+- **Decision:** Retain source-scoped ROI/manual candidates separately from the measured palette, commit validated HEX through existing scoped role edits, and put preview/export near editing with phone task navigation. Share report selection with dependent requests and transmit explicit local-area/source-coordinate scope. Produce a local palette-card PNG and separately cache stable client validation code.
+- **Reason:** Local discoveries and manual choices must survive to the actual preview/download without becoming fabricated source-area evidence. Users need a short route from editing to a deliverable, and the displayed report must be the one used by dependent actions.
+- **Tradeoffs:** Working candidates are capped at 24; removing one leaves already assigned roles intact. Preview locations are measured color regions, not semantic object positions or human fixation. Cache separation reduces main-chunk size but not validation's first-load cost. Real-device usability and independently labeled focus accuracy remain separate acceptance tasks.

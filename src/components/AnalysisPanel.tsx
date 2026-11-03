@@ -4,18 +4,20 @@ import { analysisReportSchema } from '../domain/analysis'
 import type { AnalysisReport } from '../domain/analysis'
 import { reportContextKey } from '../lib/project/model'
 import type { ReportContext, ReportSnapshot } from '../lib/project/model'
+import { sourceCoordinates } from '../lib/color/coordinates'
 import './AnalysisPanel.css'
 
 type AnalysisPanelProps = {
   sourceFile: File
   context: ReportContext
   snapshots: ReportSnapshot[]
+  selectedSnapshotId: string
+  onSelectSnapshot: (id: string) => void
   onReportChange: (report: AnalysisReport, context: ReportContext) => void
 }
 
-export default function AnalysisPanel({ sourceFile, context, snapshots, onReportChange }: AnalysisPanelProps) {
+export default function AnalysisPanel({ sourceFile, context, snapshots, selectedSnapshotId, onSelectSnapshot, onReportChange }: AnalysisPanelProps) {
   const { domain } = context
-  const [selectedSnapshotId, setSelectedSnapshotId] = useState('')
   const snapshot = snapshots.find(snapshot => snapshot.id === selectedSnapshotId) ?? snapshots.at(-1)
   const report = snapshot?.report ?? null
   const outdated = snapshot ? reportContextKey(snapshot.context) !== reportContextKey(context) : false
@@ -46,13 +48,15 @@ export default function AnalysisPanel({ sourceFile, context, snapshots, onReport
       const response = await fetch('/api/analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image, domain: captured.domain, palette: captured.palette, assignments: captured.assignments, spatial: captured.spatialEvidence }),
+        body: JSON.stringify({ image, domain: captured.domain, palette: captured.palette, assignments: captured.assignments,
+          spatial: sourceCoordinates(captured.spatialEvidence, captured.roi),
+          spatialScope: captured.roi ? { area: 'roi', coordinates: 'source', roi: captured.roi } : { area: 'full', coordinates: 'source' },
+        }),
         signal: currentController.signal,
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.message ?? payload.error ?? '分析失败，请重试')
       if (requestId.current === currentRequest) {
-        setSelectedSnapshotId('')
         onReportChange(analysisReportSchema.parse(payload), captured)
       }
     } catch (reason) {
@@ -69,7 +73,7 @@ export default function AnalysisPanel({ sourceFile, context, snapshots, onReport
   return (
     <section className="analysis-panel" aria-labelledby="analysis-title">
       <div className="panel-heading">
-        <span>05</span><h2 id="analysis-title">AI 美学分析</h2><small>MULTIMODAL EVIDENCE</small>
+        <span>07</span><h2 id="analysis-title">AI 美学分析</h2><small>MULTIMODAL EVIDENCE</small>
       </div>
       <div className="analysis-intro">
         <p>结合图像内容、色组和当前角色，生成有依据的设计建议。压缩副本只会在你点击后发送。</p>
@@ -77,7 +81,7 @@ export default function AnalysisPanel({ sourceFile, context, snapshots, onReport
       </div>
       {error && <p className="analysis-error" role="alert">{error}</p>}
       {snapshot && <div className="analysis-snapshot-note" data-snapshot-state={outdated ? 'historical' : 'current'}>
-        <label>已保存的分析 <select aria-label="选择分析快照" value={snapshot.id} onChange={event => setSelectedSnapshotId(event.target.value)}>
+        <label>已保存的分析 <select aria-label="选择分析快照" value={snapshot.id} onChange={event => onSelectSnapshot(event.target.value)}>
           {snapshots.map(item => <option value={item.id} key={item.id}>{new Date(item.createdAt).toLocaleString()} · {item.context.roi ? '原图＋局部色彩证据' : '原图＋全图色彩证据'}</option>)}
         </select></label>
         <p>{outdated ? '当前角色或区域已变化；这份报告对应之前的输入，已保留。需要新建议时请重新分析。' : '这份报告对应当前输入，已保存在本机项目中。'}</p>

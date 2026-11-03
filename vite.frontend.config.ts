@@ -6,6 +6,7 @@ import { inspectAttr } from 'kimi-plugin-inspect-react'
 export default defineConfig({
   base: './',
   plugins: [inspectAttr(), react()],
+  build: { rollupOptions: { output: { manualChunks: { 'validation-vendor': ['zod'] } } } },
   server: {
     port: 3000,
   },

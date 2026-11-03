@@ -9,6 +9,20 @@ const source = (): ProjectSource => ({
   width: 10, height: 10, palette: extractPalette([[100, 150, 200]], 6), analysis: { ...COLOR_PIPELINE, requestedColorCount: 6 },
 })
 describe('versioned project model', () => {
+  it('loads earlier version-one projects with an empty optional candidate pool', () => {
+    const project = emptyProject()
+    const legacySingle = { source: null, roleOverrides: {}, snapshots: [], roi: null }
+    expect(projectSchema.parse({ ...project, core: { ...project.core, single: legacySingle } }).core.single.workingColors).toEqual([])
+  })
+  it('keeps ROI candidates separate from global measured shares and tied to their source', () => {
+    const project = emptyProject(); project.core.single.source = source()
+    project.core.single.workingColors = [{ color: { ...source().palette[0], share: 0 }, origin: 'roi', sourceId: 'source', roi: { x: 0, y: 0, width: .5, height: .5 }, localShare: .5 }]
+    expect(projectSchema.safeParse(project).success).toBe(true)
+    project.core.single.workingColors[0].color.share = .5
+    expect(projectSchema.safeParse(project).success).toBe(false)
+    project.core.single.workingColors[0].color.share = 0; project.core.single.workingColors[0].sourceId = 'other'
+    expect(projectSchema.safeParse(project).success).toBe(false)
+  })
   it('accepts an empty project and a validated source with a retained manual color', () => {
     const project = emptyProject()
     project.core.single.source = source()

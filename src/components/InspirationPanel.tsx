@@ -13,6 +13,7 @@ type InspirationPanelProps = {
   sourceFile: File
   palette: PaletteSwatch[]
   assignments: RoleAssignments
+  historical?: boolean
 }
 
 type InspirationResponse = {
@@ -23,7 +24,7 @@ type InspirationResponse = {
   comparisonError: string | null
 }
 
-export default function InspirationPanel({ analysis, domain, sourceFile, palette, assignments }: InspirationPanelProps) {
+export default function InspirationPanel({ analysis, domain, sourceFile, palette, assignments, historical = false }: InspirationPanelProps) {
   const [result, setResult] = useState<InspirationResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -73,10 +74,10 @@ export default function InspirationPanel({ analysis, domain, sourceFile, palette
   return (
     <section className="inspiration-panel" aria-labelledby="inspiration-title">
       <div className="panel-heading">
-        <span>06</span><h2 id="inspiration-title">参考与比较</h2><small>CURATED INSPIRATION</small>
+        <span>08</span><h2 id="inspiration-title">参考与比较</h2><small>CURATED INSPIRATION</small>
       </div>
       <div className="inspiration-intro">
-        <p>{analysis ? '基于真实分析报告检索参考图，再比较配色结构、可借鉴点和不应照搬的部分。' : '先完成 AI 美学分析，再生成与图像内容相关的联网参考。'}</p>
+        <p>{analysis ? historical ? '使用当前选中的历史报告检索主题参考，并以当前色板进行比较。可重新分析更新报告。' : '基于当前选中的分析报告检索参考图，再比较配色结构、可借鉴点和不应照搬的部分。' : '先完成 AI 美学分析，再生成与图像内容相关的联网参考。'}</p>
         <button onClick={() => void search()} disabled={!analysis || loading}>{loading ? '正在检索与比较…' : '生成参考图与对比'}</button>
       </div>
       {error && <p className="inspiration-error" role="alert">{error}</p>}

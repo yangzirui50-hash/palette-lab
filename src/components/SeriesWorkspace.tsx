@@ -280,6 +280,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
               <RoleEditor
                 domain={domain}
                 palette={selected.palette}
+                contextKey={`${selected.id}:${domain}`}
                 assignments={selected.rolesByDomain[domain]}
                 lockedRoles={selected.lockedRoles}
                 onLockChange={(role, locked) => updateSeries(current => ({ ...current, images: current.images.map((image) => image.id === selected.id ? {
@@ -328,6 +329,8 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
               <RoleEditor
                 domain={domain}
                 palette={[...unified.palette, ...images.flatMap(image => image.palette)]}
+                contextKey={`${domain}:${strategy}`}
+                step="05"
                 assignments={unifiedAssignments}
                 editedRoles={Object.keys(activeOverrides ?? {})}
                 editHint="各领域和策略分别保留手动选择；重排或更换主图也会保留。"
@@ -338,7 +341,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                   ...current.unifiedDrafts, [domain]: { ...current.unifiedDrafts[domain], [strategy]: { ...current.unifiedDrafts[domain]?.[strategy], [role]: hex } },
                 } }))}
               />
-              <DomainPreview domain={domain} assignments={unifiedAssignments} contrastReport={unifiedContrastReport} />
+              <DomainPreview domain={domain} assignments={unifiedAssignments} contrastReport={unifiedContrastReport} step="06" />
               <SeriesExportPanel
                 unified={unified}
                 assignments={unifiedAssignments}

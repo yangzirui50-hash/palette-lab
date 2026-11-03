@@ -22,6 +22,20 @@ const requestBody = {
 }
 
 describe('analysis API', () => {
+  it('forwards ROI scope to the provider without relabeling local shares as full-image area', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const report = await mockAnalysisProvider.analyze(requestBody)
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(report) } }] }), { status: 200 }))
+    vi.stubGlobal('fetch', fetchMock)
+    try {
+      const spatialScope = { area: 'roi', coordinates: 'source', roi: { x: .2, y: .3, width: .4, height: .5 } }
+      const response = await app.request('/api/analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...requestBody, spatialScope }) }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(200)
+      const body = JSON.parse(fetchMock.mock.calls[0][1].body)
+      expect(JSON.parse(body.messages[1].content[0].text).spatialScope).toEqual(spatialScope)
+      expect(body.messages[0].content).toContain('not full-image area')
+    } finally { vi.unstubAllGlobals() }
+  })
   it('returns a structured report in mock mode', async () => {
     const response = await app.request('/api/analysis', {
       method: 'POST',

@@ -160,6 +160,7 @@ test('preserves analysis snapshots through role and ROI browsing and reload with
   await background(page, '#4a90e2')
   await expect(page.locator('.analysis-snapshot-note')).toHaveAttribute('data-snapshot-state', 'historical')
   await page.locator('.spatial-roi-actions button').first().click()
+  await page.locator('.spatial-image-stage').scrollIntoViewIfNeeded()
   const stage = await page.locator('.spatial-image-stage').boundingBox()
   if (!stage) throw new Error('Missing region stage')
   await page.mouse.move(stage.x + stage.width * .2, stage.y + stage.height * .2); await page.mouse.down()

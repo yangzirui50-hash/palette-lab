@@ -62,6 +62,7 @@ test('keeps red families out of deep-blue regions and resets ROI on source chang
   await page.locator('.spatial-panel').screenshot({ path: 'test-results/night-root-fix.png' })
 
   await page.locator('.spatial-roi-actions button').first().click()
+  await page.locator('.spatial-image-stage').scrollIntoViewIfNeeded()
   const stage = await page.locator('.spatial-image-stage').boundingBox()
   if (!stage) throw new Error('Spatial image stage not found')
   await page.mouse.move(stage.x + stage.width * 0.3, stage.y + stage.height * 0.3)

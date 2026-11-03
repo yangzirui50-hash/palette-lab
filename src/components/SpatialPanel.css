@@ -56,3 +56,8 @@
 @media (max-width: 600px) {
   .spatial-panel { padding: 16px; }
 }
+.spatial-candidate-action { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 14px 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+.spatial-candidate-action button { min-height: 36px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--accent); background: var(--panel); cursor: pointer; font-size: 11px; }
+.spatial-candidate-action button:disabled { opacity: .65; cursor: default; }
+.spatial-candidate-action span { flex: 1 1 220px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.spatial-candidate-action p { flex-basis: 100%; margin: 0; color: #c64b45; font-size: 11px; }

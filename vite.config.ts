@@ -8,6 +8,9 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 export default defineConfig({
   base: './',
   plugins: [inspectAttr(), react(), cloudflare()],
+  environments: {
+    client: { build: { rollupOptions: { output: { manualChunks: { 'validation-vendor': ['zod'] } } } } },
+  },
   server: {
     port: 3000,
   },

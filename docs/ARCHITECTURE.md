@@ -1,5 +1,13 @@
 # Palette Lab — Architecture
 
+## Working colors and delivery (November 3, fifth unit)
+
+The optional/default-empty `SingleDraft.workingColors` field extends version-1 projects without rejecting older records/backups. Up to 24 candidates retain source ID, manual/ROI provenance and local ROI/share metadata. Their measured global share is always zero. Role changes and candidate creation are one undoable edit; source replacement clears candidates. HEX form drafts are keyed by source/domain/strategy, and only validated normalized commits enter project state. Series custom colors use the existing scoped role drafts and exported zero-share palette entries.
+
+Spatial evidence is tagged by File identity, palette and ROI, so stale work cannot cross sources and unrelated undo/redo does not erase valid evidence. Local centroids/bounds map into full-source coordinates for scene previews and AI; `spatialScope` explicitly states that shares/counts remain ROI-relative. Zero-pixel colors cannot pull the preview to an unmeasured corner. Selected report ID is shared by report display and actual inspiration requests.
+
+`createPaletteCard` draws a local 1200×720 canvas containing original palette/approximate shares and applied roles. It neither embeds the source photo nor calls APIs. CSS composes wide-screen editor and preview/export columns; WorkbenchNav changes series view as browsing before scrolling, and supplies fixed touch navigation on phones. Stable Zod code is a client-only validation chunk, retaining the Worker/server build boundary. The chunk is still downloaded on first load; no total-byte or runtime-performance reduction is claimed without measurement.
+
 ## System shape
 
 ```text

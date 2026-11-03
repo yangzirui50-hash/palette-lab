@@ -4,6 +4,7 @@ import path from 'node:path'
 
 test('warns about 12px muted text below 4.5:1 in both preview and export', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   await page.evaluate(async () => {
     const canvas = document.createElement('canvas'); canvas.width = 300; canvas.height = 100
     const context = canvas.getContext('2d')!
@@ -37,6 +38,7 @@ test('warns about 12px muted text below 4.5:1 in both preview and export', async
 
 test('keeps fallback selectors, painted colors and exported roles consistent', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   await page.locator('.workspace input[type=file]').setInputFiles(path.resolve('tests/fixtures/palette-test.png'))
   await expect(page.locator('.spatial-preview img')).toBeVisible()
   const muted = page.getByLabel('选择次要文字颜色', { exact: true })
@@ -62,6 +64,7 @@ test('keeps fallback selectors, painted colors and exported roles consistent', a
 
 test('shows all assigned fallback colors in a single-color image in both domains', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   await page.evaluate(async () => {
     const canvas = document.createElement('canvas'); canvas.width = 20; canvas.height = 20
     const context = canvas.getContext('2d')!; context.fillStyle = '#0000ff'; context.fillRect(0, 0, 20, 20)
@@ -82,6 +85,7 @@ test('shows all assigned fallback colors in a single-color image in both domains
 
 test('shares the same audit state between a series preview and its export', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   await page.getByRole('button', { name: '系列', exact: true }).click()
   const fixture = path.resolve('tests/fixtures/palette-test.png')
   await page.locator('.series-workspace input[type=file]').setInputFiles([fixture, fixture])

@@ -4,6 +4,7 @@ import path from 'node:path'
 
 test('shows two separate whole-image focus candidates and abstains on a uniform image', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   const upload = async (uniform: boolean) => page.evaluate(async uniform => {
     const canvas = document.createElement('canvas'); canvas.width = 128; canvas.height = 128
     const context = canvas.getContext('2d')!
@@ -28,6 +29,7 @@ test('shows two separate whole-image focus candidates and abstains on a uniform 
 
 test('keeps an unselected red pixel out of the actual blue overlay after denoising and feathering', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   const pixel = await page.evaluate(async () => {
     const { extractPalette } = await import('/src/lib/color/extract.ts')
     const { createSpatialOverlay } = await import('/src/lib/color/spatialOverlay.ts')
@@ -50,6 +52,7 @@ test('keeps an unselected red pixel out of the actual blue overlay after denoisi
 
 test('applies the latest count even when changed twice during image import', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   const bytes = Array.from(fs.readFileSync(path.resolve('tests/fixtures/night-city-test.png')))
   await page.evaluate(bytes => {
     const transfer = new DataTransfer()
@@ -68,6 +71,7 @@ test('applies the latest count even when changed twice during image import', asy
 
 test('crops native pixels before resizing and exposes the local detail without changing the global palette', async ({ page }) => {
   await page.goto('/')
+  await expect(page.locator('.workspace')).toBeVisible()
   await page.evaluate(async () => {
     const canvas = document.createElement('canvas'); canvas.width = 2048; canvas.height = 2048
     const context = canvas.getContext('2d')!

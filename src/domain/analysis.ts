@@ -52,6 +52,13 @@ export const analysisRequestSchema = z.object({
   })).max(8),
   assignments: z.record(z.string(), z.string().regex(/^#[0-9a-fA-F]{6}$/)),
   spatial: z.array(spatialRegionSchema).max(8).optional(),
+  spatialScope: z.discriminatedUnion('area', [
+    z.object({ area: z.literal('full'), coordinates: z.literal('source') }),
+    z.object({ area: z.literal('roi'), coordinates: z.literal('source'), roi: z.object({
+      x: z.number().min(0).max(1), y: z.number().min(0).max(1),
+      width: z.number().positive().max(1), height: z.number().positive().max(1),
+    }).refine(roi => roi.x + roi.width <= 1.000001 && roi.y + roi.height <= 1.000001) }),
+  ]).optional(),
 })
 
 export type AnalysisRequest = z.infer<typeof analysisRequestSchema>

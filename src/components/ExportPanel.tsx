@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { toPng } from 'html-to-image'
-import { createCssVariables, createDesignTokens, downloadText } from '../lib/exporters'
+import { createCssVariables, createDesignTokens, downloadBlob, downloadText } from '../lib/exporters'
+import { createPaletteCard } from '../lib/paletteCard'
 import type { ContrastReport } from '../domain/contrast'
 import ContrastAudit from './ContrastAudit'
 import type { RoleAssignments } from '../domain/assign'
@@ -50,10 +51,17 @@ export default function ExportPanel({ domain, assignments, palette, analysis, re
     }
   }
 
+  const exportCard = async () => {
+    setExporting('card'); setError('')
+    try { downloadBlob(`palette-lab-${domain}-palette-card.png`, await createPaletteCard(domain, assignments, palette)) }
+    catch (error) { setError(error instanceof Error ? error.message : '色板卡导出失败，请重试') }
+    finally { setExporting('') }
+  }
+
   return (
     <section className="export-panel" aria-labelledby="export-title">
       <div className="panel-heading">
-        <span>07</span><h2 id="export-title">导出成果</h2><small>PRODUCTION OUTPUT</small>
+        <span>05</span><h2 id="export-title">导出成果</h2><small>PRODUCTION OUTPUT</small>
       </div>
       <ContrastAudit report={contrastReport} className="export-audit" exporting />
       <div className="export-actions">
@@ -62,6 +70,7 @@ export default function ExportPanel({ domain, assignments, palette, analysis, re
         <button onClick={() => void exportPng()} disabled={exporting === 'png'}>
           <strong>PNG</strong><span>当前场景预览图</span><i>{exporting === 'png' ? '正在生成…' : '下载 .png'}</i>
         </button>
+        <button onClick={() => void exportCard()} disabled={exporting === 'card'}><strong>色板卡</strong><span>原色、HEX、占比与当前角色</span><i>{exporting === 'card' ? '正在生成…' : '下载 .png'}</i></button>
       </div>
       {error && <p className="export-error" role="alert">{error}</p>}
     </section>

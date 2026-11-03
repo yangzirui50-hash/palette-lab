@@ -14,9 +14,11 @@ type SpatialPanelProps = {
   onEvidenceChange?: (evidence: SpatialRegionEvidence[]) => void
   roi?: SpatialRoi | null
   onRoiChange?: (roi: SpatialRoi | null) => void
+  retainedHexes?: string[]
+  onAddColor?: (color: PaletteSwatch, roi: SpatialRoi) => 'added' | 'exists' | 'full'
 }
 
-export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, roi: controlledRoi, onRoiChange }: SpatialPanelProps) {
+export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, roi: controlledRoi, onRoiChange, retainedHexes = [], onAddColor }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
   const [attentionResult, setAttentionResult] = useState<Pick<SpatialResult, 'attention' | 'attentionUrl'> | null>(null)
@@ -31,8 +33,10 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
   const [overlay, setOverlay] = useState({ url: '', detailUrl: '', key: '' })
   const [error, setError] = useState('')
   const [internalRoi, setInternalRoi] = useState<SpatialRoi | null>(null)
+  const [candidateError, setCandidateError] = useState('')
   const roi = controlledRoi === undefined ? internalRoi : controlledRoi
   const setRoi = (next: SpatialRoi | null) => {
+    setCandidateError('')
     if (controlledRoi === undefined) setInternalRoi(next)
     onRoiChange?.(next)
   }
@@ -70,8 +74,9 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
       setAttentionResult({ attention: result.attention, attentionUrl: result.attentionUrl })
       setAnalysisSize({ width: result.width, height: result.height })
       setCompletedAnalysisKey(analysisKey)
-      // A cropped region must not be presented to AI as evidence about the full image.
-      onEvidenceChange?.(roi ? [] : result.regions)
+      // The consumer retains ROI scope and maps positions to the source before
+      // preview/API use; local area shares must keep their explicit ROI scope.
+      onEvidenceChange?.(result.regions)
       const salient = [...nextPalette].sort((a, b) => b.oklch[1] - a.oklch[1])[0]
       const preferred = roi ? nextPalette[0] : salient || nextPalette[0]
       setSelectedHex((current) => roi
@@ -148,7 +153,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
 
   return (
     <section className="spatial-panel" aria-labelledby="spatial-title">
-      <div className="panel-heading"><span>03</span><h2 id="spatial-title">视觉重心与色彩地图</h2><small>SPATIAL EVIDENCE</small></div>
+      <div className="panel-heading"><span>06</span><h2 id="spatial-title">视觉重心与色彩地图</h2><small>SPATIAL EVIDENCE</small></div>
       <p className="spatial-intro">连续区域查看颜色边界，散点分布查看密度与显著中心；所有指标都是视觉证据，不是美观评分。</p>
       {!loading && !error && completedAnalysisKey === analysisKey && attentionResult && (
         <details className="attention-panel">
@@ -198,12 +203,23 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
             <small>{roi ? '仅根据框选范围重新提取' : '基于整张图片'}</small>
           </div>
           {activePalette.map((color) => (
-            <button key={color.hex} className={selectedHex === color.hex ? 'active' : ''} onClick={() => setSelectedHex(color.hex)} aria-pressed={selectedHex === color.hex}>
+            <button key={color.hex} className={selectedHex === color.hex ? 'active' : ''} onClick={() => { setSelectedHex(color.hex); setCandidateError('') }} aria-pressed={selectedHex === color.hex}>
               <i style={{ backgroundColor: color.hex }} /><span>{color.hex}</span><small>{(color.share * 100).toFixed(1)}%</small>
             </button>
           ))}
         </div>
       </div>
+      {roi && onAddColor && completedAnalysisKey === analysisKey && localPalette.some(color => color.hex === selectedHex) && (
+        <div className="spatial-candidate-action">
+          <button type="button" disabled={retainedHexes.includes(selectedHex.toLowerCase())} onClick={() => {
+            const color = localPalette.find(color => color.hex === selectedHex)!
+            const result = onAddColor(color, roi)
+            setCandidateError(result === 'full' ? '候选色已达 24 项，请先移除一个候选。' : '')
+          }}>{retainedHexes.includes(selectedHex.toLowerCase()) ? '已可用于角色分配' : '加入工作色板'}</button>
+          <span>保留局部新色供角色使用；局部占比不会变成整图占比。</span>
+          {candidateError && <p role="alert">{candidateError}</p>}
+        </div>
+      )}
       {roi && overlay.key === overlayKey && overlay.detailUrl && (
         <div className="spatial-detail" data-analysis-width={analysisSize.width} data-analysis-height={analysisSize.height}>
           <strong>局部细节</strong><p>直接分析原图中的框选区域；上方保留整图位置。</p>
