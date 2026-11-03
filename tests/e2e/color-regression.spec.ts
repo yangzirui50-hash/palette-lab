@@ -18,7 +18,7 @@ function toSwatch(hex: string): PaletteSwatch {
 
 test('keeps red families out of deep-blue regions and resets ROI on source change', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(nightFixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(nightFixture)
   await expect(page.locator('.spatial-preview img')).toBeVisible()
   const hexes = await page.locator('.spatial-swatches button span').allTextContents()
   const hasRed = hexes.some((hex) => {
@@ -69,7 +69,7 @@ test('keeps red families out of deep-blue regions and resets ROI on source chang
   await page.mouse.move(stage.x + stage.width * 0.6, stage.y + stage.height * 0.6, { steps: 4 })
   await page.mouse.up()
   await expect(page.locator('.spatial-roi')).toBeVisible()
-  await page.locator('input[type=file]').setInputFiles(simpleFixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(simpleFixture)
   await expect(page.locator('.spatial-roi')).toHaveCount(0)
   await expect(page.locator('.spatial-palette-heading')).toContainText('全局色板')
 })

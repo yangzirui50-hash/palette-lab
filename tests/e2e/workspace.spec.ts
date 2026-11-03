@@ -7,7 +7,7 @@ const fixture = path.resolve('tests/fixtures/palette-test.png')
 test('imports an image, extracts colors and changes domain and count', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { name: '色彩工作台' })).toBeVisible()
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await expect(page.locator('.swatch-row')).toHaveCount(3)
   await expect(page.locator('.swatch-info strong').first()).toHaveText(/^#[0-9a-f]{6}$/i)
   await expect(page.locator('.swatch-row').first()).toContainText(/50\.[01]%/)
@@ -24,7 +24,7 @@ test('imports an image, extracts colors and changes domain and count', async ({ 
 test('keeps the workspace usable at a phone viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await expect(page.locator('.swatch-row')).toHaveCount(3)
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
   expect(overflow).toBe(false)
@@ -38,7 +38,7 @@ test('keeps the workspace usable at a phone viewport', async ({ page }) => {
 
 test('preserves palette data across theme and domain combinations', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   const originalHex = await page.locator('.swatch-info strong').first().textContent()
 
   for (const theme of ['light', 'dark']) {
@@ -68,21 +68,21 @@ test('preserves palette data across theme and domain combinations', async ({ pag
 
 test('copies a palette HEX value with feedback', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await page.locator('.swatch-row').first().click()
   await expect(page.locator('.swatch-on-color').first()).toHaveText('已复制 ✓')
 })
 
 test('shows a useful error for unsupported files', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(path.resolve('tests/fixtures/not-an-image.txt'))
+  await page.locator('.workspace input[type=file]').setInputFiles(path.resolve('tests/fixtures/not-an-image.txt'))
   await expect(page.getByRole('alert')).toHaveText('请选择 PNG、JPG 或 WebP 图片')
   await expect(page.locator('.swatch-row')).toHaveCount(0)
 })
 
 test('edits role colors and updates Web and Poster previews', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await expect(page.locator('.role-editor')).toBeVisible()
   await expect(page.locator('.preview-web')).toBeVisible()
   await expect(page.locator('.role-field select')).toHaveCount(8)
@@ -102,7 +102,7 @@ test('edits role colors and updates Web and Poster previews', async ({ page }) =
 
 test('warns when a role edit makes text unreadable', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await page.getByLabel('选择主要文字颜色').selectOption({ index: 0 })
   await expect(page.locator('.contrast-report')).toContainText('对比不足')
   await expect(page.locator('.contrast-report')).toContainText('背景与主要文字')
@@ -110,7 +110,7 @@ test('warns when a role edit makes text unreadable', async ({ page }) => {
 
 test('exports CSS variables, JSON tokens and a real PNG preview', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
 
   const cssEvent = page.waitForEvent('download')
   await page.locator('.export-actions button').nth(0).click()
@@ -137,7 +137,7 @@ test('exports CSS variables, JSON tokens and a real PNG preview', async ({ page 
 
 test('preserves separate role edits when switching between domains', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   const webBackground = page.getByLabel('选择页面背景颜色')
   await webBackground.selectOption({ index: 1 })
   const customWebBackground = await webBackground.inputValue()
@@ -154,7 +154,7 @@ test('preserves separate role edits when switching between domains', async ({ pa
 
 test('generates a structured AI analysis through the mock provider', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await page.getByRole('button', { name: '生成 AI 美学分析' }).click()
   await expect(page.locator('.analysis-summary')).toBeVisible()
   await expect(page.locator('.analysis-summary h3')).toContainText('深色')
@@ -165,7 +165,7 @@ test('generates a structured AI analysis through the mock provider', async ({ pa
 
 test('returns attributed references and comparison after analysis', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await page.getByRole('button', { name: '生成 AI 美学分析' }).click()
   await expect(page.locator('.analysis-summary')).toBeVisible()
   await page.getByRole('button', { name: '生成参考图与对比' }).click()
@@ -178,7 +178,7 @@ test('returns attributed references and comparison after analysis', async ({ pag
 
 test('manages a series and preserves independent roles and single-image state', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await expect(page.locator('.swatch-row')).toHaveCount(3)
   await page.getByRole('button', { name: '系列', exact: true }).click()
   await page.locator('.series-workspace input[type=file]').setInputFiles([fixture, fixture])
@@ -266,7 +266,7 @@ test('keeps the series workflow usable at a phone viewport', async ({ page }) =>
 
 test('highlights spatial color regions with explainable evidence', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture)
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture)
   await expect(page.getByRole('heading', { name: '视觉重心与色彩地图' })).toBeVisible()
   await expect(page.locator('.spatial-facts-core')).toBeVisible()
   await page.locator('.spatial-swatches button').nth(2).click()
@@ -308,7 +308,7 @@ test('highlights spatial color regions with explainable evidence', async ({ page
 
 test('shows multi-scale distribution evidence for scattered neon lights', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(path.resolve('tests/fixtures/neon-test.png'))
+  await page.locator('.workspace input[type=file]').setInputFiles(path.resolve('tests/fixtures/neon-test.png'))
   await expect(page.getByRole('heading', { name: '视觉重心与色彩地图' })).toBeVisible()
   await page.getByRole('button', { name: '散点分布', exact: true }).click()
   await expect(page.locator('.spatial-preview img')).toHaveAttribute('alt', /色彩密度热图/)

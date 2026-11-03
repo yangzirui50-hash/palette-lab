@@ -164,3 +164,11 @@
 - **Decision:** Retain weighted original channel sums inside histogram bins, bypass grouping for low-color sampled inputs, and route single/series extraction through the same Worker entry. Version the processing settings and include per-source metadata in JSON exports. Commit successful batch items despite individual failures.
 - **Reason:** A uniform source must not change because of a histogram grid, and a cross-image comparison must not measure two different preprocessing paths. Batch failures must identify failed files without silently discarding valid work.
 - **Tradeoffs:** Palette suggestions can change from historical quantized values; regression expectations now use decoded source colors. Large images are still resampled and at most 8000 nontransparent pixels sampled. Cluster means and protected accent representatives are not a literal pixel-picker guarantee, and area estimates remain approximate. Human attention qualification remains separate.
+
+## ADR-024 — Validate and recover one local project without losing edit intent
+
+- **Status:** Accepted and implemented
+- **Date:** 2026-11-03
+- **Decision:** Read the saved project before mounting shared state; keep source Files and evidence with overrides/series settings; derive transient URLs; serialize revision-checked IndexedDB writes; provide hashed, validated project backups and a bounded in-page undo history. Store reports as captured-input snapshots instead of deleting them when users browse ROI/roles.
+- **Reason:** A screenshot or tokens file cannot restore the complete workspace. Persistence added to scattered effects could overwrite saved data with the initial empty render, lose concurrent-window work or save URLs that die on reload. Reports need an explicit relationship to their original inputs.
+- **Tradeoffs:** Local browser data is not cloud sync. Pending writes can still be lost by closing before completion; the saved badge reflects completed storage. History is limited to 30 in-page edits and reports to 20 snapshots. Unknown stored versions are protected rather than guessed/migrated. The frontend validation/backup code increases the main bundle to about 531kB before gzip; the build warning remains visible and a later delivery can separate stable validation code for caching.

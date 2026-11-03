@@ -23,7 +23,7 @@ Optional later stages:
 - OKLCH-oriented color calculations and Color.js
 - Zod for external and persisted data validation
 - Hono + Cloudflare Workers for later protected API calls
-- IndexedDB for local project history
+- IndexedDB for the current local project; bounded in-memory edit history
 - Vitest for deterministic logic and Playwright for workflows
 
 ## Implemented color engine
@@ -109,16 +109,28 @@ Home computes one report for the active role assignments and passes it to both D
 
 RoleEditor deduplicates palette options case-insensitively, includes role-specific fallback colors and retains any current assignment outside the palette. Missing assignments have an explicit unassigned option. Retained manual colors remain selectable after recomputation.
 
-## Page-scoped manual role drafts
+## Manual choices in recoverable projects
 
 Home stores only deliberate role overrides by domain and derives effective assignments from the latest automatic suggestions plus those overrides. The derived object is memoized so unrelated renders do not change its identity. A count-triggered re-extraction preserves overrides; a successful explicit source replacement starts a fresh draft. Failed imports do not clear the existing choices.
 
 SeriesWorkspace stores unified overrides by domain and strategy and remembers each domain's last selected strategy. Reordering, changing the primary, editing source roles or temporarily retaining only one image does not delete those drafts. Removing the final image starts a new series context and clears the drafts and strategy selections. `generateUnifiedSeriesPalette` accepts optional overrides before deriving effective roles, palette and locked-image exceptions, keeping preview and exported metadata aligned. Colors absent from remaining source palettes have zero measured source share rather than fabricated area. The role chooser includes source-image candidates as well as the effective unified palette.
 
-RoleEditor marks deliberate choices and exposes an explicit reset for the active domain/draft. Reset refreshes its suggestions without altering other domains or strategies. These records are in-memory page state; project persistence, undo/redo and reload recovery remain separate milestones.
+RoleEditor marks deliberate choices and exposes an explicit reset for the active domain/draft. Reset refreshes its suggestions without altering other domains or strategies. These records now belong to the shared recoverable project below rather than isolated page state.
 
 ## Shared, versioned palette pipeline
 
 Both Home and SeriesWorkspace send palette tasks through ColorAnalysisClient to the same Worker and `analyzeImagePalette` entry. File validation, ImageBitmap decoding, high-quality raster reduction, alpha cutoff, sampling and extraction are therefore shared. The obsolete HTMLImage/canvas series extraction path is removed. `pipelineConfig.ts` records processing version 2.0.0 and its settings; successful source records carry immutable analysis metadata. Single JSON exports include `analysis`; series tokens/reports include per-source `sourceAnalysis`. These additive optional fields have public schemas and do not expose image bytes. A count re-extraction refreshes the source metadata alongside its palette.
 
 Series batches are processed sequentially in the Worker with progress and per-file failures. One corrupt file does not roll back earlier successes or prevent later files from being attempted. Existing roles/drafts remain intact; a later import can retry a repaired file. A synchronous import guard prevents overlapping drops, and source/primary selection uses current state at commit time. Unmount cancels work and releases object URLs. A selected batch exceeding the remaining six-image capacity is rejected explicitly before processing.
+
+## Local project, history and report snapshots
+
+Home reads and validates the IndexedDB current-project record before mounting ProjectProvider. The project contains single-source evidence and domain overrides, up to six series sources and their roles/locks/order/primary/view/strategies, domain/mode and up to 20 analysis snapshots. Records use schemaVersion 1. Source Files retain original bytes and analysis provenance. `useObjectUrls` derives and releases view URLs; URLs never enter persistence, backups or undo records.
+
+ProjectProvider owns immutable project history. Deliberate edits push at most 30 previous states; browsing does not create undo steps. Source replacement, series mutation, reset and project import/new are atomic edits. Undo/redo/project replacement increments an operation epoch to cancel stale image work and clear transient feedback. File references are shared within history, not re-encoded for each step. The current project persists; undo history starts empty after reload.
+
+Writes debounce for 250ms and serialize through a queue. A readwrite transaction validates the stored record and compares its revision before putting the next revision. Concurrent-window conflicts pause writes and retain live work for backup. Read/version errors protect the old record; quota failures retain editing and expose retry. Save status compares the displayed project to the last committed one, so pending edits do not inherit a stale saved badge. Returning to the initial empty state through undo is persisted too; only the untouched initial mount skips writing.
+
+Project backup is a local, versioned `.palette-project.json` file with source bytes encoded as base64 and per-image SHA-256. Each image remains bounded to 15MB and the backup to 150MB. Opening a backup verifies format/version/structure, hashes, actual decoding and dimensions before replacing the live project. Invalid backups leave the current project unchanged. Backup and restore perform no API calls.
+
+AnalysisPanel captures immutable source/domain/palette/role/spatial/ROI inputs when the user requests analysis, validates the response and stores it as a snapshot. Source/domain changes abort stale requests; role or ROI browsing keeps existing reports and marks input differences. A snapshot remains local across reload and backup. It is never automatically re-requested from the provider. Context signatures canonicalize role keys and spatial coordinates rather than depending on JSON property order.

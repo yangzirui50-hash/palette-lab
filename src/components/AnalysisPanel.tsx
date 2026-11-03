@@ -1,23 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { fileToAiDataUrl } from '../lib/color/aiImage'
+import { analysisReportSchema } from '../domain/analysis'
 import type { AnalysisReport } from '../domain/analysis'
-import type { DomainId } from '../domain/profiles'
-import type { PaletteSwatch } from '../lib/color/extract'
-import type { SpatialRegionEvidence } from '../lib/color/spatial'
-import type { RoleAssignments } from '../domain/assign'
+import { reportContextKey } from '../lib/project/model'
+import type { ReportContext, ReportSnapshot } from '../lib/project/model'
 import './AnalysisPanel.css'
 
 type AnalysisPanelProps = {
-  domain: DomainId
   sourceFile: File
-  palette: PaletteSwatch[]
-  assignments: RoleAssignments
-  spatialEvidence: SpatialRegionEvidence[]
-  report: AnalysisReport | null
-  onReportChange: (report: AnalysisReport | null) => void
+  context: ReportContext
+  snapshots: ReportSnapshot[]
+  onReportChange: (report: AnalysisReport, context: ReportContext) => void
 }
 
-export default function AnalysisPanel({ domain, sourceFile, palette, assignments, spatialEvidence, report, onReportChange }: AnalysisPanelProps) {
+export default function AnalysisPanel({ sourceFile, context, snapshots, onReportChange }: AnalysisPanelProps) {
+  const { domain } = context
+  const [selectedSnapshotId, setSelectedSnapshotId] = useState('')
+  const snapshot = snapshots.find(snapshot => snapshot.id === selectedSnapshotId) ?? snapshots.at(-1)
+  const report = snapshot?.report ?? null
+  const outdated = snapshot ? reportContextKey(snapshot.context) !== reportContextKey(context) : false
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const requestId = useRef(0)
@@ -27,14 +28,14 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
     requestId.current += 1
     controller.current?.abort()
     controller.current = null
-    onReportChange(null)
     setLoading(false)
     setError('')
     return () => controller.current?.abort()
-  }, [domain, assignments, sourceFile, spatialEvidence, onReportChange])
+  }, [domain, sourceFile])
 
   const analyze = async () => {
     const currentRequest = ++requestId.current
+    const captured = structuredClone(context)
     controller.current?.abort()
     const currentController = new AbortController()
     controller.current = currentController
@@ -45,12 +46,15 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
       const response = await fetch('/api/analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image, domain, palette, assignments, spatial: spatialEvidence }),
+        body: JSON.stringify({ image, domain: captured.domain, palette: captured.palette, assignments: captured.assignments, spatial: captured.spatialEvidence }),
         signal: currentController.signal,
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.message ?? payload.error ?? '分析失败，请重试')
-      if (requestId.current === currentRequest) onReportChange(payload as AnalysisReport)
+      if (requestId.current === currentRequest) {
+        setSelectedSnapshotId('')
+        onReportChange(analysisReportSchema.parse(payload), captured)
+      }
     } catch (reason) {
       if (reason instanceof DOMException && reason.name === 'AbortError') return
       if (requestId.current === currentRequest) setError(reason instanceof Error ? reason.message : '分析服务暂时不可用')
@@ -72,6 +76,12 @@ export default function AnalysisPanel({ domain, sourceFile, palette, assignments
         <button onClick={() => void analyze()} disabled={loading}>{loading ? '正在分析…' : '生成 AI 美学分析'}</button>
       </div>
       {error && <p className="analysis-error" role="alert">{error}</p>}
+      {snapshot && <div className="analysis-snapshot-note" data-snapshot-state={outdated ? 'historical' : 'current'}>
+        <label>已保存的分析 <select aria-label="选择分析快照" value={snapshot.id} onChange={event => setSelectedSnapshotId(event.target.value)}>
+          {snapshots.map(item => <option value={item.id} key={item.id}>{new Date(item.createdAt).toLocaleString()} · {item.context.roi ? '原图＋局部色彩证据' : '原图＋全图色彩证据'}</option>)}
+        </select></label>
+        <p>{outdated ? '当前角色或区域已变化；这份报告对应之前的输入，已保留。需要新建议时请重新分析。' : '这份报告对应当前输入，已保存在本机项目中。'}</p>
+      </div>}
       {report && (
         <div className="analysis-report">
           <div className="analysis-summary">

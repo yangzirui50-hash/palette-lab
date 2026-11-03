@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import '../App.css'
 import '../themes.css'
 import { domainProfiles } from '../domain/profiles'
@@ -7,12 +7,10 @@ import type { PaletteSwatch } from '../lib/color/extract'
 import type { SpatialRegionEvidence } from '../lib/color/spatial'
 import { ColorAnalysisClient } from '../lib/color/analysisClient'
 import type { PaletteResult } from '../lib/color/analysisClient'
-import type { ImageAnalysisMetadata } from '../lib/color/pipelineConfig'
 import { useTheme } from '../hooks/useTheme'
 import { copyText } from '../lib/clipboard'
 import { assignPaletteRoles } from '../domain/assign'
 import { getContrastReport } from '../domain/contrast'
-import type { RoleAssignments } from '../domain/assign'
 import RoleEditor from '../components/RoleEditor'
 import SpatialPanel from '../components/SpatialPanel'
 import DomainPreview from '../components/DomainPreview'
@@ -21,39 +19,68 @@ import AnalysisPanel from '../components/AnalysisPanel'
 import InspirationPanel from '../components/InspirationPanel'
 import SeriesWorkspace from '../components/SeriesWorkspace'
 import type { AnalysisReport } from '../domain/analysis'
+import ProjectProvider from '../lib/project/ProjectProvider'
+import ProjectControls from '../lib/project/ProjectControls'
+import { useProject } from '../lib/project/context'
+import { loadProject } from '../lib/project/storage'
+import { useObjectUrls } from '../lib/project/useObjectUrls'
+import type { ProjectRecord, ProjectSource, ReportContext } from '../lib/project/model'
 
-type SourceState = {
-  url: string
-  name: string
-  width: number
-  height: number
-  file: File
-  analysis: ImageAnalysisMetadata
-}
+const noPalette: PaletteSwatch[] = []
 
 export default function Home() {
+  const [boot, setBoot] = useState<{ record: ProjectRecord | null; error: string } | null>(null)
+  useEffect(() => {
+    let active = true
+    void loadProject().then(record => { if (active) setBoot({ record, error: '' }) }).catch((error: unknown) => {
+      if (active) setBoot({ record: null, error: error instanceof Error ? error.message : '无法读取本地项目' })
+    })
+    return () => { active = false }
+  }, [])
+  return boot ? <ProjectProvider initialRecord={boot.record} readError={boot.error}><HomeWorkspace /></ProjectProvider>
+    : <main className="app-shell"><p role="status">正在恢复本地工作台…</p></main>
+}
+
+function HomeWorkspace() {
+  const { project, updateSingle, updateUi, epoch } = useProject()
+  const { mode, domain } = project.ui
+  const single = project.core.single
+  const sourceRecord = single.source
+  const palette = sourceRecord?.palette ?? noPalette
+  const roleOverrides = single.roleOverrides
+  const sourceFiles = useMemo(() => sourceRecord ? [sourceRecord.file] : [], [sourceRecord])
+  const sourceUrls = useObjectUrls(sourceFiles)
+  const source = sourceRecord ? { ...sourceRecord, url: sourceUrls.get(sourceRecord.file) ?? '' } : null
   const inputRef = useRef<HTMLInputElement>(null)
   const paletteClient = useRef(new ColorAnalysisClient())
   const latestFile = useRef<File | null>(null)
-  const colorCountRef = useRef(6)
-  const sourceRef = useRef<SourceState | null>(null)
+  const colorCountRef = useRef(sourceRecord?.analysis.requestedColorCount ?? 6)
+  const sourceRef = useRef<ProjectSource | null>(sourceRecord)
   const uploadRequestRef = useRef(0)
   const { theme, toggleTheme } = useTheme()
-  const [mode, setMode] = useState<'single' | 'series'>('single')
-  const [seriesActivated, setSeriesActivated] = useState(false)
-  const [domain, setDomain] = useState<DomainId>('web-ui')
-  const [colorCount, setColorCount] = useState(6)
-  const [palette, setPalette] = useState<PaletteSwatch[]>([])
-  const [roleOverrides, setRoleOverrides] = useState<Partial<Record<DomainId, RoleAssignments>>>({})
+  const [seriesActivated, setSeriesActivated] = useState(mode === 'series' || project.core.series.images.length > 0)
+  const [colorCount, setColorCount] = useState(sourceRecord?.analysis.requestedColorCount ?? 6)
+  const setMode = (mode: 'single' | 'series') => updateUi({ mode })
   const assignments = useMemo(() => ({
     ...assignPaletteRoles(palette, domain),
     ...roleOverrides[domain],
   }), [palette, domain, roleOverrides])
   const contrastReport = getContrastReport(domain, assignments)
   const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
-  const [source, setSource] = useState<SourceState | null>(null)
   const [spatialEvidence, setSpatialEvidence] = useState<SpatialRegionEvidence[]>([])
-  const [analysisReport, setAnalysisReport] = useState<AnalysisReport | null>(null)
+  const activeSnapshots = single.snapshots.filter(snapshot => snapshot.context.sourceId === sourceRecord?.id && snapshot.context.domain === domain)
+  const analysisReport = activeSnapshots.at(-1)?.report ?? null
+  const analysisContext = useMemo<ReportContext | null>(() => sourceRecord ? ({
+    sourceId: sourceRecord.id, sourceName: sourceRecord.name, domain, palette, assignments, spatialEvidence, roi: single.roi,
+  }) : null, [sourceRecord, domain, palette, assignments, spatialEvidence, single.roi])
+  const saveAnalysis = useCallback((report: AnalysisReport, context: ReportContext) => updateSingle(current => ({
+    ...current,
+    snapshots: [...current.snapshots, { id: crypto.randomUUID(), createdAt: new Date().toISOString(), context, report }].slice(-20),
+  })), [updateSingle])
+  const changeRoi = useCallback((roi: import('../lib/color/spatial').SpatialRoi | null) => {
+    setSpatialEvidence([])
+    updateSingle(current => ({ ...current, roi }), false)
+  }, [updateSingle])
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
@@ -69,9 +96,22 @@ export default function Home() {
   }, [domain])
 
   useEffect(() => {
-    if (!source?.url) return
-    return () => URL.revokeObjectURL(source.url)
-  }, [source?.url])
+    sourceRef.current = sourceRecord
+    latestFile.current = sourceRecord?.file ?? null
+    const count = sourceRecord?.analysis.requestedColorCount ?? 6
+    colorCountRef.current = count
+    setColorCount(count)
+  }, [sourceRecord])
+
+  useEffect(() => {
+    uploadRequestRef.current++
+    paletteClient.current.cancel()
+    setBusy(false)
+    setSpatialEvidence([])
+    setError('')
+    setCopied('')
+    setDragging(false)
+  }, [epoch])
 
   useEffect(() => {
     if (!copied) return
@@ -80,7 +120,7 @@ export default function Home() {
   }, [copied])
 
   const changeDomain = (nextDomain: DomainId) => {
-    setDomain(nextDomain)
+    updateUi({ domain: nextDomain })
   }
 
   const processFile = async (file?: File, preserveSource = false) => {
@@ -95,15 +135,14 @@ export default function Home() {
       const processed = await paletteClient.current.run<PaletteResult>({ kind: 'palette', file, count: colorCountRef.current })
       if (requestId !== uploadRequestRef.current) return
       const sameSource = preserveSource && sourceRef.current?.file === file
-      setPalette(processed.palette)
       // Clear drafts only when a replacement actually succeeds. Re-extraction
       // updates suggestions without overwriting deliberate choices.
-      if (!sameSource) setRoleOverrides({})
-      const nextSource = sameSource ? { ...sourceRef.current!, analysis: processed.analysis } : {
-        url: URL.createObjectURL(file), name: file.name, width: processed.width, height: processed.height, file, analysis: processed.analysis,
+      const nextSource: ProjectSource = {
+        id: sameSource ? sourceRef.current!.id : crypto.randomUUID(), name: file.name,
+        width: processed.width, height: processed.height, file, analysis: processed.analysis, palette: processed.palette,
       }
       sourceRef.current = nextSource
-      setSource(nextSource)
+      updateSingle(current => ({ ...current, source: nextSource, roleOverrides: sameSource ? current.roleOverrides : {}, roi: sameSource ? current.roi : null }))
     } catch (reason) {
       if (requestId === uploadRequestRef.current) {
         latestFile.current = sourceRef.current?.file ?? null
@@ -147,6 +186,7 @@ export default function Home() {
       </header>
 
       <main>
+        <ProjectControls />
         <section className="domain-bar mode-bar" aria-label="工作模式">
           <span>工作模式</span>
           <div>
@@ -176,7 +216,7 @@ export default function Home() {
           <small>{domainProfiles[domain].colorRoles.length} 个颜色角色</small>
         </section>
 
-        {seriesActivated && <div hidden={mode !== 'series'}><SeriesWorkspace domain={domain} /></div>}
+        {(seriesActivated || mode === 'series' || project.core.series.images.length > 0) && <div hidden={mode !== 'series'}><SeriesWorkspace domain={domain} /></div>}
 
         <section className="workspace" hidden={mode !== 'single'}>
           <div className="source-panel">
@@ -191,7 +231,7 @@ export default function Home() {
             >
               {source ? (
                 <>
-                  <img src={source.url} alt={`待分析图片：${source.name}`} />
+                  {source.url && <img src={source.url} alt={`待分析图片：${source.name}`} />}
                   <div className="source-meta">
                     <div><strong>{source.name}</strong><span>{source.width} × {source.height}</span></div>
                     <button onClick={() => inputRef.current?.click()} disabled={busy}>更换图片</button>
@@ -257,23 +297,22 @@ export default function Home() {
           </div>
         </section>
 
-        {source && palette.length > 0 && (
-          <div hidden={mode !== 'single' || busy}>
+        {source && source.url && palette.length > 0 && (
+          <div className="single-results" hidden={mode !== 'single' || busy}>
             <RoleEditor
               domain={domain}
               palette={palette}
               assignments={assignments}
               editedRoles={Object.keys(roleOverrides[domain] ?? {})}
               editHint="改变色数会保留手动颜色；更换图片会开始新方案。"
-              onResetAll={() => setRoleOverrides((current) => ({ ...current, [domain]: {} }))}
-              onChange={(role, hex) => setRoleOverrides((current) => ({
-                ...current,
-                [domain]: { ...current[domain], [role]: hex },
-              }))}
+              onResetAll={() => updateSingle(current => ({ ...current, roleOverrides: { ...current.roleOverrides, [domain]: {} } }))}
+              onChange={(role, hex) => updateSingle(current => ({ ...current, roleOverrides: {
+                ...current.roleOverrides, [domain]: { ...current.roleOverrides[domain], [role]: hex },
+              } }))}
             />
-            <SpatialPanel key={source.url} sourceFile={source.file} palette={palette} onEvidenceChange={setSpatialEvidence} />
+            <SpatialPanel key={source.id} sourceFile={source.file} palette={palette} roi={single.roi} onRoiChange={changeRoi} onEvidenceChange={setSpatialEvidence} />
             <DomainPreview domain={domain} assignments={assignments} spatial={spatialEvidence} renderRef={setPreviewTarget} contrastReport={contrastReport} />
-            <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} spatialEvidence={spatialEvidence} report={analysisReport} onReportChange={setAnalysisReport} />
+            {analysisContext && <AnalysisPanel sourceFile={source.file} context={analysisContext} snapshots={activeSnapshots} onReportChange={saveAnalysis} />}
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
             <ExportPanel domain={domain} assignments={assignments} palette={palette} analysis={source.analysis} renderTarget={previewTarget} contrastReport={contrastReport} />
           </div>

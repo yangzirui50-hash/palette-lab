@@ -28,7 +28,7 @@ function toSwatch(hex: string): PaletteSwatch {
 test('processes diverse image types sequentially without stale state or invalid output', async ({ page }) => {
   await page.goto('/')
   for (const name of corpus) {
-    await page.locator('input[type=file]').setInputFiles(fixture(name))
+    await page.locator('.workspace input[type=file]').setInputFiles(fixture(name))
     await expect(page.locator('.spatial-preview img')).toBeVisible()
     await expect(page.locator('.spatial-swatches button')).not.toHaveCount(0)
     await expect(page.locator('.spatial-palette-heading')).toContainText('全局色板')
@@ -50,7 +50,7 @@ test('processes diverse image types sequentially without stale state or invalid 
 
 test('preserves both saturated families in periodic red-blue textures', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture('periodic-test.png'))
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture('periodic-test.png'))
   await expect(page.locator('.spatial-preview img')).toBeVisible()
   const hexes = await page.locator('.spatial-swatches button span').allTextContents()
   const hasRed = hexes.some((hex) => {
@@ -79,7 +79,7 @@ test('preserves both saturated families in periodic red-blue textures', async ({
 
 test('keeps person face and arms complete and creates an independent face ROI palette', async ({ page }) => {
   await page.goto('/')
-  await page.locator('input[type=file]').setInputFiles(fixture('person-test.png'))
+  await page.locator('.workspace input[type=file]').setInputFiles(fixture('person-test.png'))
   await expect(page.locator('.spatial-preview img')).toBeVisible()
   await expect(page.locator('.spatial-mode button')).toHaveText('全部近似色区域')
   const buttons = page.locator('.spatial-swatches button')

@@ -11,7 +11,7 @@ test('shows two separate whole-image focus candidates and abstains on a uniform 
     if (!uniform) { context.fillStyle = '#f0f0f0'; context.fillRect(16, 48, 16, 32); context.fillRect(96, 48, 16, 32) }
     const blob = await new Promise<Blob>(resolve => canvas.toBlob(value => resolve(value!)))
     const transfer = new DataTransfer(); transfer.items.add(new File([blob], uniform ? 'uniform.png' : 'two-foci.png', { type: 'image/png' }))
-    const input = document.querySelector<HTMLInputElement>('input[type=file]')!
+    const input = document.querySelector<HTMLInputElement>('.workspace input[type=file]')!
     input.files = transfer.files; input.dispatchEvent(new Event('change', { bubbles: true }))
   }, uniform)
   await upload(false)
@@ -54,7 +54,7 @@ test('applies the latest count even when changed twice during image import', asy
   await page.evaluate(bytes => {
     const transfer = new DataTransfer()
     transfer.items.add(new File([new Uint8Array(bytes)], 'count-race.png', { type: 'image/png' }))
-    const input = document.querySelector<HTMLInputElement>('input[type=file]')!
+    const input = document.querySelector<HTMLInputElement>('.workspace input[type=file]')!
     input.files = transfer.files
     input.dispatchEvent(new Event('change', { bubbles: true }))
     const increase = document.querySelector<HTMLButtonElement>('[aria-label="增加颜色数量"]')!
@@ -78,7 +78,7 @@ test('crops native pixels before resizing and exposes the local detail without c
     const blob = await new Promise<Blob>(resolve => canvas.toBlob(value => resolve(value!)))
     const file = new File([blob], 'native-detail.png', { type: 'image/png', lastModified: 42 })
     const transfer = new DataTransfer(); transfer.items.add(file)
-    const input = document.querySelector<HTMLInputElement>('input[type=file]')!
+    const input = document.querySelector<HTMLInputElement>('.workspace input[type=file]')!
     input.files = transfer.files; input.dispatchEvent(new Event('change', { bubbles: true }))
     ;(window as unknown as { repeatFile: File }).repeatFile = file
   })
@@ -98,7 +98,7 @@ test('crops native pixels before resizing and exposes the local detail without c
   expect(await page.locator('.swatch-info strong').allTextContents()).toEqual(global)
   await page.evaluate(() => {
     const transfer = new DataTransfer(); transfer.items.add((window as unknown as { repeatFile: File }).repeatFile)
-    const input = document.querySelector<HTMLInputElement>('input[type=file]')!
+    const input = document.querySelector<HTMLInputElement>('.workspace input[type=file]')!
     input.files = transfer.files; input.dispatchEvent(new Event('change', { bubbles: true }))
   })
   await expect(page.locator('.spatial-palette-heading')).toContainText('全局色板')

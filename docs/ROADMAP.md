@@ -63,9 +63,9 @@ The owner confirmed daily usability first, with portfolio value retained. The fo
 
 1. Trust repair: contrast/role selection, page-scoped manual preservation and sampled source-color fidelity are implemented in the first three units.
 2. Shared analysis entry and versioned preprocessing across single/series modes, with partial batch success, are implemented in the third unit.
-3. Next: validated recoverable local project records and backups, then bounded undo/redo and report snapshots. Read saved state before mounting/writing; preserve usable live work on storage failure; protect against concurrent-window overwrites. Keep image Blobs separate from transient view URLs.
-4. A task-oriented workspace with nearby preview/export, local-color application, explicit color editing and usable palette-card output.
+3. Implemented in the fourth unit: validated local project recovery/backups, revision-checked saving, bounded undo/redo and report snapshots. Read before mounting/writing, preserve live work on storage failure, protect concurrent-window records and derive view URLs from Files.
+4. Next: nearby preview/export and phone navigation, local-color application, explicit HEX editing and usable palette-card output. Keep measured source shares distinct from added/manual candidates, and keep validation delivery/cache costs visible.
 5. Quality calibration on difficult real imagery, followed by a small independently labeled focus pilot and held-out evaluation before the 1000-image scale run.
 6. Portfolio case-study evidence and further platform/provider/visual expansion only after the daily workflow is reliable.
 
-Each delivery unit has its own regression evidence. The third passes 178 unit tests and 41 regular browser workflows, plus rerun 50/30-image operational suites. Review positive/negative failure classes and worst per-image deltas; averages and upload counts do not replace independent algorithm qualification. Completing these repairs does not mark persistent state, task layout or human-focus qualification complete.
+Each delivery unit has its own regression evidence. The fourth passes 188 unit tests and 52 regular browser workflows; its image algorithm is unchanged from the third unit's separate 50/30-image run. Review positive/negative failure classes and worst per-image deltas; averages and upload counts do not replace independent algorithm qualification. Completing these repairs does not mark task layout, local-color delivery or human-focus qualification complete.

@@ -4,7 +4,7 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
-Three daily-use repair units are implemented: truthful contrast/role selections, page-scoped manual drafts, and faithful sampled RGB with a shared single/series Worker pipeline. Batch import retains successful items around failures, and JSON records processing provenance with publicly resolvable schemas. Dim cross-hue conflicts and muted same-hue false rejection have complementary regressions. Type checking, lint, 178 unit tests, 41 regular browser workflows, environment safety and production build pass. The 50-image operational benchmark and licensed 30-image 4/6/8-color development matrix also pass; independent human focus qualification remains skipped. See docs/REVIEWS/2026-11-03-source-pipeline.md. Persistent project recovery is next. Public release acceptance is recorded separately from local checks.
+Four daily-use repair units are implemented. The latest adds validated local project recovery/backup, revision-checked saving, 30-step in-page undo/redo and captured-input report snapshots. Source files, evidence, count, manual choices, series primary/order/locks/strategies/drafts and ROI recover after completed saves; reports survive browsing without automatic paid requests. Type checking, lint, 188 unit tests, 52 regular browser workflows, environment safety and production build pass. See docs/REVIEWS/2026-11-03-project-recovery.md. Local production-build smoke passes; public release acceptance is separate. The preceding source-pipeline unit's 50/30 operational suites are not rerun here; independent human focus qualification remains pending.
 
 ## Production (historical checks; repair revision acceptance is separate)
 
@@ -26,7 +26,9 @@ Three daily-use repair units are implemented: truthful contrast/role selections,
 - HEX output is normalized to six digits; non-grid uniform sampled RGB and low-color source distinctions are preserved
 - Single and series palette extraction share versioned decoding/preprocessing/Worker execution and exported per-source provenance
 - A corrupt batch item no longer discards successful items or prevents following files from being attempted
-- 178 unit tests and 41 regular browser workflows pass locally after the source/pipeline unit. Its complete browser run passes 43 tests including the 50-image benchmark and 30-image development matrix, with independent human-focus qualification skipped. A final schema-link-only change also passes three targeted real-download workflows.
+- 188 unit tests and 52 regular browser workflows pass locally after project recovery. Three image/annotation opt-ins are skipped because the image algorithm is unchanged. An additional final eleven-case recovery run and production-build smoke pass, including fresh-context backup and explicit offline-report restore with no API calls.
+- Local saving protects unreadable records and concurrent-window updates; quota failure retains editing and backup. Project import checks image hashes, decoding and dimensions before replacing live work.
+- 30-step in-page undo/redo restores atomic image/series/project edits with regenerated URLs; it resets after reload. Reports retain up to 20 captured-input snapshots and explicitly mark changed inputs.
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures
@@ -82,4 +84,4 @@ Three daily-use repair units are implemented: truthful contrast/role selections,
 
 ## Next action
 
-Next implement validated local project records, recovery, backup round-trips and reversible editing; the current published manual drafts do not yet survive reload. Preserve report snapshots across browsing/ROI changes before improving task layout and local-color application. Inspect worst per-image quality changes alongside aggregate passes: a four-color portrait remains a human-review case (+3.5 percentage points unassigned versus the earlier pipeline). Independent focus qualification remains before the 1000-image scale run. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.
+Next improve local-color application, explicit HEX editing, useful palette cards and nearby preview/export with phone navigation. Review frontend delivery/cache boundaries after validation code increased the initial main bundle to about 531kB (171kB gzip); its warning remains visible. Inspect worst per-image quality changes alongside aggregate passes: a four-color portrait remains a human-review case (+3.5 percentage points unassigned versus the earlier pipeline). Prepare independent human focus qualification before the 1000-image scale run. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.

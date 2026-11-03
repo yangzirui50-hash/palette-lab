@@ -8,7 +8,7 @@ test('preserves major chromatic families and deterministic output across source 
   for (const name of variants) {
     const fixture = path.resolve(`tests/fixtures/${name}`)
     const readPalette = async () => {
-      await page.locator('input[type=file]').setInputFiles(fixture)
+      await page.locator('.workspace input[type=file]').setInputFiles(fixture)
       await expect(page.locator('.spatial-preview img')).toBeVisible()
       return page.locator('.spatial-swatches button span').allTextContents()
     }

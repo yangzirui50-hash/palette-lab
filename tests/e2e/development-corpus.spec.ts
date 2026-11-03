@@ -23,7 +23,7 @@ test('runs independent development images through color counts and both spatial 
     const started = performance.now()
     let focusSignature = ''
     try {
-      await page.locator('input[type=file]').first().setInputFiles(filename)
+      await page.locator('.workspace input[type=file]').first().setInputFiles(filename)
       await expect(page.locator('.source-meta strong')).toHaveText(entry.file)
       await expect(page.locator('.spatial-preview img')).toBeVisible()
       for (const count of [4, 6, 8]) {

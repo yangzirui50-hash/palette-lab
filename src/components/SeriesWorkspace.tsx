@@ -1,49 +1,37 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { compareSeries } from '../domain/series'
-import type { SeriesImageAnalysis } from '../domain/series'
 import { assignPaletteRoles } from '../domain/assign'
 import { getContrastReport } from '../domain/contrast'
-import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { PaletteSwatch } from '../lib/color/extract'
 import { ColorAnalysisClient } from '../lib/color/analysisClient'
 import type { PaletteResult } from '../lib/color/analysisClient'
-import type { ImageAnalysisMetadata } from '../lib/color/pipelineConfig'
+import { useProject } from '../lib/project/context'
+import { useObjectUrls } from '../lib/project/useObjectUrls'
+import type { SeriesSource } from '../lib/project/model'
 import RoleEditor from './RoleEditor'
 import DomainPreview from './DomainPreview'
 import SeriesExportPanel from './SeriesExportPanel'
 import { generateUnifiedSeriesPalette } from '../domain/unify'
-import type { SeriesStrategy } from '../domain/unify'
 import './SeriesWorkspace.css'
-
-type SeriesImageState = Omit<SeriesImageAnalysis, 'roles'> & {
-  file: File
-  url: string
-  width: number
-  height: number
-  rolesByDomain: Record<DomainId, RoleAssignments>
-  lockedRoles: string[]
-  analysis: ImageAnalysisMetadata
-}
 
 type SeriesWorkspaceProps = {
   domain: DomainId
 }
 
-type UnifiedDrafts = Partial<Record<DomainId, Partial<Record<SeriesStrategy, RoleAssignments>>>>
-
 export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
+  const { project, updateSeries, epoch } = useProject()
+  const draft = project.core.series
+  const { primaryId, selectedId, view, strategiesByDomain, unifiedDrafts } = draft
+  const sourceFiles = useMemo(() => draft.images.map(image => image.file), [draft.images])
+  const sourceUrls = useObjectUrls(sourceFiles)
+  const images = useMemo(() => draft.images.map(image => ({ ...image, label: image.name, url: sourceUrls.get(image.file) ?? '' })), [draft.images, sourceUrls])
+  const setView = (view: typeof draft.view) => updateSeries(current => current.view === view ? current : ({ ...current, view }), false)
+  const setPrimaryId = (primaryId: string) => updateSeries(current => current.primaryId === primaryId ? current : ({ ...current, primaryId }))
   const inputRef = useRef<HTMLInputElement>(null)
-  const urls = useRef(new Set<string>())
   const paletteClient = useRef(new ColorAnalysisClient())
   const importState = useRef({ run: 0, busy: false })
-  const [images, setImages] = useState<SeriesImageState[]>([])
-  const [primaryId, setPrimaryId] = useState('')
-  const [selectedId, setSelectedId] = useState('')
-  const [view, setView] = useState<'overview' | 'inspect' | 'unify'>('overview')
-  const [strategiesByDomain, setStrategiesByDomain] = useState<Partial<Record<DomainId, SeriesStrategy>>>({})
   const strategy = strategiesByDomain[domain] ?? 'preserve-accents'
-  const [unifiedDrafts, setUnifiedDrafts] = useState<UnifiedDrafts>({})
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
@@ -53,15 +41,23 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
   useEffect(() => {
     const client = paletteClient.current
     const state = importState.current
-    const ownedUrls = urls.current
     return () => {
       state.run++
       state.busy = false
       client.cancel()
-      ownedUrls.forEach((url) => URL.revokeObjectURL(url))
-      ownedUrls.clear()
     }
   }, [])
+
+  useEffect(() => {
+    importState.current.run++
+    importState.current.busy = false
+    paletteClient.current.cancel()
+    setBusy(false)
+    setProgress(null)
+    setImportResults(null)
+    setError('')
+    setDragging(false)
+  }, [epoch])
 
   const report = useMemo(() => {
     if (images.length < 2 || !primaryId) return null
@@ -98,7 +94,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
     setError('')
     setImportResults(null)
     try {
-      const additions: SeriesImageState[] = []
+      const additions: SeriesSource[] = []
       const failures: { name: string; reason: string }[] = []
       for (const [index, file] of files.entries()) {
         setProgress({ current: index + 1, total: files.length, name: file.name })
@@ -106,10 +102,8 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
           const processed = await paletteClient.current.run<PaletteResult>({ kind: 'palette', file, count: 6 })
           if (run !== state.run) return
           const { palette } = processed
-          const url = URL.createObjectURL(file)
-          urls.current.add(url)
           additions.push({
-            id: crypto.randomUUID(), label: file.name, file, url,
+            id: crypto.randomUUID(), name: file.name, file,
             width: processed.width, height: processed.height, palette, analysis: processed.analysis,
             rolesByDomain: {
               'web-ui': assignPaletteRoles(palette, 'web-ui'),
@@ -122,11 +116,11 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
           failures.push({ name: file.name, reason: reason instanceof Error ? reason.message : '图片处理失败，请重试' })
         }
       }
-      setImages((current) => [...current, ...additions])
-      if (additions[0]) {
-        setPrimaryId(current => current || additions[0].id)
-        setSelectedId(current => current || additions[0].id)
-      }
+      if (additions[0]) updateSeries(current => ({ ...current,
+        images: [...current.images, ...additions],
+        primaryId: current.primaryId || additions[0].id,
+        selectedId: current.selectedId || additions[0].id,
+      }))
       setImportResults({ succeeded: additions.length, failures })
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : '图片处理失败，请重试')
@@ -142,34 +136,30 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
   }
 
   const removeImage = (id: string) => {
-    const next = images.filter((image) => image.id !== id)
-    const removed = images.find((image) => image.id === id)
-    if (removed) {
-      URL.revokeObjectURL(removed.url)
-      urls.current.delete(removed.url)
-    }
-    setImages(next)
-    if (next.length === 0) {
-      setUnifiedDrafts({})
-      setStrategiesByDomain({})
-    }
-    if (primaryId === id) setPrimaryId(next[0]?.id ?? '')
-    if (selectedId === id) setSelectedId(next[0]?.id ?? '')
+    updateSeries(current => {
+      const next = current.images.filter(image => image.id !== id)
+      if (next.length === current.images.length) return current
+      return { ...current, images: next,
+        primaryId: current.primaryId === id ? next[0]?.id ?? '' : current.primaryId,
+        selectedId: current.selectedId === id ? next[0]?.id ?? '' : current.selectedId,
+        unifiedDrafts: next.length ? current.unifiedDrafts : {},
+        strategiesByDomain: next.length ? current.strategiesByDomain : {},
+      }
+    })
   }
 
   const moveImage = (id: string, offset: number) => {
-    const index = images.findIndex((image) => image.id === id)
-    const target = index + offset
-    if (index < 0 || target < 0 || target >= images.length) return
-    const next = [...images]
-    const [moved] = next.splice(index, 1)
-    next.splice(target, 0, moved)
-    setImages(next)
+    updateSeries(current => {
+      const index = current.images.findIndex(image => image.id === id), target = index + offset
+      if (index < 0 || target < 0 || target >= current.images.length) return current
+      const images = [...current.images], [moved] = images.splice(index, 1)
+      images.splice(target, 0, moved)
+      return { ...current, images }
+    })
   }
 
   const inspect = (id: string) => {
-    setSelectedId(id)
-    setView('inspect')
+    updateSeries(current => ({ ...current, selectedId: id, view: 'inspect' }), false)
   }
 
   return (
@@ -203,7 +193,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
           {images.map((image, index) => (
             <article className={`series-thumbnail ${primaryId === image.id ? 'primary' : ''}`} key={image.id}>
               <button className="thumbnail-preview" onClick={() => inspect(image.id)} aria-label={`检查图片：${image.label}`}>
-                <img src={image.url} alt={image.label} />
+                {image.url && <img src={image.url} alt={image.label} />}
                 <span>{String(index + 1).padStart(2, '0')}</span>
               </button>
               <div className="thumbnail-meta"><strong>{image.label}</strong><small>{primaryId === image.id ? '主图' : '候选图'}</small></div>
@@ -279,7 +269,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                 <div className="inspection-image-grid">
                   {[primary, selected].map((image, index) => image && (
                     <figure key={`${image.id}-${index}`}>
-                      <img src={image.url} alt={image.label} />
+                      {image.url && <img src={image.url} alt={image.label} />}
                       <figcaption><strong>{image.label}</strong><span>{image.id === primaryId ? '主图' : '候选图'} · {image.palette.length} 色</span></figcaption>
                       <div className="inspection-palette">{image.palette.map((color: PaletteSwatch) => <i key={`${color.hex}-${color.share}`} style={{ backgroundColor: color.hex, flexGrow: color.share }} title={`${color.hex} ${(color.share * 100).toFixed(1)}%`} />)}</div>
                     </figure>
@@ -292,17 +282,17 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                 palette={selected.palette}
                 assignments={selected.rolesByDomain[domain]}
                 lockedRoles={selected.lockedRoles}
-                onLockChange={(role, locked) => setImages((current) => current.map((image) => image.id === selected.id ? {
+                onLockChange={(role, locked) => updateSeries(current => ({ ...current, images: current.images.map((image) => image.id === selected.id ? {
                   ...image,
                   lockedRoles: locked ? [...image.lockedRoles, role] : image.lockedRoles.filter((item) => item !== role),
-                } : image))}
-                onChange={(role, hex) => setImages((current) => current.map((image) => image.id === selected.id ? {
+                } : image) }))}
+                onChange={(role, hex) => updateSeries(current => ({ ...current, images: current.images.map((image) => image.id === selected.id ? {
                   ...image,
                   rolesByDomain: {
                     ...image.rolesByDomain,
                     [domain]: { ...image.rolesByDomain[domain], [role]: hex },
                   },
-                } : image))}
+                } : image) }))}
               />
             </div>
           )}
@@ -317,7 +307,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                     ['balanced', '折中统一', '每张作品一票，选择全系列距离最小的现有代表色。'],
                     ['preserve-accents', '保留个性', '统一基础角色，每张作品保留自己的强调色。'],
                   ] as const).map(([id, label, description]) => (
-                    <button key={id} className={strategy === id ? 'active' : ''} onClick={() => setStrategiesByDomain((current) => ({ ...current, [domain]: id }))} aria-pressed={strategy === id}>
+                    <button key={id} className={strategy === id ? 'active' : ''} onClick={() => updateSeries(current => ({ ...current, strategiesByDomain: { ...current.strategiesByDomain, [domain]: id } }))} aria-pressed={strategy === id}>
                       <strong>{label}</strong><span>{description}</span>
                     </button>
                   ))}
@@ -341,17 +331,12 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                 assignments={unifiedAssignments}
                 editedRoles={Object.keys(activeOverrides ?? {})}
                 editHint="各领域和策略分别保留手动选择；重排或更换主图也会保留。"
-                onResetAll={() => setUnifiedDrafts((current) => ({
-                  ...current,
-                  [domain]: { ...current[domain], [strategy]: {} },
-                }))}
-                onChange={(role, hex) => setUnifiedDrafts((current) => ({
-                  ...current,
-                  [domain]: {
-                    ...current[domain],
-                    [strategy]: { ...current[domain]?.[strategy], [role]: hex },
-                  },
-                }))}
+                onResetAll={() => updateSeries(current => ({ ...current, unifiedDrafts: {
+                  ...current.unifiedDrafts, [domain]: { ...current.unifiedDrafts[domain], [strategy]: {} },
+                } }))}
+                onChange={(role, hex) => updateSeries(current => ({ ...current, unifiedDrafts: {
+                  ...current.unifiedDrafts, [domain]: { ...current.unifiedDrafts[domain], [strategy]: { ...current.unifiedDrafts[domain]?.[strategy], [role]: hex } },
+                } }))}
               />
               <DomainPreview domain={domain} assignments={unifiedAssignments} contrastReport={unifiedContrastReport} />
               <SeriesExportPanel

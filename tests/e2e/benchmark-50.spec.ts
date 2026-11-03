@@ -34,7 +34,7 @@ test('benchmarks 50 diverse images with timing and category reporting', async ({
     const itemStarted = performance.now()
     const result: Record<string, unknown> = { file: fixture.file, category: fixture.category }
     try {
-      await page.locator('input[type=file]').setInputFiles(fixture.path)
+      await page.locator('.workspace input[type=file]').setInputFiles(fixture.path)
       await expect(page.locator('.spatial-preview img')).toBeVisible({ timeout: 10_000 })
       await expect(page.locator('.spatial-swatches button')).not.toHaveCount(0)
       await expect(page.locator('.spatial-palette-heading')).toContainText('全局色板')

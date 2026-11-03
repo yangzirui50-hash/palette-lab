@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Recoverable local projects and analysis snapshots
+
+- Added validated local project loading before workspace mount, debounced/revision-checked IndexedDB saving and clear save/error/conflict states.
+- Restored source Files, palette evidence, count, independent manual choices, series order/primary/locks/strategies/drafts and ROI after successful saves and reloads.
+- Added 30-step in-page undo/redo and atomic source/series/project edits with fresh, correctly released view URLs.
+- Added local project backup/open with version/structure checks, image SHA-256 and decoding/dimension verification; failed imports preserve live work.
+- Preserved captured-input analysis snapshots through ROI/role browsing and reload, marking historical inputs without automatic paid calls.
+- Added model/history and real browser recovery, quota, invalid-data, cross-context backup and concurrent-window regression coverage.
+
 ## 2026-11-03 — Source fidelity and one palette-analysis entry
 
 - Preserved original RGB statistics inside histogram bins and exact sampled colors for low-color inputs, fixing uniform-source drift and avoidable low-color merging.

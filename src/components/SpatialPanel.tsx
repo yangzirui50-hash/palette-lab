@@ -12,9 +12,11 @@ type SpatialPanelProps = {
   sourceFile: File
   palette: PaletteSwatch[]
   onEvidenceChange?: (evidence: SpatialRegionEvidence[]) => void
+  roi?: SpatialRoi | null
+  onRoiChange?: (roi: SpatialRoi | null) => void
 }
 
-export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: SpatialPanelProps) {
+export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, roi: controlledRoi, onRoiChange }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
   const [attentionResult, setAttentionResult] = useState<Pick<SpatialResult, 'attention' | 'attentionUrl'> | null>(null)
@@ -28,7 +30,12 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange }: 
   const [mode, setMode] = useState<'largest' | 'all'>('all')
   const [overlay, setOverlay] = useState({ url: '', detailUrl: '', key: '' })
   const [error, setError] = useState('')
-  const [roi, setRoi] = useState<SpatialRoi | null>(null)
+  const [internalRoi, setInternalRoi] = useState<SpatialRoi | null>(null)
+  const roi = controlledRoi === undefined ? internalRoi : controlledRoi
+  const setRoi = (next: SpatialRoi | null) => {
+    if (controlledRoi === undefined) setInternalRoi(next)
+    onRoiChange?.(next)
+  }
   const [draftRoi, setDraftRoi] = useState<SpatialRoi | null>(null)
   const [selecting, setSelecting] = useState<'armed' | 'dragging' | null>(null)
   const startPoint = useRef<{ x: number; y: number } | null>(null)
