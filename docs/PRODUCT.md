@@ -51,6 +51,8 @@ The domains share the color engine but use separate rules, previews, exports and
 5. All generated colors remain editable and exportable.
 6. Layout works at desktop, tablet and phone widths without horizontal overflow.
 7. Deterministic color functions have automated tests.
+8. Contrast audits distinguish passed, failed and unexamined pairs. Missing or invalid colors cannot count as passed checks; small text uses the normal-text threshold.
+9. Every assigned role color remains selectable, including fallback and current colors outside the extracted palette. The editor, preview and exported roles must agree.
 
 ## Product north star
 

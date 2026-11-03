@@ -3,6 +3,8 @@ import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { SpatialRegionEvidence } from '../lib/color/spatial'
 import { getContrastReport } from '../domain/contrast'
+import type { ContrastReport } from '../domain/contrast'
+import ContrastAudit from './ContrastAudit'
 import './DomainPreview.css'
 
 type DomainPreviewProps = {
@@ -10,21 +12,18 @@ type DomainPreviewProps = {
   assignments: RoleAssignments
   spatial?: SpatialRegionEvidence[]
   renderRef?: Ref<HTMLDivElement>
+  contrastReport?: ContrastReport
 }
 
-export default function DomainPreview({ domain, assignments, spatial = [], renderRef }: DomainPreviewProps) {
-  const report = getContrastReport(domain, assignments)
+export default function DomainPreview({ domain, assignments, spatial = [], renderRef, contrastReport }: DomainPreviewProps) {
+  const report = contrastReport ?? getContrastReport(domain, assignments)
 
   return (
     <section className="domain-preview" aria-labelledby="domain-preview-title">
       <div className="panel-heading">
         <span>04</span><h2 id="domain-preview-title">场景预览</h2><small>{domain === 'web-ui' ? 'WEB / UI' : 'ART / POSTER'}</small>
       </div>
-      <div className={`contrast-report ${report.issues.length > 0 ? 'has-issues' : ''}`} role="status">
-        {report.issues.length === 0
-          ? `✓ ${report.checked} 组关键对比检查通过`
-          : `⚠ ${report.issues.length} 组对比不足：${report.issues.map((issue) => `${issue.label} ${issue.ratio.toFixed(1)}:1`).join('；')}`}
-      </div>
+      <ContrastAudit report={report} className="contrast-report" live />
       <div className="preview-render-target" ref={renderRef}>
         {domain === 'web-ui' ? <WebPreview assignments={assignments} /> : <PosterPreview assignments={assignments} spatial={spatial} />}
       </div>

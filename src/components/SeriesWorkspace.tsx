@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { compareSeries } from '../domain/series'
 import type { SeriesImageAnalysis } from '../domain/series'
 import { assignPaletteRoles } from '../domain/assign'
+import { getContrastReport } from '../domain/contrast'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import { extractPalette } from '../lib/color/extract'
@@ -65,6 +66,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
     })), primaryId, domain, strategy)
   }, [images, primaryId, domain, strategy])
   const unifiedAssignments = manualUnified ?? unified?.roles ?? {}
+  const unifiedContrastReport = getContrastReport(domain, unifiedAssignments)
 
   const selected = images.find((image) => image.id === selectedId) ?? images[0]
   const primary = images.find((image) => image.id === primaryId) ?? images[0]
@@ -300,12 +302,13 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                 assignments={unifiedAssignments}
                 onChange={(role, hex) => setManualUnified({ ...unifiedAssignments, [role]: hex })}
               />
-              <DomainPreview domain={domain} assignments={unifiedAssignments} />
+              <DomainPreview domain={domain} assignments={unifiedAssignments} contrastReport={unifiedContrastReport} />
               <SeriesExportPanel
                 unified={unified}
                 assignments={unifiedAssignments}
                 comparison={report}
                 imageLabels={Object.fromEntries(images.map((image) => [image.id, image.label]))}
+                contrastReport={unifiedContrastReport}
               />
             </div>
           )}

@@ -56,3 +56,16 @@ Every phase requires a working build, relevant tests, a Git commit, a remote bac
 ## Current precision stage (2026-11-03)
 
 Implement pipeline correctness and independent contrast-based focus first. Next obtain a two-reviewer focus annotation pilot, freeze standards, then run held-out qualification. Scale toward 100 controlled +400 development +500 held-out unique images only after failure classes and provenance are established. See `ATTENTION_EVALUATION.md`; a thousand uploads alone is not an accuracy acceptance gate.
+
+## Daily-use priority order after the November 3 review
+
+The owner confirmed daily usability first, with portfolio value retained. The following order supersedes the earlier focus-first next action:
+
+1. Trust repair: contrast false positives and role display/value mismatch (first delivery unit); then manual edit preservation and source-color fidelity.
+2. A shared analysis entry point and versioned preprocessing across single/series modes, with partial batch success.
+3. Recoverable project state, autosave, undo/redo, role locks/overrides and report snapshots.
+4. A task-oriented workspace with nearby preview/export, local-color application, explicit color editing and usable palette-card output.
+5. Quality calibration on difficult real imagery, followed by a small independently labeled focus pilot and held-out evaluation before the 1000-image scale run.
+6. Portfolio case-study evidence and further platform/provider/visual expansion only after the daily workflow is reliable.
+
+Each delivery unit has its own regression evidence. Completing the first contrast/selector unit does not mark the remaining trust, state or layout work complete.

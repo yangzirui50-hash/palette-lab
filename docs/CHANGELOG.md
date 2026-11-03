@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Trustworthy contrast audits and role selectors
+
+- Fixed normal-size secondary and colored status text being accepted at 3:1; these preview labels now use 4.5:1 with full-precision comparisons.
+- Added explicit passed/failed/unexamined evidence and actual check counts; missing or invalid colors no longer become successful checks.
+- Shared the same report between preview/export in single and series flows, rendered by one expandable audit component with scope and export guidance.
+- Included fallback/current colors in role selectors, fixing selected-option/paint/export mismatch and keeping fallback colors available after edits.
+- Added boundary, incomplete/invalid-report and actual-browser/download regressions. Export formats and dependencies are unchanged.
+- Reordered development toward daily usability; manual edit preservation, project recovery, unified image processing and layout improvements remain subsequent units.
+
 ## 2026-11-03 — Repair color pipelines and add independent focus estimation
 
 - Moved raster analysis and rendering to cancellable local Workers with response IDs and cache scoping; fixed rapid color-count changes and pending-import stale controls.

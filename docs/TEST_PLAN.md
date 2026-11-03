@@ -79,3 +79,9 @@ Historical November 1 execution result: see `docs/REVIEWS/2026-11-01-comprehensi
 Mandatory regression covers denoising enabled, actual rendered overlay pixels, import/count races, native ROI detail, re-import reset and visible multiple/no-focus results. Optional 30-image development runs exercise 4/6/8 colors, both modes, normalized shares, provenance hashes, no network API, no stale ROI and unchanged focus candidates across palette counts. High-quality resampling is part of the pipeline under comparison.
 
 Focus contracts, independent region annotation protocol, multiple-focus recall/precision, no-focus false positives, center baseline, aspect-aware error, held-out gates and the proposed 1000-image allocation are defined in `ATTENTION_EVALUATION.md`. The human-label gate is not run until a qualifying independent dataset exists. The current change does not claim Firefox/WebKit or real-device acceptance.
+
+## Contrast and role trust regression (2026-11-03)
+
+Check normal-size secondary/status text at 4.5:1 using unrounded ratios; missing/invalid pairs are unexamined and excluded from checked/passed counts. Empty reports must not show success in either preview or export. Browser regressions use an actual black/gray/white image to verify the 12px gray-text warning, shared single/series audit presentation, fallback options in both domains and downloaded JSON role values. Single-color input must show the assigned fallback colors instead of a misleading first palette option. Correct additional default-scheme warnings are expected, not suppressed.
+
+The first trust unit does not change extraction/attention algorithms; 50-image timing and external-development/human-annotation suites are not rerun for this change. Their earlier results remain historical baselines. Further daily-use contracts include preservation through re-extraction and project recovery, which are separate unfinished units.

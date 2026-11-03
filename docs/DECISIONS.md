@@ -140,3 +140,11 @@
 - **Decision:** Run deterministic image analysis/rendering in a module Worker; crop native ROI first; guard denoising by original pixel color; clip feathering inward. Compare coverage and accent extraction candidates per image rather than special-casing fixtures. Expose whole-image focus independently of selected-color density, including abstention and multiple candidates.
 - **Reason:** Correct complete user-visible pipelines, remove synchronous main-thread analysis, and avoid confusing color density with human attention. Keep human-quality validation explicitly pending until independent labels exist.
 - **Tradeoffs:** Total time may increase despite smoother interaction. Resampling changes decoded evidence and must be measured end to end. Focus remains a bottom-up contrast heuristic, without face/text semantics or calibrated probabilities.
+
+## ADR-021 — Complete contrast evidence and truthful selected colors
+
+- **Status:** Accepted and implemented
+- **Date:** 2026-11-03
+- **Decision:** Keep passed, failed and unexamined pair evidence in a typed contrast report; compare unrounded ratios; use the same report and presentation in preview/export for single and series flows. Include fallback/current role values in the selector even when absent from the extracted palette.
+- **Reason:** A skipped check must not become a success, and the editor must display the color actually rendered and exported. Small colored status text needs the same normal-text threshold as other small text.
+- **Tradeoffs:** Correct checks expose additional warnings in existing default schemes. Colors remain editable/exportable and are not silently corrected. Scope remains the declared pairs, rather than a claim of full WCAG compliance; role optimization and edit persistence follow separately.

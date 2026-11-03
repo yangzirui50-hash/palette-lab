@@ -10,6 +10,7 @@ import type { PaletteResult } from '../lib/color/analysisClient'
 import { useTheme } from '../hooks/useTheme'
 import { copyText } from '../lib/clipboard'
 import { assignPaletteRoles } from '../domain/assign'
+import { getContrastReport } from '../domain/contrast'
 import type { RoleAssignments } from '../domain/assign'
 import RoleEditor from '../components/RoleEditor'
 import SpatialPanel from '../components/SpatialPanel'
@@ -43,6 +44,7 @@ export default function Home() {
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
   const [assignmentsByDomain, setAssignmentsByDomain] = useState<Record<DomainId, RoleAssignments>>({ 'web-ui': {}, 'art-poster': {} })
   const assignments = assignmentsByDomain[domain]
+  const contrastReport = getContrastReport(domain, assignments)
   const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
   const [source, setSource] = useState<SourceState | null>(null)
   const [spatialEvidence, setSpatialEvidence] = useState<SpatialRegionEvidence[]>([])
@@ -266,10 +268,10 @@ export default function Home() {
               }))}
             />
             <SpatialPanel key={source.url} sourceFile={source.file} palette={palette} onEvidenceChange={setSpatialEvidence} />
-            <DomainPreview domain={domain} assignments={assignments} spatial={spatialEvidence} renderRef={setPreviewTarget} />
+            <DomainPreview domain={domain} assignments={assignments} spatial={spatialEvidence} renderRef={setPreviewTarget} contrastReport={contrastReport} />
             <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} spatialEvidence={spatialEvidence} report={analysisReport} onReportChange={setAnalysisReport} />
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
-            <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} />
+            <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} contrastReport={contrastReport} />
           </div>
         )}
 

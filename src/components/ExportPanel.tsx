@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { toPng } from 'html-to-image'
 import { createCssVariables, createDesignTokens, downloadText } from '../lib/exporters'
-import { getContrastReport } from '../domain/contrast'
+import type { ContrastReport } from '../domain/contrast'
+import ContrastAudit from './ContrastAudit'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { PaletteSwatch } from '../lib/color/extract'
@@ -12,12 +13,12 @@ type ExportPanelProps = {
   assignments: RoleAssignments
   palette: PaletteSwatch[]
   renderTarget: HTMLElement | null
+  contrastReport: ContrastReport
 }
 
-export default function ExportPanel({ domain, assignments, palette, renderTarget }: ExportPanelProps) {
+export default function ExportPanel({ domain, assignments, palette, renderTarget, contrastReport }: ExportPanelProps) {
   const [exporting, setExporting] = useState('')
   const [error, setError] = useState('')
-  const report = getContrastReport(domain, assignments)
 
   const exportCss = () => {
     downloadText(`palette-lab-${domain}.css`, createCssVariables(domain, assignments), 'text/css;charset=utf-8')
@@ -52,11 +53,7 @@ export default function ExportPanel({ domain, assignments, palette, renderTarget
       <div className="panel-heading">
         <span>07</span><h2 id="export-title">导出成果</h2><small>PRODUCTION OUTPUT</small>
       </div>
-      <div className={`export-audit ${report.issues.length > 0 ? 'has-issues' : ''}`}>
-        {report.issues.length === 0
-          ? `✓ ${report.checked} 组关键对比检查通过，可以导出。`
-          : `⚠ 当前有 ${report.issues.length} 组对比不足。文件仍可导出，但建议先修正。`}
-      </div>
+      <ContrastAudit report={contrastReport} className="export-audit" exporting />
       <div className="export-actions">
         <button onClick={exportCss}><strong>CSS</strong><span>网页语义变量</span><i>下载 .css</i></button>
         <button onClick={exportJson}><strong>JSON</strong><span>结构化设计令牌</span><i>下载 .json</i></button>

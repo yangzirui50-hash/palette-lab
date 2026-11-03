@@ -4,7 +4,7 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
-The local image pipeline now runs in cancellable Workers with hue/perceptual denoise guards, inward-clipped masks, native-source ROI detail, import/count race protection and adaptive palette candidate selection. Independent whole-image/ROI contrast-based focus estimation supports multiple/no-focus outcomes. Type checking, lint, 147 unit tests and environment-safety checks pass; the current 50-image browser benchmark passed 50/50 in 55.084 seconds. The full browser and external development-corpus acceptance is recorded in the November 3 repair review. Human attention accuracy is not measured without independent annotations.
+The first daily-use repair fixes contrast false positives and selected-color display mismatch. Preview and export share explicit passed/failed/unexamined evidence; small text uses 4.5:1 and fallback/current role colors remain selectable. Type checking, lint, 155 unit tests, 33 regular browser workflows, environment safety and production build pass. See docs/REVIEWS/2026-11-03-contrast-role-trust.md. Manual edit preservation, project recovery and the remaining roadmap stages are still pending.
 
 ## Production (historical checks; repair revision acceptance is separate)
 
@@ -24,7 +24,7 @@ The local image pipeline now runs in cancellable Workers with hue/perceptual den
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 147 unit tests and 29 regular browser workflows pass locally; 50/50 benchmark fixtures and 30/30 independent development sources pass separately
+- 155 unit tests and 33 regular browser workflows pass locally for the contrast/role unit. The earlier 50/50 benchmark and 30/30 development-source results are historical; those opt-in suites were not rerun for this unit.
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures
@@ -79,4 +79,4 @@ The local image pipeline now runs in cancellable Workers with hue/perceptual den
 
 ## Next action
 
-Collect an independent two-reviewer focus annotation pilot and freeze held-out criteria; then qualify on balanced labeled images. Investigate remaining category-level color coverage regressions, broaden photographic product/portrait data, and complete Firefox/WebKit and deployed-revision acceptance. Keep the current development-only minimatch audit issue visible until a compatible dependency-chain update is reviewed.
+Next preserve manual role edits through re-extraction and unified-series domain/strategy changes, then repair source-color fidelity and unify the single/series analysis entry point. Follow with recoverable project state and task-oriented layout. Focus qualification remains a later independently labeled stage. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.

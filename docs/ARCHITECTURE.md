@@ -100,3 +100,11 @@ Spatial analysis assigns thumbnail pixels to palette regions in OKLab space and 
 `raster.ts` uses high-quality ImageBitmap resampling and crops the native source before reducing a local ROI. It supports OffscreenCanvas in the Worker and Canvas in browser regression tests. Region feathers are clipped inward to the hard assignment mask. Palette extraction compares constrained-accent and coverage candidates and accepts a coverage alternative only when neither weighted sampled error nor sampled rejection gets worse. This sample-level guard is not a guarantee on all decoded pixels.
 
 `attention.ts` adds palette-independent whole-image/local focus candidates without a center prior or semantic claim. See `ATTENTION_EVALUATION.md` for formulas, thresholds, tests and the unexecuted human-annotation gate.
+
+## Shared contrast evidence and role selections
+
+`getContrastReport` emits per-pair evidence (`passed`, `failed`, `unexamined`), full-precision ratios, thresholds and actual checked/passed/total counts. Six-digit HEX validation excludes invalid or missing assignments from checked counts. Normal-size secondary text and the preview's small success/error labels use 4.5:1. The report covers only declared color pairs; it is not a complete accessibility certification.
+
+Home computes one report for the active role assignments and passes it to both DomainPreview and ExportPanel. SeriesWorkspace does the same for the unified preview/export. `ContrastAudit` renders those reports consistently, with expandable evidence and a clear warning when exporting a problematic or incomplete scheme. Export formats continue to preserve the current role values; the audit does not automatically recolor or block exports.
+
+RoleEditor deduplicates palette options case-insensitively, includes role-specific fallback colors and retains any current assignment outside the palette. Missing assignments have an explicit unassigned option. This fixes display/value mismatch; preserving manual edits through recomputation remains a subsequent milestone.

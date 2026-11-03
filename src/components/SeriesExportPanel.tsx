@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { createCssVariables, downloadText } from '../lib/exporters'
 import { createSeriesReport, createSeriesTokens } from '../lib/seriesExporters'
 import { downloadSeriesOverviewPng } from '../lib/seriesOverviewPng'
-import { getContrastReport } from '../domain/contrast'
+import type { ContrastReport } from '../domain/contrast'
+import ContrastAudit from './ContrastAudit'
 import type { RoleAssignments } from '../domain/assign'
 import type { SeriesComparisonReport } from '../domain/series'
 import type { UnifiedSeriesPalette } from '../domain/unify'
@@ -12,12 +13,12 @@ type SeriesExportPanelProps = {
   assignments: RoleAssignments
   comparison: SeriesComparisonReport
   imageLabels: Record<string, string>
+  contrastReport: ContrastReport
 }
 
-export default function SeriesExportPanel({ unified, assignments, comparison, imageLabels }: SeriesExportPanelProps) {
+export default function SeriesExportPanel({ unified, assignments, comparison, imageLabels, contrastReport }: SeriesExportPanelProps) {
   const [exporting, setExporting] = useState(false)
   const [error, setError] = useState('')
-  const audit = getContrastReport(unified.domain, assignments)
 
   const exportPng = async () => {
     setExporting(true)
@@ -35,9 +36,7 @@ export default function SeriesExportPanel({ unified, assignments, comparison, im
   return (
     <section className="series-export" aria-labelledby="series-export-title">
       <div className="panel-heading"><span>06</span><h3 id="series-export-title">导出系列成果</h3><small>PRODUCTION OUTPUT</small></div>
-      <p className={`series-export-audit ${audit.issues.length > 0 ? 'has-issues' : ''}`}>
-        {audit.issues.length === 0 ? `✓ ${audit.checked} 组关键对比检查通过` : `⚠ ${audit.issues.length} 组对比不足，仍可导出但建议先修正`}
-      </p>
+      <ContrastAudit report={contrastReport} className="series-export-audit" exporting />
       <div className="series-export-actions">
         <button onClick={() => downloadText(`palette-lab-series-${unified.strategy}.css`, createCssVariables(unified.domain, assignments), 'text/css;charset=utf-8')}><strong>CSS</strong><span>统一语义变量</span></button>
         <button onClick={() => downloadText(`palette-lab-series-${unified.strategy}.json`, createSeriesTokens(unified, assignments, comparison), 'application/json;charset=utf-8')}><strong>JSON</strong><span>系列设计令牌</span></button>

@@ -214,7 +214,9 @@ test('unifies a series with preserved accents and exports production artifacts',
   await page.getByRole('button', { name: '统一色组' }).click()
   await expect(page.getByRole('button', { name: '保留个性', exact: false })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('.series-exceptions')).toContainText('accent #4890e0')
-  await expect(page.locator('.series-export')).toContainText('4 组对比不足，仍可导出但建议先修正')
+  await expect(page.locator('.series-export')).toContainText('4 组对比不足')
+  await expect(page.locator('.series-export')).toContainText('仍可导出当前颜色，建议先修正')
+  await expect(page.locator('.series-export-audit')).toHaveAttribute('data-contrast-status', 'failed')
   await page.screenshot({ path: 'test-results/series-unified.png', fullPage: true })
 
   const cssEvent = page.waitForEvent('download')
