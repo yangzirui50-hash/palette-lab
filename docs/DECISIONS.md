@@ -180,3 +180,11 @@
 - **Decision:** Retain source-scoped ROI/manual candidates separately from the measured palette, commit validated HEX through existing scoped role edits, and put preview/export near editing with phone task navigation. Share report selection with dependent requests and transmit explicit local-area/source-coordinate scope. Produce a local palette-card PNG and separately cache stable client validation code.
 - **Reason:** Local discoveries and manual choices must survive to the actual preview/download without becoming fabricated source-area evidence. Users need a short route from editing to a deliverable, and the displayed report must be the one used by dependent actions.
 - **Tradeoffs:** Working candidates are capped at 24; removing one leaves already assigned roles intact. Preview locations are measured color regions, not semantic object positions or human fixation. Cache separation reduces main-chunk size but not validation's first-load cost. Real-device usability and independently labeled focus accuracy remain separate acceptance tasks.
+
+## ADR-026 — Separate contrast heat from stable focus-region evidence
+
+- **Status:** Implemented as review candidate, pending human interpretation review
+- **Date:** 2026-11-03
+- **Decision:** Retain existing heat, grow strong seeds through weaker measured support, preserve independently qualified strong cores, and require supported positions or abstention. Expose uncertainty and reasons instead of calling every candidate failure distributed. Version the focus model separately from palette preprocessing.
+- **Reason:** Text-like strokes can be individually below the energy gate even when their combined local response is meaningful. Simply lowering candidate energy or joining every nearby fragment risks noise and merged subjects. Uncertainty in the model is not evidence of a dispersed real-world scene.
+- **Tradeoffs:** 35% support is a conservative development choice, not a learned optimum. Adjacent sub-threshold structures may still merge and semantically important content may remain undetected. Global prototypes that made every development image a localized target were not selected merely for higher coverage. Human drafts and verbal feedback are diagnosis inputs, not qualifying spatial ground truth; review precedes merging this algorithm candidate into production.

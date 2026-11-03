@@ -7,6 +7,7 @@ import type { SpatialViews } from '../lib/color/spatialOverlay'
 import { analyzePaletteDiscrimination } from '../lib/color/metrics'
 import type { PaletteSwatch } from '../lib/color/extract'
 import './SpatialPanel.css'
+import AttentionEstimate from './AttentionEstimate'
 
 type SpatialPanelProps = {
   sourceFile: File
@@ -156,18 +157,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
       <div className="panel-heading"><span>06</span><h2 id="spatial-title">视觉重心与色彩地图</h2><small>SPATIAL EVIDENCE</small></div>
       <p className="spatial-intro">连续区域查看颜色边界，散点分布查看密度与显著中心；所有指标都是视觉证据，不是美观评分。</p>
       {!loading && !error && completedAnalysisKey === analysisKey && attentionResult && (
-        <details className="attention-panel">
-          <summary>{roi ? '局部' : '整图'}视觉焦点估计 · {{ empty: '没有可分析像素', uniform: '无明确焦点', distributed: '分散结构', single: '单焦点', multiple: '多焦点' }[attentionResult.attention.state]}</summary>
-          <p>依据原图的明暗与色彩反差独立估计，不受色板数量影响。人脸、文字和观看任务可能改变实际注意位置。</p>
-          <div className="attention-image" data-focus-state={attentionResult.attention.state}>
-            <img src={attentionResult.attentionUrl} alt={`${roi ? '框选区域' : '整张图片'}的视觉显著性估计热图`} />
-            {attentionResult.attention.foci.map((focus, index) => (
-              <span className="attention-marker" key={index} style={{ left: `${focus.x * 100}%`, top: `${focus.y * 100}%` }} aria-label={`候选焦点 ${index + 1}`}>{index + 1}</span>
-            ))}
-          </div>
-          <div className="attention-locations">{attentionResult.attention.foci.map((focus, index) => <span key={index}>候选 {index + 1}：横向 {(focus.x * 100).toFixed(1)}% · 纵向 {(focus.y * 100).toFixed(1)}%</span>)}</div>
-          <p>坐标从左上角起算。热度表示模型内的相对反差，不是被注视概率；多个焦点分别标出，避免把中间空白当成主体。</p>
-        </details>
+        <AttentionEstimate attention={attentionResult.attention} imageUrl={attentionResult.attentionUrl} local={Boolean(roi)} />
       )}
       <div className="spatial-roi-actions">
         <button onClick={() => {

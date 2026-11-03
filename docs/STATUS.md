@@ -4,6 +4,8 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
+Review candidate `fix/focus-region-evidence` implements focus model 1.1.0: measured-support region growth, protected strong targets, supported positions, explicit uncertainty/reasons and response bounds. It also repairs count intent being overwritten by interleaved analysis completion. See `REVIEWS/2026-11-03-focus-regions.md`. This algorithm candidate is separate from published main; no human focus-accuracy acceptance is claimed.
+
 Five daily-use repair units are implemented. The latest connects native-ROI candidates and validated manual HEX to recoverable role edits, adds a palette-card PNG and nearby desktop preview/export with phone navigation, and fixes report selection and ROI evidence scope. Validation code has a separate stable chunk; main client JS is about 446kB (147kB gzip), plus 98kB (28kB gzip) validation. This improves caching rather than removing first-load validation cost. See docs/REVIEWS/2026-11-03-workbench-delivery.md. Release checks are recorded separately from local regression. The preceding source-pipeline unit's 50/30 operational suites are not rerun for unchanged image algorithms; independent human focus qualification remains pending.
 
 ## Production (historical checks; repair revision acceptance is separate)

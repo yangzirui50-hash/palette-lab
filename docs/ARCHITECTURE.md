@@ -1,5 +1,11 @@
 # Palette Lab — Architecture
 
+## Candidate focus-region evidence 1.1.0
+
+`attention.ts` still computes the same palette-independent 64-cell contrast heat. `attentionRegions.ts` selects regions separately, using opaque-pixel weights, 50%-peak seeds and contiguous 35%-peak support. Original independently qualified strong components remain separate if weaker support connects them. The 8% total-energy, 30% leading-energy and three-marker limits remain. Each marker has measured support; ambiguous projections abstain. Broad response, fragmentation and ambiguous location have separate reasons, with explicit uncertainty rather than falsely asserting dispersed structure.
+
+AttentionEvidence carries model version, state/reason and support/qualification diagnostics through ColorAnalysisClient's structured Worker response. The new AttentionEstimate component uses those fields to distinguish evidence from semantics, render response bounds and expose omitted qualifying candidates. It does not alter source palettes, role assignments, AI request bodies or saved project/report formats. Candidate 1.1.0 is under review separately from the published application baseline.
+
 ## Working colors and delivery (November 3, fifth unit)
 
 The optional/default-empty `SingleDraft.workingColors` field extends version-1 projects without rejecting older records/backups. Up to 24 candidates retain source ID, manual/ROI provenance and local ROI/share metadata. Their measured global share is always zero. Role changes and candidate creation are one undoable edit; source replacement clears candidates. HEX form drafts are keyed by source/domain/strategy, and only validated normalized commits enter project state. Series custom colors use the existing scoped role drafts and exported zero-share palette entries.

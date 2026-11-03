@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Candidate focus-region model 1.1.0 (review branch)
+
+- Kept the contrast heat unchanged and added strong-seed/weak-support region growth with protected independent strong cores.
+- Distinguished broad response from fragmented/ambiguous evidence; unsupported or ambiguous positions abstain instead of marking a blank center.
+- Added explicit model version/reasons, response bounds and qualification limits in the UI.
+- Fixed completed source analysis resetting newer count intent between clicks; project undo/redo/import still restores the processed count explicitly.
+- Added geometry, bridge, transparency, uncertainty and actual Worker/browser regressions. This is a candidate branch, not a claim of human attention accuracy or a production release.
+
 ## 2026-11-03 — Repair blind-review image delivery
 
 - Embedded hash-verified image bytes into each standalone reviewer HTML, removing its dependency on a sibling image directory when moved or opened separately.
