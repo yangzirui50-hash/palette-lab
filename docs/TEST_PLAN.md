@@ -1,6 +1,6 @@
 # Palette Lab Comprehensive Test Plan
 
-_Last updated: 2026-11-01_
+_Last updated: 2026-11-03_
 
 ## 1. Product-specific quality goals
 
@@ -72,4 +72,10 @@ Priority meanings:
 
 Every report distinguishes unit tests, regular browser workflows, opt-in benchmarks, real versus synthetic images, local versus production, and passed/failed/not-run. No single aggregate percentage may hide a failed category or an unexecuted environment.
 
-Current execution result: see `docs/REVIEWS/2026-11-01-comprehensive-test-report.md` — 72 unit tests and 25 regular browser workflows passed locally; 50/50 benchmark images passed. Firefox/WebKit, production and broader real-world generalization remain not run or unverified.
+Historical November 1 execution result: see `docs/REVIEWS/2026-11-01-comprehensive-test-report.md` — 72 unit tests and 25 regular browser workflows passed locally; 50/50 benchmark images passed. Firefox/WebKit, production and broader real-world generalization remain not run or unverified.
+
+## November 3 additions
+
+Mandatory regression covers denoising enabled, actual rendered overlay pixels, import/count races, native ROI detail, re-import reset and visible multiple/no-focus results. Optional 30-image development runs exercise 4/6/8 colors, both modes, normalized shares, provenance hashes, no network API, no stale ROI and unchanged focus candidates across palette counts. High-quality resampling is part of the pipeline under comparison.
+
+Focus contracts, independent region annotation protocol, multiple-focus recall/precision, no-focus false positives, center baseline, aspect-aware error, held-out gates and the proposed 1000-image allocation are defined in `ATTENTION_EVALUATION.md`. The human-label gate is not run until a qualifying independent dataset exists. The current change does not claim Firefox/WebKit or real-device acceptance.

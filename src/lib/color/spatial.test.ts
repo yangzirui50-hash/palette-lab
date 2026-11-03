@@ -56,12 +56,21 @@ describe('spatial palette evidence', () => {
     expect(region.largestComponentShare).toBe(1)
   })
 
-  it('removes isolated salt-and-pepper assignments without erasing real regions', () => {
+  it('preserves an isolated real accent instead of repainting it as its neighbors', () => {
     const pixels = Array.from({ length: 16 }, () => grayPixel)
     pixels[5] = redPixel
     const regions = analyzePaletteSpatial(pixels, 4, 4, [gray, red])
-    expect(regions[0].pixelCount).toBe(16)
-    expect(regions[1].pixelCount).toBe(0)
+    expect(regions[0].pixelCount).toBe(15)
+    expect(regions[1].pixelCount).toBe(1)
+  })
+
+  it.each([1, 2])('does not put a %s-pixel red detail in the blue selection after denoising', (size) => {
+    const blue = swatch('#0000ff')
+    const pixels = Array.from({ length: 81 }, (): RGBPixel => [0, 0, 255])
+    for (let offset = 0; offset < size; offset += 1) pixels[40 + offset] = redPixel
+    const result = buildSpatialAssignments(pixels, 9, 9, [blue, red], true)
+    for (let offset = 0; offset < size; offset += 1) expect(result.assignments[40 + offset]).toBe(1)
+    expect(result.assignments[0]).toBe(0)
   })
 
   it('excludes transparent pixels from shares and connected regions', () => {

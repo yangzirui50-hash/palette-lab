@@ -4,8 +4,8 @@ import fs from 'node:fs'
 import { performance } from 'node:perf_hooks'
 
 const baseFixtures = [
-  ['person-test.png', 'real-person'],
-  ['night-city-test.png', 'real-night'],
+  ['person-test.png', 'owner-art-person'],
+  ['night-city-test.png', 'owner-art-night'],
   ['neon-test.png', 'neon'],
   ['product-reflection-test.png', 'product'],
   ['landscape-test.png', 'landscape'],
@@ -63,7 +63,7 @@ test('benchmarks 50 diverse images with timing and category reporting', async ({
   const report = {
     date: new Date().toISOString(),
     totalImages: fixtures.length,
-    realImages: 2,
+    ownerProvidedArtImages: 2,
     syntheticImages: 48,
     totalMs: Math.round(performance.now() - started),
     passed: results.filter((item) => item.status === 'passed').length,

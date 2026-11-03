@@ -92,3 +92,11 @@ Local palette editing, previews and exports remain available when AI or stock AP
 Series comparison reuses extracted palettes and roles without rereading image pixels. It supports at most six images and uses deterministic optimal matching plus existing-role medoids for balanced unification; no RGB averaging or AI call is required. Preserve Accents and role locks are explicit export data. Series overview PNG uses a bounded native Canvas renderer rather than cloning the full interactive workspace.
 
 Spatial analysis assigns thumbnail pixels to palette regions in OKLab space and reports centroid, center/edge distribution and connected components. Region highlighting runs locally. The optional validated `spatial` request field passes the same evidence to DeepSeek so semantic analysis can distinguish background, central subjects and small accents without relying on area alone.
+
+## 2026-11-03: local analysis worker
+
+`src/lib/color/analysisClient.ts` owns a cancellable module Worker in `src/lib/color/analysis.worker.ts`. Source raster loading, palette clustering, assignments, distribution/focus analysis and overlay encoding run there. Response IDs and source/ROI keys reject stale work; switching render modes reuses cached frame/evidence. Home count changes read synchronous refs. Previous analysis controls are hidden during a pending import.
+
+`raster.ts` uses high-quality ImageBitmap resampling and crops the native source before reducing a local ROI. It supports OffscreenCanvas in the Worker and Canvas in browser regression tests. Region feathers are clipped inward to the hard assignment mask. Palette extraction compares constrained-accent and coverage candidates and accepts a coverage alternative only when neither weighted sampled error nor sampled rejection gets worse. This sample-level guard is not a guarantee on all decoded pixels.
+
+`attention.ts` adds palette-independent whole-image/local focus candidates without a center prior or semantic claim. See `ATTENTION_EVALUATION.md` for formulas, thresholds, tests and the unexecuted human-annotation gate.

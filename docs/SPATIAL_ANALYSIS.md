@@ -72,3 +72,11 @@ Spatial data remains deterministic. AI may interpret it but may not alter measur
 - Provider prompt test confirms `largestComponentShare` is transmitted
 - Real DeepSeek request with left-base, central-accent and right-support evidence returned HTTP 200 and an accurate composition summary
 - The November 1 acceptance baseline passed 72 unit tests and 25 real-browser workflows, along with ESLint and production build; see `docs/TEST_CORPUS.md` for scope and limits and `docs/REVIEWS/2026-11-02-github-sync.md` for the synchronization check
+
+## 2026-11-03 implementation changes
+
+Analysis and encoding run in a cancellable Worker. ROI crops original pixels before resizing and exposes a local detail preview while retaining full-image context. Color-count changes retain the current source; explicit re-import resets ROI. Same-file re-import is also an explicit new source.
+
+Denoising cannot replace a reliable isolated accent with an incompatible neighborhood hue or increase its OKLab error by more than 0.01. Feathering is clipped inward, so colors outside selected assignments cannot leak through the mask. The interface now says credible matched area, because palette cluster share and validated pixel coverage are different estimates.
+
+Selected-color hotspot position remains distinct from the new whole-image focus estimate. Its UI label no longer implies a universal visual center. Whole-image contrast candidates and limits are defined in `ATTENTION_EVALUATION.md`; multiple candidates are not averaged into an empty gap, and uniform/distributed images can have no explicit focus.

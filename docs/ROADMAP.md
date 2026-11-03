@@ -52,3 +52,7 @@
 ## Delivery discipline
 
 Every phase requires a working build, relevant tests, a Git commit, a remote backup and an explicit review before scope expands.
+
+## Current precision stage (2026-11-03)
+
+Implement pipeline correctness and independent contrast-based focus first. Next obtain a two-reviewer focus annotation pilot, freeze standards, then run held-out qualification. Scale toward 100 controlled +400 development +500 held-out unique images only after failure classes and provenance are established. See `ATTENTION_EVALUATION.md`; a thousand uploads alone is not an accuracy acceptance gate.

@@ -1,4 +1,5 @@
 import Color from 'colorjs.io'
+import { buildSpatialAssignments } from './spatial'
 
 export type RGBPixel = readonly [number, number, number]
 
@@ -93,13 +94,15 @@ function findSalientCenters(samples: WeightedSample[], dominant: RGBPixel): RGBP
     .filter((center) => distanceSquared(center, dominant) > 0.0064)
 }
 
-function initialCenters(samples: WeightedSample[], count: number): { centers: RGBPixel[]; protectedCount: number } {
+function initialCenters(samples: WeightedSample[], count: number, accentBudget: number): { centers: RGBPixel[]; protectedCount: number } {
   const remaining = [...samples]
   const centers: RGBPixel[] = []
   const first = remaining.reduce((best, sample) => sample.weight > best.weight ? sample : best)
   centers.push(first.oklch)
+  // Reserve slots for population-weighted coverage. Frozen accent centers
+  // must not consume a small palette and exclude broad neutral/light regions.
   for (const salient of findSalientCenters(samples, first.oklch)) {
-    if (centers.length >= count) break
+    if (centers.length - 1 >= accentBudget) break
     if (centers.every((center) => distanceSquared(center, salient) > 0.0064)) centers.push(salient)
   }
 
@@ -128,16 +131,7 @@ function directSwatches(samples: WeightedSample[]): PaletteSwatch[] {
     .sort((a, b) => b.share - a.share)
 }
 
-export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): PaletteSwatch[] {
-  if (pixels.length === 0) throw new Error('At least one pixel is required')
-  if (!Number.isInteger(colorCount) || colorCount < 2 || colorCount > 8) {
-    throw new Error('colorCount must be an integer between 2 and 8')
-  }
-
-  const samples = buildSamples(pixels)
-  if (samples.length <= colorCount) return directSwatches(samples)
-
-  const initialization = initialCenters(samples, colorCount)
+function clusterSamples(samples: WeightedSample[], initialization: ReturnType<typeof initialCenters>): PaletteSwatch[] {
   let centers = initialization.centers
   const protectedCount = initialization.protectedCount
   const assignments = new Array<number>(samples.length).fill(0)
@@ -190,4 +184,32 @@ export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): Pal
     })
     .filter((swatch): swatch is PaletteSwatch => swatch !== null)
     .sort((a, b) => b.share - a.share)
+}
+
+function candidateQuality(samples: WeightedSample[], palette: PaletteSwatch[]) {
+  const result = buildSpatialAssignments(samples.map(sample => sample.rgb), samples.length, 1, palette, false)
+  let rejected = 0
+  let error = 0
+  samples.forEach((sample, index) => {
+    if (result.assignments[index] === 65535) rejected += sample.weight
+    error += Math.sqrt(Math.min(...palette.map(color => distanceSquared(sample.oklch, color.oklch)))) * sample.weight
+  })
+  return { rejected, error }
+}
+
+export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): PaletteSwatch[] {
+  if (pixels.length === 0) throw new Error('At least one pixel is required')
+  if (!Number.isInteger(colorCount) || colorCount < 2 || colorCount > 8) throw new Error('colorCount must be an integer between 2 and 8')
+  const samples = buildSamples(pixels)
+  if (samples.length <= colorCount) return directSwatches(samples)
+  const coverageInitialization = initialCenters(samples, colorCount, colorCount <= 4 ? Math.floor(colorCount / 3) : colorCount - 3)
+  const accentInitialization = initialCenters(samples, colorCount, colorCount - 1)
+  const coverage = clusterSamples(samples, coverageInitialization)
+  if (accentInitialization.protectedCount === coverageInitialization.protectedCount) return coverage
+  const accents = clusterSamples(samples, accentInitialization)
+  const coverageQuality = candidateQuality(samples, coverage)
+  const accentQuality = candidateQuality(samples, accents)
+  // Accept a coverage candidate only if neither sampled color error nor reliable
+  // coverage regresses. This is a per-image comparison, never a fixture exception.
+  return coverageQuality.rejected <= accentQuality.rejected && coverageQuality.error <= accentQuality.error ? coverage : accents
 }

@@ -45,7 +45,7 @@ test('keeps red families out of deep-blue regions and resets ROI on source chang
     if (!response.ok) throw new Error('Missing night fixture')
     const file = new File([await response.blob()], 'night-city-test.png', { type: 'image/png' })
     const data = await imageFileToSpatialData(file)
-    const result = buildSpatialAssignments(data.pixels, data.width, data.height, palette, false)
+    const result = buildSpatialAssignments(data.pixels, data.width, data.height, palette, true)
     return data.pixels.reduce((count, rgb, index) => count + (
       rgb && rgb[0] > 50 && rgb[0] > rgb[1] * 1.4 && rgb[0] > rgb[2] * 1.2 && result.assignments[index] === selectedIndex ? 1 : 0
     ), 0)

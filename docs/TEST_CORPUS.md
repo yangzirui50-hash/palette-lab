@@ -45,3 +45,9 @@ Separate workflows check periodic red/blue family preservation, person ROI behav
 ## Limits
 
 Synthetic fixtures cover algorithmic mechanisms but do not prove universal real-world quality. More independent real photography, portraits, products and complex scenes are still required before making a broad production-generalization claim. Analysis has already increased from 320 to 512 pixels; fidelity beyond that baseline and actionable hotspots remain separate acceptance stages.
+
+## November 3 development evidence
+
+`docs/fixtures/development-corpus-sources.json` records 30 independent licensed Wikimedia sources with category, author, source/license URLs and SHA256. Each of six groups has five examples: night, nature, portrait, product, art and design. This includes photographs, paintings and graphics. Portrait is mixed-media; product is largely still-life art, so neither group establishes portrait-photo or reflective-product-photo generalization. Downloads are optional and remain outside Git. These images were used for diagnosis/tuning and are development-only.
+
+The earlier 50-image suite contains two owner-provided art/anime scenes and 48 generated images; older report labels `real-person`/`real-night` did not establish photography provenance. The current reporter names them owner art. The 30-source suite verifies complete browser operations at 4/6/8 colors, both spatial modes and palette-independent focus invariance. These are functional and engineering evidence, not human attention ground truth.

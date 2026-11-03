@@ -55,3 +55,7 @@ The domains share the color engine but use separate rules, previews, exports and
 ## Product north star
 
 A user can turn visual inspiration into a usable, explainable design color system while retaining control over every decision.
+
+## Focus evidence acceptance (2026-11-03)
+
+The visual-center feature must distinguish selected-color location from whole-image focus. It must support multiple candidates, no-focus results, original-source ROI detail and palette-count invariance. Local processing and editable color roles remain core requirements. Human attention accuracy is gated on independent annotations; see `ATTENTION_EVALUATION.md`.

@@ -137,7 +137,20 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
           }
         }
         const majority = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0] - b[0])[0]
-        if (majority && majority[1] >= 6) next[index] = majority[0]
+        if (majority && majority[1] >= 6) {
+          const pixel = pixels[index]
+          if (!pixel) continue
+          const lab = oklab(pixel)
+          const candidate = palette[majority[0]].oklch
+          const chroma = Math.hypot(lab[1], lab[2])
+          const hue = ((Math.atan2(lab[2], lab[1]) * 180 / Math.PI) + 360) % 360
+          const hueGap = Math.abs(((hue - candidate[2] + 540) % 360) - 180)
+          const compatible = chroma < 0.02 ? candidate[1] < 0.035 : candidate[1] >= 0.02 && hueGap <= 30
+          const currentDistance = Math.sqrt(distanceSquared(lab, paletteLab[assignments[index]]))
+          const candidateDistance = Math.sqrt(distanceSquared(lab, paletteLab[majority[0]]))
+          // Neighborhood agreement cannot override reliable, incompatible color evidence.
+          if (compatible && candidateDistance <= currentDistance + 0.01) next[index] = majority[0]
+        }
       }
     }
     assignments = next

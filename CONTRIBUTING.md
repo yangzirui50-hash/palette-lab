@@ -38,3 +38,5 @@ Run `npm audit` during dependency changes and before release. Prefer compatible 
 ## Commits and backups
 
 Keep commits scoped to understandable milestones. Do not mix unrelated feature work with documentation-only changes. A task is not considered backed up until the remote push succeeds.
+
+External corpus commands and their scope are documented in README. Keep downloaded images under ignored `.external-corpus/` or an explicit external directory; commit only attributed provenance, hashes and reports. Independent human focus labels must be acquired before reporting localization accuracy. A development corpus cannot be relabeled as held-out after tuning.

@@ -3,10 +3,10 @@ import '../App.css'
 import '../themes.css'
 import { domainProfiles } from '../domain/profiles'
 import type { DomainId } from '../domain/profiles'
-import { extractPalette } from '../lib/color/extract'
-import type { PaletteSwatch, RGBPixel } from '../lib/color/extract'
+import type { PaletteSwatch } from '../lib/color/extract'
 import type { SpatialRegionEvidence } from '../lib/color/spatial'
-import { imageFileToPixels } from '../lib/color/image'
+import { ColorAnalysisClient } from '../lib/color/analysisClient'
+import type { PaletteResult } from '../lib/color/analysisClient'
 import { useTheme } from '../hooks/useTheme'
 import { copyText } from '../lib/clipboard'
 import { assignPaletteRoles } from '../domain/assign'
@@ -30,7 +30,10 @@ type SourceState = {
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null)
-  const pixelsRef = useRef<RGBPixel[]>([])
+  const paletteClient = useRef(new ColorAnalysisClient())
+  const latestFile = useRef<File | null>(null)
+  const colorCountRef = useRef(6)
+  const sourceRef = useRef<SourceState | null>(null)
   const uploadRequestRef = useRef(0)
   const { theme, toggleTheme } = useTheme()
   const [mode, setMode] = useState<'single' | 'series'>('single')
@@ -48,6 +51,11 @@ export default function Home() {
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState('')
+
+  useEffect(() => {
+    const client = paletteClient.current
+    return () => client.cancel()
+  }, [])
 
   useEffect(() => {
     document.documentElement.dataset.domain = domain
@@ -76,24 +84,26 @@ export default function Home() {
     setDomain(nextDomain)
   }
 
-  const processFile = async (file?: File) => {
+  const processFile = async (file?: File, preserveSource = false) => {
     if (!file) return
+    latestFile.current = file
     const requestId = ++uploadRequestRef.current
     setBusy(true)
     setError('')
     setCopied('')
     setSpatialEvidence([])
     try {
-      const processed = await imageFileToPixels(file)
-      if (requestId !== uploadRequestRef.current) {
-        URL.revokeObjectURL(processed.previewUrl)
-        return
+      const processed = await paletteClient.current.run<PaletteResult>({ kind: 'palette', file, count: colorCountRef.current })
+      if (requestId !== uploadRequestRef.current) return
+      applyPalette(processed.palette)
+      const nextSource = preserveSource && sourceRef.current?.file === file ? sourceRef.current : {
+        url: URL.createObjectURL(file), name: file.name, width: processed.width, height: processed.height, file,
       }
-      pixelsRef.current = processed.pixels
-      applyPalette(extractPalette(processed.pixels, colorCount))
-      setSource({ url: processed.previewUrl, name: file.name, width: processed.width, height: processed.height, file })
+      sourceRef.current = nextSource
+      setSource(nextSource)
     } catch (reason) {
       if (requestId === uploadRequestRef.current) {
+        latestFile.current = sourceRef.current?.file ?? null
         setError(reason instanceof Error ? reason.message : '图片处理失败，请重试')
       }
     } finally {
@@ -105,9 +115,11 @@ export default function Home() {
     }
   }
 
-  const changeColorCount = (nextCount: number) => {
+  const changeColorCount = (step: number) => {
+    const nextCount = Math.max(2, Math.min(8, colorCountRef.current + step))
+    colorCountRef.current = nextCount
     setColorCount(nextCount)
-    if (pixelsRef.current.length > 0) applyPalette(extractPalette(pixelsRef.current, nextCount))
+    if (latestFile.current) void processFile(latestFile.current, true)
   }
 
   const copyColor = async (hex: string) => {
@@ -196,18 +208,20 @@ export default function Home() {
             <div className="privacy-note"><span aria-hidden="true">●</span> 原始图片不会离开此设备</div>
           </div>
 
-          <div className="palette-panel">
+          <div className="palette-panel" aria-busy={busy}>
             <div className="panel-heading">
               <span>02</span><h2>色彩结果</h2><small>{palette.length} COLORS</small>
             </div>
             <div className="palette-toolbar">
               <label htmlFor="color-count">提取数量</label>
               <div className="count-control">
-                <button aria-label="减少颜色数量" onClick={() => changeColorCount(Math.max(2, colorCount - 1))} disabled={colorCount <= 2}>−</button>
+                <button aria-label="减少颜色数量" onClick={() => changeColorCount(-1)} disabled={colorCount <= 2}>−</button>
                 <output>{colorCount}</output>
-                <button aria-label="增加颜色数量" onClick={() => changeColorCount(Math.min(8, colorCount + 1))} disabled={colorCount >= 8}>＋</button>
+                <button aria-label="增加颜色数量" onClick={() => changeColorCount(1)} disabled={colorCount >= 8}>＋</button>
               </div>
             </div>
+
+            {busy && <p role="status">正在更新色板…</p>}
 
             {palette.length > 0 ? (
               <>
@@ -241,7 +255,7 @@ export default function Home() {
         </section>
 
         {source && palette.length > 0 && (
-          <div hidden={mode !== 'single'}>
+          <div hidden={mode !== 'single' || busy}>
             <RoleEditor
               domain={domain}
               palette={palette}
@@ -251,7 +265,7 @@ export default function Home() {
                 [domain]: { ...current[domain], [role]: hex },
               }))}
             />
-            <SpatialPanel key={`${source.file.name}:${source.file.lastModified}:${source.file.size}`} sourceFile={source.file} palette={palette} onEvidenceChange={setSpatialEvidence} />
+            <SpatialPanel key={source.url} sourceFile={source.file} palette={palette} onEvidenceChange={setSpatialEvidence} />
             <DomainPreview domain={domain} assignments={assignments} spatial={spatialEvidence} renderRef={setPreviewTarget} />
             <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} spatialEvidence={spatialEvidence} report={analysisReport} onReportChange={setAnalysisReport} />
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />

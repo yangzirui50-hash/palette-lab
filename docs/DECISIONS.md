@@ -132,3 +132,11 @@
 - **Date:** 2026-10-27
 - **Decision:** Build series mode around cross-image role consistency, reproducible differences and three unification strategies. Keep pixel-level recoloring and universal aesthetic scores out of scope.
 - **Reason:** Provide practical design-system value and a defensible workflow distinction without pretending that color extraction alone proves semantics or that all variation is undesirable.
+
+## ADR-020 — Local cancellable image analysis and independent focus evidence
+
+- **Status:** Accepted and implemented
+- **Date:** 2026-11-03
+- **Decision:** Run deterministic image analysis/rendering in a module Worker; crop native ROI first; guard denoising by original pixel color; clip feathering inward. Compare coverage and accent extraction candidates per image rather than special-casing fixtures. Expose whole-image focus independently of selected-color density, including abstention and multiple candidates.
+- **Reason:** Correct complete user-visible pipelines, remove synchronous main-thread analysis, and avoid confusing color density with human attention. Keep human-quality validation explicitly pending until independent labels exist.
+- **Tradeoffs:** Total time may increase despite smoother interaction. Resampling changes decoded evidence and must be measured end to end. Focus remains a bottom-up contrast heuristic, without face/text semantics or calibrated probabilities.

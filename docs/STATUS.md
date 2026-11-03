@@ -1,12 +1,12 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-11-02_
+_Last updated: 2026-11-03_
 
 ## Current phase
 
-The deterministic series workflow and dual-mode spatial evidence layer are implemented. Hue-safe constrained extraction, confidence-aware assignment, dominant-component placement, normalized significance and nearest-swatch OKLab discrimination are verified. Analysis now runs at 512 pixels with eight-neighbor continuity and 0.65 px highlight feathering. 72 unit tests and 25 regular browser workflows pass. The 50-image precision benchmark passed 50/50 in 73.290 seconds; actionable hotspots and broader real-image coverage remain future stages.
+The local image pipeline now runs in cancellable Workers with hue/perceptual denoise guards, inward-clipped masks, native-source ROI detail, import/count race protection and adaptive palette candidate selection. Independent whole-image/ROI contrast-based focus estimation supports multiple/no-focus outcomes. Type checking, lint, 147 unit tests and environment-safety checks pass; the current 50-image browser benchmark passed 50/50 in 55.084 seconds. The full browser and external development-corpus acceptance is recorded in the November 3 repair review. Human attention accuracy is not measured without independent annotations.
 
-## Production
+## Production (historical checks; repair revision acceptance is separate)
 
 - Public URL: https://palette-lab.3476554092.workers.dev/
 - Cloudflare Workers is connected to the dedicated GitHub repository and `main` branch.
@@ -24,7 +24,7 @@ The deterministic series workflow and dual-mode spatial evidence layer are imple
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
 - HEX output is normalized to six digits
-- 72 unit tests and 25 real-browser workflow tests pass locally
+- 147 unit tests and 29 regular browser workflows pass locally; 50/50 benchmark fixtures and 30/30 independent development sources pass separately
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures
@@ -54,8 +54,8 @@ The deterministic series workflow and dual-mode spatial evidence layer are imple
 - Desktop and 390px mobile layouts pass without horizontal overflow
 - ESLint passes
 - Runtime dependencies reduced from 48 to 7
-- `npm audit` reports 0 known vulnerabilities after compatible updates and reviewed overrides
-- Previous GitHub Actions CI runs pass on `main`
+- The November 3 security recheck found a moderate development-only minimatch advisory (GHSA-g3hv-75wg-m249); earlier zero-vulnerability reports are historical. The audit job remains active and fails while this is unresolved.
+- The last synchronized baseline a4376fd failed its npm audit step; historical green CI is not current acceptance. Security and functional verification now run as independent jobs without suppressing audit failures.
 
 ## Repository
 
@@ -79,4 +79,4 @@ The deterministic series workflow and dual-mode spatial evidence layer are imple
 
 ## Next action
 
-Expand the independent real-image corpus and complete Firefox/WebKit and deployed-revision acceptance. Then implement actionable distribution hotspots and continue region-edge and precision/performance work. After Unsplash approval, separately configure its Access Key and verify real attributed search plus comparison. Deterministic multi-image comparison and unification are already implemented.
+Collect an independent two-reviewer focus annotation pilot and freeze held-out criteria; then qualify on balanced labeled images. Investigate remaining category-level color coverage regressions, broaden photographic product/portrait data, and complete Firefox/WebKit and deployed-revision acceptance. Keep the current development-only minimatch audit issue visible until a compatible dependency-chain update is reviewed.

@@ -64,3 +64,14 @@ npm audit
 ## Publishing discipline
 
 Each completed phase is reviewed, committed and pushed to `main`. Secrets and local environment files must never be committed.
+
+## External development corpus and focus evaluation
+
+```bash
+node scripts/fetch-corpus.mjs
+npm run test:corpus -- .external-corpus/manifest.json
+```
+
+The opt-in fetch verifies 30 attributed Wikimedia source files against SHA256 and caches them outside Git. Existing-file hash verification was exercised locally; fresh network downloads can fail if source bytes change, which requires provenance review. Sources include photographs, paintings and graphics; the product group is largely still-life art, not reflective-product photography. These are development examples, not a held-out accuracy benchmark.
+
+`docs/ATTENTION_EVALUATION.md` defines the palette-independent focus algorithm, test contracts and optional independently annotated evaluation via `ATTENTION_MANIFEST`. Without that dataset, the human-quality test is skipped explicitly. No API key or AI request is needed for these checks.

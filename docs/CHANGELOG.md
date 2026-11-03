@@ -2,6 +2,16 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Repair color pipelines and add independent focus estimation
+
+- Moved raster analysis and rendering to cancellable local Workers with response IDs and cache scoping; fixed rapid color-count changes and pending-import stale controls.
+- Guarded denoising by original hue and perceptual error; clipped feather masks inward. Native-resolution ROI analysis now has a local detail preview and explicit re-import reset.
+- Compared accent-preserving and coverage-oriented palette candidates without fixture exceptions, and improved substantial downscaling to reduce texture aliasing.
+- Added whole-image/ROI contrast-based focus candidates independently of palette count, including multiple/no-focus states, numbered heatmaps and explicit semantic limits.
+- Added geometric focus contracts, actual-overlay/race/ROI browser checks, an attributed 30-source development corpus and an optional independently annotated held-out focus evaluator.
+- Defined multi-focus recall, candidate precision, no-focus false positives, aspect-aware localization and proposed 1000-image allocation in ATTENTION_EVALUATION.md. Human-label accuracy remains unmeasured.
+- Separated the unchanged security audit into its own CI job so functional checks can run while the known development dependency advisory stays visible.
+
 ## 2026-11-02 — Reconcile conversation changes for GitHub synchronization
 
 - Matched the October 28–November 1 conversation to all ten local commits after the previous GitHub baseline `de78279`; the implemented changes and historical test reports are already committed.
