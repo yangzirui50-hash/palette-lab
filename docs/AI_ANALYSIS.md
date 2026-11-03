@@ -26,7 +26,7 @@ Validated by `analysisReportSchema`:
 - Uncertainties
 - Provider and model metadata
 
-Invalid provider output is rejected instead of being rendered as trusted content.
+Invalid provider output is rejected instead of being rendered as trusted content. Each recommendation has the exact string fields `title`, `rationale` and `action`. The provider prompt names these fields explicitly. For an observed legacy compatible-provider reply, a string `actionable` is accepted as an alias only when `action` is absent; the normalized record still passes the complete report schema. Existing `action` values are never replaced by the alias, and an invalid explicit value still fails validation. This bounded compatibility conversion does not invent advice or accept a malformed report.
 
 ## Providers
 

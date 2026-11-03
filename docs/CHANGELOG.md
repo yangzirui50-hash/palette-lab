@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Preserve valid recommendation text from legacy provider replies
+
+- Replaced ambiguous recommendation wording with the exact `title`, `rationale`, `action` string fields.
+- Normalized the observed string alias `actionable` only when `action` is absent, retaining complete schema validation and existing explicit values.
+- Verified the actual captured mixed-key failure reply recovers in one transport attempt, alongside two real DeepSeek report calls, unit regression and relevant browser workflows. No focus task is added to report generation.
+- Kept the compatibility repair on the isolated review branch; no production deployment or model-ranking acceptance is implied.
+
 ## 2026-11-03 — Clean default for focus presentation (review branch)
 
 - Showed unpainted source/ROI pixels instead of default heat and filled grid cells after presentation review found the mosaic distracting.

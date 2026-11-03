@@ -61,6 +61,36 @@ describe('analysis API', () => {
     expect(report.uncertainties.length).toBeGreaterThan(0)
   })
 
+  it('accepts the observed legacy action-text alias without another paid request', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const report = await mockAnalysisProvider.analyze(requestBody)
+    const recommendations = report.recommendations.map(({ action, ...item }) => ({ ...item, actionable: action }))
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ ...report, recommendations }) } }] })))
+    vi.stubGlobal('fetch', fetchMock)
+    try {
+      const response = await app.request('/api/analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(200)
+      const payload = await response.json()
+      expect(payload.recommendations).toEqual(report.recommendations)
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    } finally { vi.unstubAllGlobals() }
+  })
+
+  it('rejects malformed action values and retains an explicit action over an extra alias', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const report = await mockAnalysisProvider.analyze(requestBody)
+    const responseFor = (recommendations: unknown) => new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ ...report, recommendations }) } }] }))
+    const invalid = report.recommendations.map(item => ({ ...item, action: 42, actionable: 'A valid-looking alias must not hide an invalid explicit action.' }))
+    const fetchMock = vi.fn().mockResolvedValueOnce(responseFor(invalid)).mockResolvedValueOnce(responseFor(report.recommendations.map(item => ({ ...item, actionable: 'An extra key must not replace the explicit action.' }))))
+    vi.stubGlobal('fetch', fetchMock)
+    try {
+      const response = await app.request('/api/analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(200)
+      expect((await response.json()).recommendations).toEqual(report.recommendations)
+      expect(fetchMock).toHaveBeenCalledTimes(2)
+    } finally { vi.unstubAllGlobals() }
+  })
+
   it('returns an honest unconfigured response without a key', async () => {
     const response = await app.request('/api/analysis', {
       method: 'POST',

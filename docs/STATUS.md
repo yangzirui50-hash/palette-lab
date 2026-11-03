@@ -4,6 +4,12 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
+The semantic-focus candidate is backed up at `fix/semantic-focus-deepseek` (`fb77cb6`); its text hierarchy has passed presentation review only. Subject priorities and model boxes remain unaccepted. `fix/focus-priority-evaluation` now preserves this UI while comparing bounded ranking alternatives outside the repository. Production main remains `ed7d32f`.
+
+The follow-up fixes the observed aesthetics-report `actionable`/`action` ambiguity with precise prompt fields and a string-only legacy alias when the explicit field is absent. 244 unit tests, four relevant browser workflows, type/lint, production build and environment-safety checks pass. The exact previously failing mixed-key reply succeeds in one replayed transport; two real `/api/analysis` Hono-handler calls in Node also succeed on their first attempt. These checks do not establish model quality or deployed Cloudflare acceptance. Raw images, outputs and private comments remain outside Git. The prior 74-workflow complete browser run belongs to the unchanged semantic-focus candidate, not a new full run for this backend-only fix.
+
+Historical stages follow; their earlier pending presentation decisions and test counts do not supersede the current candidate record.
+
 Presentation follow-up: default image readability takes precedence over grid visualization. The prototype now shows unpainted source/ROI pixels with an optional contrast-evidence toggle, initially off and reset on source replacement. The filled-grid default was rejected in review; that is a presentation decision, not semantic focus acceptance. Follow-up verification passes 230 unit tests and 71 browser checks (70 regular plus 50-image benchmark), with three opt-in suites skipped. Production main is unchanged; the prototype remains isolated.
 
 Local review branch `fix/focus-structure-prototype` now carries `1.2.0-prototype`, based on published daily reliability plus the prior focus candidate. The full verbal review has been received and archived privately; it identified unresolved subject, ordering, missing-region and over-localization problems. The current unit removes nearest-supported-cell projection, preserves measured response masks, groups connected parent support and separates contrast evidence from perceived-focus claims. See `FOCUS_OUTPUT_CONTRACT.md`. No semantic focus acceptance or production merge is implied. The previous release and candidate records below are historical.
