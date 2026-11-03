@@ -2,6 +2,12 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Repair blind-review image delivery
+
+- Embedded hash-verified image bytes into each standalone reviewer HTML, removing its dependency on a sibling image directory when moved or opened separately.
+- Added a loopback-only browser entry with no upload/file-reading endpoints, and clear browser-opening guidance for chat previews.
+- Added standalone-page reload and local-serving regressions. Packet identity, original bytes and annotation export format remain unchanged.
+
 ## 2026-11-03 — Prepare independent human focus protocol rehearsal
 
 - Added offline A/B blind-annotation pages generated from hash-verified licensed development images, with uncertainty, normalized regions, local saving and identity-checked JSON progress restore/export.

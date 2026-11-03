@@ -55,3 +55,22 @@ test('reviewers have isolated drafts and no phone overflow in the blind tool', a
   await expect(page.locator('[name=state]:checked')).toHaveCount(0)
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
 })
+
+test('portable reviewer page shows embedded images after moving the HTML alone and reloading', async ({ page }) => {
+  const requests: string[] = []
+  const imageDataUrl = `data:image/png;base64,${fs.readFileSync('tests/fixtures/palette-test.png').toString('base64')}`
+  const standalone = { ...packet, reviewer: 'A', entries: packet.entries.map(entry => ({ ...entry, imageDataUrl })) }
+  await page.route('https://pilot.test/**', route => {
+    requests.push(route.request().url())
+    return route.request().url() === 'https://pilot.test/moved/reviewer.html'
+      ? route.fulfill({ contentType: 'text/html', body: template.replace('/*__PACKET__*/null', JSON.stringify(standalone)) })
+      : route.abort()
+  })
+  await page.goto('https://pilot.test/moved/reviewer.html')
+  await expect(page.locator('#stage')).toHaveAttribute('data-loaded', 'true')
+  expect(await page.locator('#photo').evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+  await page.locator('#jump').selectOption('1'); await expect(page.locator('#stage')).toHaveAttribute('data-loaded', 'true')
+  await page.reload(); await expect(page.locator('#stage')).toHaveAttribute('data-loaded', 'true')
+  expect(requests.every(url => url === 'https://pilot.test/moved/reviewer.html')).toBe(true)
+  await expect(page.locator('#error')).toHaveText('')
+})

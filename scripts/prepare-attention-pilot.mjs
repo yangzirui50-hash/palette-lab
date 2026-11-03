@@ -26,10 +26,16 @@ const template = fs.readFileSync(path.join(root, 'scripts/templates/attention-pi
 // The same five starter images support a cheap paired wording review. Orders
 // differ, but the first five must overlap before either reviewer labels all 30.
 const starters = new Set([0, 5, 10, 15, 20].map(index => entries[index].id))
+const embedded = new Map(entries.map(entry => {
+  const mime = entry.file.endsWith('.webp') ? 'image/webp' : 'image/jpeg'
+  return [entry.id, `data:${mime};base64,${fs.readFileSync(path.resolve(images, entry.file)).toString('base64')}`]
+}))
 for (const reviewer of ['A', 'B']) {
   // Distinct deterministic orders reduce discussion/order contamination, not dataset bias.
   const order = [...entries].sort((a, b) => Number(starters.has(b.id)) - Number(starters.has(a.id)) || createHash('sha256').update(reviewer + a.id).digest('hex').localeCompare(createHash('sha256').update(reviewer + b.id).digest('hex')))
-  const payload = JSON.stringify({ ...packet, reviewer, entries: order }).replaceAll('<', '\\u003c')
+  // Each page is portable on its own; chat/file previews may lose sibling assets.
+  // Keep bytes out of packet.json and exported annotation/checkpoint JSON.
+  const payload = JSON.stringify({ ...packet, reviewer, entries: order.map(entry => ({ ...entry, imageDataUrl: embedded.get(entry.id) })) }).replaceAll('<', '\\u003c')
   fs.writeFileSync(path.join(out, `评审${reviewer}.html`), template.replace('/*__PACKET__*/null', payload))
 }
 fs.copyFileSync(path.join(root, 'docs/ATTENTION_PILOT_GUIDE.txt'), path.join(out, '先读我.txt'))

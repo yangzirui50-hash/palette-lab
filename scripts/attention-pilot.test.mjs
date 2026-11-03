@@ -5,6 +5,8 @@ import path from 'node:path'
 import os from 'node:os'
 import { createHash } from 'node:crypto'
 import { spawnSync } from 'node:child_process'
+import { once } from 'node:events'
+import { createPilotServer } from './serve-attention-pilot.mjs'
 import { boxIoU, matchBoxes, compareReviews } from './lib/attention-pilot.mjs'
 // Deliberately synthetic QA records. They never enter the human review packet.
 const box = { x: .1, y: .2, width: .2, height: .3 }
@@ -60,4 +62,22 @@ test('comparison CLI verifies bytes and renders escaped human notes without gene
   fs.writeFileSync(path.join(directory, 'images', fixturePacket.entries[0].file), 'tampered')
   assert.notEqual(command().status, 0)
   // Retain this tiny, explicitly synthetic OS-temp evidence; do not touch user files.
+})
+
+test('local review server serves only reviewer pages, disallows uploads and file access', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'palette-pilot-server-qa-'))
+  fs.writeFileSync(path.join(directory, '评审A.html'), '<!doctype html><title>A fixture</title>')
+  fs.writeFileSync(path.join(directory, '评审B.html'), '<!doctype html><title>B fixture</title>')
+  const server = createPilotServer(directory)
+  server.listen(0, '127.0.0.1'); await once(server, 'listening')
+  try {
+    const url = `http://127.0.0.1:${server.address().port}`
+    const response = await fetch(`${url}/review-a`)
+    assert.equal(response.status, 200); assert((await response.text()).includes('A fixture'))
+    assert.equal(response.headers.get('cache-control'), 'no-store')
+    assert(response.headers.get('content-security-policy').includes("connect-src 'none'"))
+    assert.equal((await fetch(`${url}/review-b`, { method: 'HEAD' })).status, 200)
+    assert.equal((await fetch(`${url}/packet.json`)).status, 404)
+    assert.equal((await fetch(`${url}/review-a`, { method: 'POST', body: 'must-not-upload' })).status, 404)
+  } finally { await new Promise(resolve => server.close(resolve)) }
 })
