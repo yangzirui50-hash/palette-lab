@@ -34,8 +34,8 @@ async function scope(task: Exclude<ColorTask, { kind: 'palette' }>) {
   })
   heatContext.putImageData(heatData, 0, 0)
   attentionContext.drawImage(heatCanvas, 0, 0, frame.width, frame.height)
-  const attentionUrl = await rasterDataUrl(attentionCanvas)
-  const result: SpatialResult = { palette, regions: spatial.regions, unassignedShare: spatial.unassignedShare, distributions, attention, attentionUrl, width: frame.width, height: frame.height }
+  const [attentionSourceUrl, attentionUrl] = await Promise.all([rasterDataUrl(frame.canvas), rasterDataUrl(attentionCanvas)])
+  const result: SpatialResult = { palette, regions: spatial.regions, unassignedShare: spatial.unassignedShare, distributions, attention, attentionUrl, attentionSourceUrl, width: frame.width, height: frame.height }
   cached = { key, result, render: { frame, overview, components: spatial.components, distributions } }
   return cached
 }

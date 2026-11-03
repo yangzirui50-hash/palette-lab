@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Clean default for focus presentation (review branch)
+
+- Showed unpainted source/ROI pixels instead of default heat and filled grid cells after presentation review found the mosaic distracting.
+- Added an explicit evidence toggle with keyboard access, reversible source display and evidence-off reset on source replacement.
+- Kept supported compact positions and measured diagnostic support; did not restore unsupported projected dots or claim semantic accuracy from a display change.
+- Verified source-pixel fidelity, show/hide, replacement reset, mobile layout, the complete regular browser workflows, a 50-image operational run and built-Worker delivery. Private review comments remain outside Git.
+
 ## 2026-11-03 — Structural response prototype 1.2.0 (local review)
 
 - Defined measured contrast, geometric presentation and perceived focus as separate layers, with explicit unsupported subject/priority/no-dominant claims.

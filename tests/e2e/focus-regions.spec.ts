@@ -44,6 +44,8 @@ test('keeps independent strong targets without inventing connectivity from a fai
   await expect(page.locator('.attention-panel summary')).toContainText('多处局部反差')
   await page.locator('.attention-panel summary').click()
   await expect(page.locator('.attention-marker')).toHaveCount(2)
+  await expect(page.locator('.attention-region')).toHaveCount(0)
+  await page.getByRole('button',{name:'显示反差证据',exact:true}).click()
   // The drawn gray connector falls below measured support after contrast
   // normalization. It must not be filled just because it connects in RGB.
   await expect(page.locator('.attention-region')).toHaveCount(2)
@@ -53,7 +55,7 @@ test('keeps independent strong targets without inventing connectivity from a fai
   await expect(page.locator('.attention-panel')).toContainText('多个标记不代表多个主体')
 })
 
-test('keeps a hollow outline as measured support instead of projecting a visual-center dot', async ({page}) => {
+test('defaults to unpainted source pixels, exposes outline evidence on demand and resets on replacement', async ({page}) => {
   await page.goto('/'); await expect(page.locator('.workspace')).toBeVisible()
   await page.evaluate(async()=>{
     const canvas=document.createElement('canvas'); canvas.width=canvas.height=128
@@ -67,10 +69,31 @@ test('keeps a hollow outline as measured support instead of projecting a visual-
   })
   await expect(page.locator('.attention-panel summary')).toContainText('区域或轮廓响应')
   await page.locator('.attention-panel summary').click()
+  await expect(page.locator('.attention-region')).toHaveCount(0)
+  const source=await page.locator('.attention-image img').getAttribute('src')
+  const borderPixel=async()=>page.locator('.attention-image img').evaluate(async element=>{
+    const image=element as HTMLImageElement;await image.decode()
+    const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight
+    const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0)
+    return [...ctx.getImageData(24,64,1,1).data]
+  })
+  expect(await borderPixel()).toEqual([240,240,240,255])
+  await page.getByRole('button',{name:'显示反差证据',exact:true}).focus()
+  await page.keyboard.press('Space')
   await expect(page.locator('.attention-region')).toHaveCount(1)
   await expect(page.locator('.attention-marker')).toHaveCount(0)
   await expect(page.locator('.attention-region')).toHaveAttribute('data-response-geometry','outline')
   await expect(page.locator('.attention-panel')).toContainText('不强行选一个中心点')
+  expect(await borderPixel()).not.toEqual([240,240,240,255])
+  await page.getByRole('button',{name:'收起反差证据',exact:true}).click()
+  await expect(page.locator('.attention-region')).toHaveCount(0)
+  await expect(page.locator('.attention-image img')).toHaveAttribute('src',source!)
+  expect(await borderPixel()).toEqual([240,240,240,255])
+  await page.getByRole('button',{name:'显示反差证据',exact:true}).click()
+  await page.locator('.workspace input[type=file]').setInputFiles('tests/fixtures/palette-test.png')
+  await expect(page.locator('.source-meta strong')).toHaveText('palette-test.png')
+  await expect(page.getByRole('button',{name:'显示反差证据',exact:true,includeHidden:true})).toHaveAttribute('aria-pressed','false')
+  await expect(page.locator('.attention-region')).toHaveCount(0)
   await page.setViewportSize({width:390,height:844})
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)).toBe(false)
 })

@@ -34,4 +34,8 @@ The first bridge UI assertion assumed a painted gray connector necessarily quali
 
 ## Next decision
 
-Obtain a narrow presentation judgment on supported ranges versus forced dots in four changed examples. This does not repeat all 30 annotations or accept semantic accuracy. Presentation approval alone must not globally merge the prototype. Next evaluate semantic evidence and relation/contour extraction against dedicated failure strata and new independent images, keeping color/role workflows stable. The thousand-image task remains downstream of an evaluator matching the output contract.
+The presentation judgment has arrived: the filled-grid default is distracting. The follow-up therefore displays unpainted source/ROI pixels, retaining the grid/heat as opt-in evidence and preserving the rule against unsupported projected dots. It does not infer per-case semantic approval. No repeat 30-image review is requested.
+
+Follow-up verification: 230 unit tests; 71 browser tests passed (70 regular workflows plus the 50-image operational benchmark), with three unrelated opt-in suites skipped. The hollow-outline browser case checks actual source pixels, keyboard enable, changed evidence pixels, exact source restoration, source replacement reset and mobile width. Production-build Worker smoke and 30 original-image digest/report checks passed; all archived overlays remain collapsed by default. The report's first digest helper was blocked by the intentional `connect-src 'none'` rule when it tried fetching data URLs; the helper now decodes embedded bytes directly, without weakening CSP.
+
+Next evaluate semantic evidence and relation/contour extraction against dedicated failure strata and new independent images, keeping color/role workflows stable. The thousand-image task remains downstream of an evaluator matching the output contract. Clearer presentation alone is not a global algorithm merge gate.

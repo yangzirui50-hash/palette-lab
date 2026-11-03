@@ -22,7 +22,7 @@ type SpatialPanelProps = {
 export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, roi: controlledRoi, onRoiChange, retainedHexes = [], onAddColor }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
-  const [attentionResult, setAttentionResult] = useState<Pick<SpatialResult, 'attention' | 'attentionUrl'> | null>(null)
+  const [attentionResult, setAttentionResult] = useState<Pick<SpatialResult, 'attention' | 'attentionUrl' | 'attentionSourceUrl'> | null>(null)
   const client = useRef(new ColorAnalysisClient())
   const [analysisSize, setAnalysisSize] = useState({ width: 0, height: 0 })
   const [completedAnalysisKey, setCompletedAnalysisKey] = useState('')
@@ -72,7 +72,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
       setEvidence(result.regions)
       setUnassignedShare(result.unassignedShare)
       setDistributions(result.distributions)
-      setAttentionResult({ attention: result.attention, attentionUrl: result.attentionUrl })
+      setAttentionResult({ attention: result.attention, attentionUrl: result.attentionUrl, attentionSourceUrl: result.attentionSourceUrl })
       setAnalysisSize({ width: result.width, height: result.height })
       setCompletedAnalysisKey(analysisKey)
       // The consumer retains ROI scope and maps positions to the source before
@@ -157,7 +157,7 @@ export default function SpatialPanel({ sourceFile, palette, onEvidenceChange, ro
       <div className="panel-heading"><span>06</span><h2 id="spatial-title">视觉重心与色彩地图</h2><small>SPATIAL EVIDENCE</small></div>
       <p className="spatial-intro">连续区域查看颜色边界，散点分布查看密度与显著中心；所有指标都是视觉证据，不是美观评分。</p>
       {!loading && !error && completedAnalysisKey === analysisKey && attentionResult && (
-        <AttentionEstimate attention={attentionResult.attention} imageUrl={attentionResult.attentionUrl} local={Boolean(roi)} />
+        <AttentionEstimate attention={attentionResult.attention} imageUrl={attentionResult.attentionUrl} sourceImageUrl={attentionResult.attentionSourceUrl} local={Boolean(roi)} />
       )}
       <div className="spatial-roi-actions">
         <button onClick={() => {

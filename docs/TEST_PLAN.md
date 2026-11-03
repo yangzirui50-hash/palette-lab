@@ -4,6 +4,8 @@ _Last updated: 2026-11-03_
 
 ## Structural response prototype 1.2.0
 
+Clean-view follow-up passes 230 unit tests and 71 browser checks (70 regular workflows plus 50-image operational benchmark; three opt-ins skipped). Assertions cover exact unpainted source pixels, keyboard and pointer evidence toggle, source restoration, source-replacement reset and phone width. Built-Worker checks include the clean default and opt-in outline; report QA verifies all 30 original byte hashes and collapsed overlay archives. Attention math is unchanged, so the prior 30-image heat/matrix diagnostics remain historical evidence rather than repeated accuracy claims.
+
 See `FOCUS_OUTPUT_CONTRACT.md` and `REVIEWS/2026-11-03-focus-structure.md`. Validation: 230 unit tests/26 files, seven pilot CLI/server tests, 73 complete browser tests (70 regular plus 50-image benchmark, 30-image count/view matrix and 30-image structural probe), and nine final focused browser tests passed. Independent perceived-focus qualification is skipped: the machine-readable contrast-only capability cannot be scored as semantic state/priority by the legacy harness. Type, lint, environment safety, production build, real built-Worker smoke and self-contained 60-image report/mobile checks are recorded in the external dated archive. Output counts, repeated rotations/crops and fewer markers are not accuracy gains. Human comments, image/model bytes and simulated scope-guard parameters stay outside Git.
 
 ## 1. Product-specific quality goals

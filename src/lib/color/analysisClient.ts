@@ -10,7 +10,7 @@ export type ColorTask =
   | ({ kind: 'spatial' } & Scope)
   | ({ kind: 'render'; hex: string; mode: 'largest' | 'all'; view: 'regions' | 'distribution' } & Scope)
 export type PaletteResult = ImagePaletteResult
-export type SpatialResult = { palette: PaletteSwatch[]; regions: SpatialRegionEvidence[]; distributions: PaletteDistribution[]; attention: AttentionEvidence; attentionUrl: string; unassignedShare: number; width: number; height: number }
+export type SpatialResult = { palette: PaletteSwatch[]; regions: SpatialRegionEvidence[]; distributions: PaletteDistribution[]; attention: AttentionEvidence; attentionUrl: string; attentionSourceUrl: string; unassignedShare: number; width: number; height: number }
 export type ColorResponse = { id: number; result?: unknown; error?: string }
 
 export class ColorAnalysisClient {

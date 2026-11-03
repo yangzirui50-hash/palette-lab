@@ -2,6 +2,8 @@
 
 ## Structural evidence prototype 1.2.0
 
+Clean-view follow-up adds an unpainted `attentionSourceUrl` from the same raster used for analysis, including ROI cropping. Source and evidence PNG encoding share immutable canvases and run concurrently in the Worker. The component uses the source by default; the heat image and SVG support mask are only mounted after an explicit toggle. Reanalysis unmounts the result while loading, returning new source/ROI results to evidence-off. Neither attention math nor source palettes, saved projects or AI requests changes.
+
 The contrast heat and energy/seed/growth gates remain unchanged. `attentionRegions.ts` now retains measured connected-parent cells and reports compact, extended, unsupported-center outline, or frame-like geometry. A weighted center outside measured support is no longer projected onto a nearby pixel. Eligible compact centers stay as positions; extended support can remain without a dot. Connected parent masks are shown once, with qualified independent cores still distinguished. This is evidence grouping, not semantic deduplication.
 
 The Worker transports sorted grid cells to `AttentionEstimate`; SVG row runs preserve measured holes/alpha gaps and replace misleading full bounding-rectangle fills. UI labels call low contrast unresolved focus, not semantic no-focus. Marker count and energy order are explicitly distinct from subject count and perceived priority. No project format, AI request, source-palette or role-assignment change is introduced. See `FOCUS_OUTPUT_CONTRACT.md` for geometry rules, unsupported claims and staged acceptance.
