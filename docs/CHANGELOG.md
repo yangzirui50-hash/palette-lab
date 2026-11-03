@@ -2,6 +2,12 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Prepare independent human focus protocol rehearsal
+
+- Added offline A/B blind-annotation pages generated from hash-verified licensed development images, with uncertainty, normalized regions, local saving and identity-checked JSON progress restore/export.
+- Added validated one-to-one region comparison and a human disagreement review page; partial/uncertain cases remain explicit and no qualifying labels are invented.
+- Added synthetic tool QA and documented the actual-content gaps behind retrieval category prefixes. Real human labels and held-out qualification remain pending.
+
 ## 2026-11-03 — Deliver local colors through editing, previews and exports
 
 - Added recoverable ROI/manual working candidates without changing source palette shares; role HEX editing accepts normalized three/six-digit values in single and series flows.

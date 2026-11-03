@@ -18,6 +18,9 @@ Five daily-use repair units are implemented. The latest connects native-ROI cand
 
 ## Verified
 
+- Fifth-unit local acceptance: 208 unit tests and 58 regular browser workflows pass, followed by actual production-build and public smoke. GitHub verify succeeds for 2bb529f; security remains the separately reported dependency failure.
+- The two-reviewer 30-image development-pilot tool and comparison workflow are prepared. Human annotations and held-out focus qualification remain pending. The six corpus prefixes are retrieval buckets, not proof of actual-content balance.
+
 - Product, architecture, roadmap and multi-platform documents are established
 - React + TypeScript + Vite production build passes
 - Hono + Cloudflare Workers foundation is configured

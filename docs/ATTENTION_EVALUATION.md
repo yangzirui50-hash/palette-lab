@@ -25,6 +25,12 @@ These are geometry/implementation contracts, not real-photo attention accuracy.
 
 ## Independent annotation protocol
 
+The offline 30-image protocol pilot is prepared by `scripts/prepare-attention-pilot.mjs IMAGE_DIRECTORY OUTPUT_DIRECTORY`. See `ATTENTION_PILOT_GUIDE.txt`. It validates cached development-image hashes and preserves provenance/attribution, then generates separate A/B pages with distinct orders, normalized-box drawing, uncertainty/notes, local saving, identity-checked JSON restore/export and no algorithm overlays or network calls. Browser fixture tests are synthetic tool QA, not human labels.
+
+After two real independent reviewers return their files, `scripts/compare-attention-pilot.mjs PACKET_JSON REVIEW_A_JSON REVIEW_B_JSON` validates identities, images, geometry and completion, and produces a disagreement JSON and side-by-side human-box HTML. Matching maximizes total one-to-one IoU; different state/count, overlap below 0.5 or either reviewer's uncertainty are discussion items, never automatically adjudicated truth. Missing/partial records remain explicit. The IoU threshold is a discussion aid, not an algorithm acceptance threshold. No held-out manifest or accuracy claim is generated.
+
+These images have already been used in development, so the pilot is only a protocol rehearsal. The six original category prefixes are retrieval buckets: some product/portrait entries are still-life paintings or historical portraits. They do not establish modern product-photo/face/text/edge/negative coverage. Actual content and difficulty strata must be manually curated before sampling new development/held-out sets. Independent answers alone cannot make reused images held out.
+
 At least two reviewers mark zero/one/multiple focal regions before seeing predictions. Record disagreements and adjudicate ambiguous scenes separately. Cover faces, text/posters, products, nature, night, texture/no-focus negatives, edge subjects and multiple subjects. Record normalized boxes, source, license and SHA256. Never use the algorithm's own predictions as labels.
 
 The optional `attention-annotated.spec.ts` reads `ATTENTION_MANIFEST` and writes `test-results/attention-annotated-report.json`. Initial qualification requires >=100 images, >=20 negatives and >=5 categories. Smaller pilots produce metrics but fail qualification. Freeze these proposed engineering gates before the held-out run:
