@@ -7,6 +7,10 @@
 .role-field select { max-width: 105px; padding: 6px; border: 1px solid var(--line); border-radius: 7px; color: var(--text); background: var(--panel); font: 10px ui-monospace, monospace; }
 .role-lock { flex: 0 0 26px; padding: 5px 0; border: 0; border-radius: 6px; color: var(--muted); background: transparent; font-size: 9px; cursor: pointer; }
 .role-lock.locked { color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.role-edit-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin: -4px 0 16px; }
+.role-edit-actions p { flex: 1 1 240px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+.role-edit-actions button { flex: 0 0 auto; min-height: 34px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 7px; color: var(--accent); background: var(--soft); font-size: 11px; cursor: pointer; }
+.role-edit-badge { flex: 0 0 auto; color: var(--accent); font-size: 10px; font-style: normal; }
 .contrast-report { margin-bottom: 14px; padding: 10px 12px; border-radius: 9px; color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); font-size: 11px; line-height: 1.6; }
 .contrast-report.has-issues { color: #c64b45; background: #c64b4510; }
 .preview-web { overflow: hidden; min-height: 420px; border-radius: 14px; color: var(--preview-text); background: var(--preview-bg); font-family: Inter, system-ui, sans-serif; }

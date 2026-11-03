@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Preserve manual choices during analysis and strategy changes
+
+- Separated single-image manual role overrides from automatic suggestions, preserving both-domain choices during count-driven re-extraction and failed imports.
+- Added independent unified-series drafts per domain/strategy and last-strategy restoration per domain, retained through reordering, primary changes and partial image removal; clearing all images starts fresh drafts.
+- Applied manual unified roles before computing palette and locked-image exceptions so preview, role choices and exports agree. Untouched suggestions remain live; absent-source colors carry no invented area.
+- Added visible manual markers and a scoped restore-automatic action. Drafts remain in-memory; project/reload recovery is not claimed.
+- Added browser regressions for context boundaries and actual exports, plus domain regressions for override/lock/palette consistency.
+
 ## 2026-11-03 — Trustworthy contrast audits and role selectors
 
 - Fixed normal-size secondary and colored status text being accepted at 3:1; these preview labels now use 4.5:1 with full-precision comparisons.

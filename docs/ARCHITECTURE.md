@@ -107,4 +107,12 @@ Spatial analysis assigns thumbnail pixels to palette regions in OKLab space and 
 
 Home computes one report for the active role assignments and passes it to both DomainPreview and ExportPanel. SeriesWorkspace does the same for the unified preview/export. `ContrastAudit` renders those reports consistently, with expandable evidence and a clear warning when exporting a problematic or incomplete scheme. Export formats continue to preserve the current role values; the audit does not automatically recolor or block exports.
 
-RoleEditor deduplicates palette options case-insensitively, includes role-specific fallback colors and retains any current assignment outside the palette. Missing assignments have an explicit unassigned option. This fixes display/value mismatch; preserving manual edits through recomputation remains a subsequent milestone.
+RoleEditor deduplicates palette options case-insensitively, includes role-specific fallback colors and retains any current assignment outside the palette. Missing assignments have an explicit unassigned option. Retained manual colors remain selectable after recomputation.
+
+## Page-scoped manual role drafts
+
+Home stores only deliberate role overrides by domain and derives effective assignments from the latest automatic suggestions plus those overrides. The derived object is memoized so unrelated renders do not change its identity. A count-triggered re-extraction preserves overrides; a successful explicit source replacement starts a fresh draft. Failed imports do not clear the existing choices.
+
+SeriesWorkspace stores unified overrides by domain and strategy and remembers each domain's last selected strategy. Reordering, changing the primary, editing source roles or temporarily retaining only one image does not delete those drafts. Removing the final image starts a new series context and clears the drafts and strategy selections. `generateUnifiedSeriesPalette` accepts optional overrides before deriving effective roles, palette and locked-image exceptions, keeping preview and exported metadata aligned. Colors absent from remaining source palettes have zero measured source share rather than fabricated area. The role chooser includes source-image candidates as well as the effective unified palette.
+
+RoleEditor marks deliberate choices and exposes an explicit reset for the active domain/draft. Reset refreshes its suggestions without altering other domains or strategies. These records are in-memory page state; project persistence, undo/redo and reload recovery remain separate milestones.

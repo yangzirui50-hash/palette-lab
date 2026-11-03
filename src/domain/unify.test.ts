@@ -28,6 +28,36 @@ const primary = image('primary', '#080808', '#e0ff50')
 const candidate = image('candidate', '#181818', '#4890e0')
 
 describe('unified series strategies', () => {
+  it('includes a retained manual color in effective roles and the unified palette without inventing area', () => {
+    const result = generateUnifiedSeriesPalette([primary, candidate], 'primary', 'web-ui', 'balanced', { background: '#123456' })
+    expect(result.roles.background).toBe('#123456')
+    expect(result.palette.find(color => color.hex === '#123456')).toMatchObject({ share: 0 })
+    expect(result.rationale).toContain('1 项手动选择')
+    expect(primary.roles.background).toBe('#080808')
+  })
+
+  it('recomputes a locked-image exception when manual editing changes the global base', () => {
+    const locked = image('candidate', '#080808', '#4890e0', ['background'])
+    const result = generateUnifiedSeriesPalette([primary, locked], 'primary', 'web-ui', 'follow-primary', { background: '#123456' })
+    expect(result.roles.background).toBe('#123456')
+    expect(result.exceptions.candidate).toEqual({ background: '#080808' })
+  })
+
+  it('keeps a primary lock as a per-image exception while allowing an explicit global edit', () => {
+    const locked = image('primary', '#080808', '#e0ff50', ['background'])
+    const result = generateUnifiedSeriesPalette([locked, candidate], 'primary', 'web-ui', 'balanced', { background: '#123456' })
+    expect(result.roles.background).toBe('#123456')
+    expect(result.exceptions.primary).toEqual({ background: '#080808' })
+  })
+
+  it('updates untouched roles from the latest suggestion while retaining only explicit overrides', () => {
+    const changed = { ...primary, roles: { ...primary.roles, surface: '#765432' } }
+    const result = generateUnifiedSeriesPalette([changed, candidate], 'primary', 'web-ui', 'follow-primary', { background: '#123456' })
+    expect(result.roles.background).toBe('#123456')
+    expect(result.roles.surface).toBe('#765432')
+    expect(result.roles.accent).toBe(primary.roles.accent)
+  })
+
   it('follows the primary while preserving locked candidate roles', () => {
     const locked = image('candidate', '#181818', '#4890e0', ['accent'])
     const result = generateUnifiedSeriesPalette([primary, locked], 'primary', 'web-ui', 'follow-primary')

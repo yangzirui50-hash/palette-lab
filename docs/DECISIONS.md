@@ -148,3 +148,11 @@
 - **Decision:** Keep passed, failed and unexamined pair evidence in a typed contrast report; compare unrounded ratios; use the same report and presentation in preview/export for single and series flows. Include fallback/current role values in the selector even when absent from the extracted palette.
 - **Reason:** A skipped check must not become a success, and the editor must display the color actually rendered and exported. Small colored status text needs the same normal-text threshold as other small text.
 - **Tradeoffs:** Correct checks expose additional warnings in existing default schemes. Colors remain editable/exportable and are not silently corrected. Scope remains the declared pairs, rather than a claim of full WCAG compliance; role optimization and edit persistence follow separately.
+
+## ADR-022 — Preserve intent as scoped overrides, not frozen suggestions
+
+- **Status:** Accepted and implemented
+- **Date:** 2026-11-03
+- **Decision:** Store explicit single-image overrides by domain and unified-series overrides by domain/strategy. Derive untouched roles from current suggestions; recompute unified palettes and lock exceptions from the effective edited roles. Provide an explicit scoped reset, clear on successful new source/all-images removal, and keep choices after failed replacement.
+- **Reason:** Analysis updates and view/strategy changes must not silently erase user decisions. Freezing an entire suggested role table after one edit would also stop untouched roles from updating and could produce stale export exceptions.
+- **Tradeoffs:** Drafts are page-scoped, not saved projects. Different strategies keep independent choices restored when revisited. Global manual edits can produce per-image exceptions for locked original roles, including the primary image; the UI and export describe those exceptions explicitly.

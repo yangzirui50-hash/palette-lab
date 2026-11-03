@@ -28,6 +28,8 @@ type SeriesWorkspaceProps = {
   domain: DomainId
 }
 
+type UnifiedDrafts = Partial<Record<DomainId, Partial<Record<SeriesStrategy, RoleAssignments>>>>
+
 export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const urls = useRef(new Set<string>())
@@ -35,8 +37,9 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
   const [primaryId, setPrimaryId] = useState('')
   const [selectedId, setSelectedId] = useState('')
   const [view, setView] = useState<'overview' | 'inspect' | 'unify'>('overview')
-  const [strategy, setStrategy] = useState<SeriesStrategy>('preserve-accents')
-  const [manualUnified, setManualUnified] = useState<RoleAssignments | null>(null)
+  const [strategiesByDomain, setStrategiesByDomain] = useState<Partial<Record<DomainId, SeriesStrategy>>>({})
+  const strategy = strategiesByDomain[domain] ?? 'preserve-accents'
+  const [unifiedDrafts, setUnifiedDrafts] = useState<UnifiedDrafts>({})
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState('')
@@ -46,15 +49,12 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
     urls.current.clear()
   }, [])
 
-  useEffect(() => {
-    setManualUnified(null)
-  }, [images, primaryId, domain, strategy])
-
   const report = useMemo(() => {
     if (images.length < 2 || !primaryId) return null
     return compareSeries(images.map(({ id, label, palette, rolesByDomain }) => ({ id, label, palette, roles: rolesByDomain[domain] })), primaryId)
   }, [images, primaryId, domain])
 
+  const activeOverrides = unifiedDrafts[domain]?.[strategy]
   const unified = useMemo(() => {
     if (images.length < 2 || !primaryId) return null
     return generateUnifiedSeriesPalette(images.map(({ id, label, palette, rolesByDomain, lockedRoles }) => ({
@@ -63,9 +63,9 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
       palette,
       roles: rolesByDomain[domain],
       lockedRoles,
-    })), primaryId, domain, strategy)
-  }, [images, primaryId, domain, strategy])
-  const unifiedAssignments = manualUnified ?? unified?.roles ?? {}
+    })), primaryId, domain, strategy, activeOverrides)
+  }, [images, primaryId, domain, strategy, activeOverrides])
+  const unifiedAssignments = unified?.roles ?? {}
   const unifiedContrastReport = getContrastReport(domain, unifiedAssignments)
 
   const selected = images.find((image) => image.id === selectedId) ?? images[0]
@@ -121,6 +121,10 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
       urls.current.delete(removed.url)
     }
     setImages(next)
+    if (next.length === 0) {
+      setUnifiedDrafts({})
+      setStrategiesByDomain({})
+    }
     if (primaryId === id) setPrimaryId(next[0]?.id ?? '')
     if (selectedId === id) setSelectedId(next[0]?.id ?? '')
   }
@@ -278,7 +282,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
                     ['balanced', '折中统一', '每张作品一票，选择全系列距离最小的现有代表色。'],
                     ['preserve-accents', '保留个性', '统一基础角色，每张作品保留自己的强调色。'],
                   ] as const).map(([id, label, description]) => (
-                    <button key={id} className={strategy === id ? 'active' : ''} onClick={() => setStrategy(id)} aria-pressed={strategy === id}>
+                    <button key={id} className={strategy === id ? 'active' : ''} onClick={() => setStrategiesByDomain((current) => ({ ...current, [domain]: id }))} aria-pressed={strategy === id}>
                       <strong>{label}</strong><span>{description}</span>
                     </button>
                   ))}
@@ -298,9 +302,21 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
               </section>
               <RoleEditor
                 domain={domain}
-                palette={unified.palette}
+                palette={[...unified.palette, ...images.flatMap(image => image.palette)]}
                 assignments={unifiedAssignments}
-                onChange={(role, hex) => setManualUnified({ ...unifiedAssignments, [role]: hex })}
+                editedRoles={Object.keys(activeOverrides ?? {})}
+                editHint="各领域和策略分别保留手动选择；重排或更换主图也会保留。"
+                onResetAll={() => setUnifiedDrafts((current) => ({
+                  ...current,
+                  [domain]: { ...current[domain], [strategy]: {} },
+                }))}
+                onChange={(role, hex) => setUnifiedDrafts((current) => ({
+                  ...current,
+                  [domain]: {
+                    ...current[domain],
+                    [strategy]: { ...current[domain]?.[strategy], [role]: hex },
+                  },
+                }))}
               />
               <DomainPreview domain={domain} assignments={unifiedAssignments} contrastReport={unifiedContrastReport} />
               <SeriesExportPanel

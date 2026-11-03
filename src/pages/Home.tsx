@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import '../App.css'
 import '../themes.css'
 import { domainProfiles } from '../domain/profiles'
@@ -42,8 +42,11 @@ export default function Home() {
   const [domain, setDomain] = useState<DomainId>('web-ui')
   const [colorCount, setColorCount] = useState(6)
   const [palette, setPalette] = useState<PaletteSwatch[]>([])
-  const [assignmentsByDomain, setAssignmentsByDomain] = useState<Record<DomainId, RoleAssignments>>({ 'web-ui': {}, 'art-poster': {} })
-  const assignments = assignmentsByDomain[domain]
+  const [roleOverrides, setRoleOverrides] = useState<Partial<Record<DomainId, RoleAssignments>>>({})
+  const assignments = useMemo(() => ({
+    ...assignPaletteRoles(palette, domain),
+    ...roleOverrides[domain],
+  }), [palette, domain, roleOverrides])
   const contrastReport = getContrastReport(domain, assignments)
   const [previewTarget, setPreviewTarget] = useState<HTMLElement | null>(null)
   const [source, setSource] = useState<SourceState | null>(null)
@@ -74,14 +77,6 @@ export default function Home() {
     return () => window.clearTimeout(timer)
   }, [copied])
 
-  const applyPalette = (nextPalette: PaletteSwatch[]) => {
-    setPalette(nextPalette)
-    setAssignmentsByDomain({
-      'web-ui': assignPaletteRoles(nextPalette, 'web-ui'),
-      'art-poster': assignPaletteRoles(nextPalette, 'art-poster'),
-    })
-  }
-
   const changeDomain = (nextDomain: DomainId) => {
     setDomain(nextDomain)
   }
@@ -97,8 +92,12 @@ export default function Home() {
     try {
       const processed = await paletteClient.current.run<PaletteResult>({ kind: 'palette', file, count: colorCountRef.current })
       if (requestId !== uploadRequestRef.current) return
-      applyPalette(processed.palette)
-      const nextSource = preserveSource && sourceRef.current?.file === file ? sourceRef.current : {
+      const sameSource = preserveSource && sourceRef.current?.file === file
+      setPalette(processed.palette)
+      // Clear drafts only when a replacement actually succeeds. Re-extraction
+      // updates suggestions without overwriting deliberate choices.
+      if (!sameSource) setRoleOverrides({})
+      const nextSource = sameSource ? sourceRef.current! : {
         url: URL.createObjectURL(file), name: file.name, width: processed.width, height: processed.height, file,
       }
       sourceRef.current = nextSource
@@ -262,7 +261,10 @@ export default function Home() {
               domain={domain}
               palette={palette}
               assignments={assignments}
-              onChange={(role, hex) => setAssignmentsByDomain((current) => ({
+              editedRoles={Object.keys(roleOverrides[domain] ?? {})}
+              editHint="改变色数会保留手动颜色；更换图片会开始新方案。"
+              onResetAll={() => setRoleOverrides((current) => ({ ...current, [domain]: {} }))}
+              onChange={(role, hex) => setRoleOverrides((current) => ({
                 ...current,
                 [domain]: { ...current[domain], [role]: hex },
               }))}

@@ -61,11 +61,11 @@ Implement pipeline correctness and independent contrast-based focus first. Next 
 
 The owner confirmed daily usability first, with portfolio value retained. The following order supersedes the earlier focus-first next action:
 
-1. Trust repair: contrast false positives and role display/value mismatch (first delivery unit); then manual edit preservation and source-color fidelity.
+1. Trust repair: contrast false positives and role display/value mismatch are complete in the first unit; page-scoped manual edit preservation is complete in the second. Source-color fidelity is next.
 2. A shared analysis entry point and versioned preprocessing across single/series modes, with partial batch success.
 3. Recoverable project state, autosave, undo/redo, role locks/overrides and report snapshots.
 4. A task-oriented workspace with nearby preview/export, local-color application, explicit color editing and usable palette-card output.
 5. Quality calibration on difficult real imagery, followed by a small independently labeled focus pilot and held-out evaluation before the 1000-image scale run.
 6. Portfolio case-study evidence and further platform/provider/visual expansion only after the daily workflow is reliable.
 
-Each delivery unit has its own regression evidence. Completing the first contrast/selector unit does not mark the remaining trust, state or layout work complete.
+Each delivery unit has its own regression evidence. The second unit passes 159 unit tests and 37 regular browser workflows; these counts do not replace independent algorithm qualification. Completing contrast/selector and manual-draft repairs does not mark source fidelity, persistent state or layout work complete.

@@ -40,7 +40,7 @@ function representativeRole(images: SeriesStrategyImage[], role: string) {
   }, { hex: candidates[0] ?? '', cost: Number.POSITIVE_INFINITY, support: 0 }).hex
 }
 
-export function generateUnifiedSeriesPalette(images: SeriesStrategyImage[], primaryId: string, domain: DomainId, strategy: SeriesStrategy): UnifiedSeriesPalette {
+export function generateUnifiedSeriesPalette(images: SeriesStrategyImage[], primaryId: string, domain: DomainId, strategy: SeriesStrategy, roleOverrides: RoleAssignments = {}): UnifiedSeriesPalette {
   if (images.length < 2 || images.length > 6) throw new Error('Series requires between 2 and 6 images')
   const primary = images.find((image) => image.id === primaryId)
   if (!primary) throw new Error('Primary image must belong to the series')
@@ -48,9 +48,10 @@ export function generateUnifiedSeriesPalette(images: SeriesStrategyImage[], prim
   const roles: RoleAssignments = {}
   const exceptions: Record<string, RoleAssignments> = {}
   for (const role of domainProfiles[domain].colorRoles) {
-    const value = strategy === 'balanced' && !primary.lockedRoles?.includes(role)
+    const suggested = strategy === 'balanced' && !primary.lockedRoles?.includes(role)
       ? representativeRole(images, role) || primary.roles[role]
       : primary.roles[role]
+    const value = roleOverrides[role] ?? suggested
     if (value) roles[role] = value
   }
 
@@ -71,11 +72,13 @@ export function generateUnifiedSeriesPalette(images: SeriesStrategyImage[], prim
     const source = images.flatMap((image) => image.palette).find((color) => color.hex.toLowerCase() === hex.toLowerCase())
     return source ?? swatch(hex, 0)
   })
-  const rationale = strategy === 'follow-primary'
+  const strategyRationale = strategy === 'follow-primary'
     ? '基础角色跟随主图，锁定的独立角色保留。'
     : strategy === 'balanced'
       ? '每个角色选择现有作品中的代表色，使全系列总 OKLCH 距离最小；不是 RGB 平均色。'
       : '基础角色跟随主图，每张作品保留自己的强调色与锁定角色。'
+  const manualCount = domainProfiles[domain].colorRoles.filter(role => roleOverrides[role]).length
+  const rationale = manualCount ? `${strategyRationale} 已保留 ${manualCount} 项手动选择，其他角色采用当前自动建议。` : strategyRationale
 
   return { strategy, domain, roles, palette, exceptions, rationale }
 }

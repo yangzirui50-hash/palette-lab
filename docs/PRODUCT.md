@@ -53,6 +53,7 @@ The domains share the color engine but use separate rules, previews, exports and
 7. Deterministic color functions have automated tests.
 8. Contrast audits distinguish passed, failed and unexamined pairs. Missing or invalid colors cannot count as passed checks; small text uses the normal-text threshold.
 9. Every assigned role color remains selectable, including fallback and current colors outside the extracted palette. The editor, preview and exported roles must agree.
+10. Re-extraction preserves manual role choices for the current image while refreshing untouched suggestions. Unified-series drafts are independent by domain and strategy; resetting one draft does not clear the others. These page-scoped drafts do not yet provide recovery after reload.
 
 ## Product north star
 
