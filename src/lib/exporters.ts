@@ -34,6 +34,7 @@ export function downloadBlob(filename: string, blob: Blob) {
   const anchor = document.createElement('a')
   anchor.href = url
   anchor.download = filename
-  anchor.click()
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  anchor.hidden = true
+  try { document.body.appendChild(anchor); anchor.click() }
+  finally { anchor.remove(); window.setTimeout(() => URL.revokeObjectURL(url), 1000) }
 }

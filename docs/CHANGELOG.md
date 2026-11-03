@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Independent daily-operation reliability
+
+- Prevented completed image analysis from overwriting newer color-count intent; project history/import still restores the processed count explicitly.
+- Recovered from denied Clipboard API access and throwing legacy copy commands, removing temporary controls and restoring focus/selection with useful manual-copy feedback.
+- Exported all six locked-image exception records in the series overview, wrapping long Unicode names/role descriptions/rationale and expanding canvas height to fit.
+- Removed temporary download anchors and scheduled object-URL cleanup even when triggering a download throws; a failed series export can be retried.
+- Clarified local color-workflow wording while retaining the AI panel's explicit compressed-image-on-click explanation. Focus candidate 1.1.0 remains on its separate review branch pending later feedback.
+
 ## 2026-11-03 — Repair blind-review image delivery
 
 - Embedded hash-verified image bytes into each standalone reviewer HTML, removing its dependency on a sibling image directory when moved or opened separately.

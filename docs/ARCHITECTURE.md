@@ -1,5 +1,11 @@
 # Palette Lab — Architecture
 
+## Daily-operation failure recovery
+
+Requested color count is an input cursor; completed source metadata is evidence. Ordinary completion effects update source references without resetting newer intent. Project replacement/undo/redo explicitly restores the cursor through the project epoch. Clipboard access/permission and legacy-command exceptions fall back safely, with temporary textarea cleanup and best-effort focus/selection restoration.
+
+Series PNG layout measures and wraps complete filenames, exception roles and rationale before sizing a 1600px-wide canvas. Height grows from a 1000px minimum, retaining all six records rather than slicing at five or clipping text. The shared blob downloader attaches a temporary hidden anchor and always removes it/schedules URL revocation in finally, preserving caller error handling and retry. These changes do not touch palette/focus algorithms or annotation data.
+
 ## Working colors and delivery (November 3, fifth unit)
 
 The optional/default-empty `SingleDraft.workingColors` field extends version-1 projects without rejecting older records/backups. Up to 24 candidates retain source ID, manual/ROI provenance and local ROI/share metadata. Their measured global share is always zero. Role changes and candidate creation are one undoable edit; source replacement clears candidates. HEX form drafts are keyed by source/domain/strategy, and only validated normalized commits enter project state. Series custom colors use the existing scoped role drafts and exported zero-share palette entries.

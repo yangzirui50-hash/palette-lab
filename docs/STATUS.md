@@ -4,6 +4,8 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
+Independent daily-operation follow-up: newer count intent survives interleaved analysis commits; clipboard denial is recoverable; all six series exceptions and long names fit the PNG; blocked downloads clean up and retry. Local verification is 212 unit tests, seven pilot CLI/server tests and 67 regular browser workflows, plus type/lint/environment safety and production-build checks recorded separately. The image/focus algorithm is unchanged. Candidate 1.1.0 remains on `fix/focus-region-evidence` awaiting the owner's later per-image feedback; it is not included in this release.
+
 Five daily-use repair units are implemented. The latest connects native-ROI candidates and validated manual HEX to recoverable role edits, adds a palette-card PNG and nearby desktop preview/export with phone navigation, and fixes report selection and ROI evidence scope. Validation code has a separate stable chunk; main client JS is about 446kB (147kB gzip), plus 98kB (28kB gzip) validation. This improves caching rather than removing first-load validation cost. See docs/REVIEWS/2026-11-03-workbench-delivery.md. Release checks are recorded separately from local regression. The preceding source-pipeline unit's 50/30 operational suites are not rerun for unchanged image algorithms; independent human focus qualification remains pending.
 
 ## Production (historical checks; repair revision acceptance is separate)
@@ -87,4 +89,4 @@ Five daily-use repair units are implemented. The latest connects native-ROI cand
 
 ## Next action
 
-Next prepare a two-reviewer blind annotation pilot and disagreement review before enlarging the focus dataset. Reuse the 30 development images only to settle labeling instructions; they cannot become held-out qualification data. Inspect worst per-image quality changes alongside aggregate passes: a four-color portrait remains a human-review case (+3.5 percentage points unassigned versus the earlier pipeline). Freeze the protocol and algorithm before the independent held-out and 1000-image stages. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.
+The owner will provide the 30-image focus feedback later; preserve the candidate branch, self-contained contact report and original human drafts, and accept sequential verbal feedback without requiring a new drawing/export session now. These development images cannot become held-out qualification data. Independent daily-operation fixes may continue without merging the candidate focus algorithm. Inspect worst per-image quality changes, freeze standards and obtain independent labels before the thousand-image stage. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.

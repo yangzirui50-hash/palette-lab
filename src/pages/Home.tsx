@@ -239,7 +239,7 @@ function HomeWorkspace() {
             <p className="kicker">IMAGE → COLOR SYSTEM</p>
             <h1>色彩工作台</h1>
           </div>
-          <p>从图像提取色彩关系，而不仅是色值。所有图片仅在你的设备上处理。</p>
+          <p>从图像提取色彩关系，而不仅是色值。取色、编辑和导出在本机完成。</p>
         </section>
 
         <section className="domain-bar" aria-label="设计领域">
@@ -287,7 +287,7 @@ function HomeWorkspace() {
               <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => void processFile(event.target.files?.[0])} hidden />
             </div>
             {error && <p className="error-message" role="alert">{error}</p>}
-            <div className="privacy-note"><span aria-hidden="true">●</span> 原始图片不会离开此设备</div>
+            <div className="privacy-note"><span aria-hidden="true">●</span> 取色与编辑无需上传图片</div>
           </div>
 
           <div className="palette-panel" aria-busy={busy}>

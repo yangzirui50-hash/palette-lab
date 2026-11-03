@@ -1,5 +1,7 @@
 import type { RoleAssignments } from '../domain/assign'
 import type { UnifiedSeriesPalette } from '../domain/unify'
+import { wrapCanvasText } from './canvasText'
+import { downloadBlob } from './exporters'
 
 const strategyLabels = {
   'follow-primary': '跟随主图',
@@ -10,9 +12,21 @@ const strategyLabels = {
 export async function downloadSeriesOverviewPng(unified: UnifiedSeriesPalette, assignments: RoleAssignments, imageLabels: Record<string, string>) {
   const canvas = document.createElement('canvas')
   canvas.width = 1600
-  canvas.height = 1000
   const context = canvas.getContext('2d')
   if (!context) throw new Error('当前浏览器无法生成系列总览图')
+
+  const entries = Object.entries(assignments), exceptions = Object.entries(unified.exceptions)
+  const exceptionY = 218 + Math.ceil(entries.length / 4) * 204 + 24
+  context.font = '600 21px system-ui, sans-serif'
+  const measured = exceptions.map(([id, roles]) => ({
+    labels: wrapCanvasText(imageLabels[id] ?? id, 1392, text => context.measureText(text).width),
+    roles: wrapCanvasText(Object.entries(roles).map(([role, hex]) => `${role} ${hex}`).join(' · '), 1392, text => context.measureText(text).width),
+  }))
+  const exceptionBottom = exceptionY + 48 + (measured.length ? measured.reduce((sum, row) => sum + (row.labels.length + row.roles.length) * 30 + 20, 0) : 30)
+  context.font = '19px system-ui, sans-serif'
+  const rationale = wrapCanvasText(unified.rationale, 1392, text => context.measureText(text).width)
+  const footerY = Math.max(910, exceptionBottom + 36)
+  canvas.height = Math.max(1000, footerY + rationale.length * 28 + 56)
 
   const dark = document.documentElement.dataset.theme === 'dark'
   const background = dark ? '#151716' : '#f3f4f0'
@@ -22,7 +36,7 @@ export async function downloadSeriesOverviewPng(unified: UnifiedSeriesPalette, a
   context.fillStyle = background
   context.fillRect(0, 0, canvas.width, canvas.height)
   context.fillStyle = panel
-  context.fillRect(56, 56, 1488, 888)
+  context.fillRect(56, 56, 1488, canvas.height - 112)
 
   context.fillStyle = text
   context.font = '600 32px system-ui, sans-serif'
@@ -31,7 +45,6 @@ export async function downloadSeriesOverviewPng(unified: UnifiedSeriesPalette, a
   context.font = '22px system-ui, sans-serif'
   context.fillText(`${strategyLabels[unified.strategy]} · ${unified.domain}`, 104, 166)
 
-  const entries = Object.entries(assignments)
   const columns = 4
   const cardWidth = 330
   entries.forEach(([role, hex], index) => {
@@ -47,32 +60,29 @@ export async function downloadSeriesOverviewPng(unified: UnifiedSeriesPalette, a
     context.fillText(hex.toUpperCase(), x + 174, y + 140)
   })
 
-  const exceptionY = 650
   context.fillStyle = text
   context.font = '600 24px system-ui, sans-serif'
-  context.fillText('独立保留', 104, exceptionY)
+  context.fillText(`独立保留 · ${exceptions.length} 张作品`, 104, exceptionY)
   context.fillStyle = muted
   context.font = '21px system-ui, sans-serif'
-  const exceptions = Object.entries(unified.exceptions)
   if (exceptions.length === 0) {
     context.fillText('无 · 所有作品使用当前统一角色', 104, exceptionY + 48)
   } else {
-    exceptions.slice(0, 5).forEach(([id, roles], index) => {
-      const rolesText = Object.entries(roles).map(([role, hex]) => `${role} ${hex}`).join(' · ')
-      context.fillText(`${imageLabels[id] ?? id} · ${rolesText}`, 104, exceptionY + 48 + index * 42)
-    })
+    let y = exceptionY + 48
+    for (const row of measured) {
+      context.fillStyle = text; context.font = '600 20px system-ui, sans-serif'
+      for (const label of row.labels) { context.fillText(label, 104, y); y += 30 }
+      context.fillStyle = muted; context.font = '20px system-ui, sans-serif'
+      for (const roles of row.roles) { context.fillText(roles, 104, y); y += 30 }
+      y += 20
+    }
   }
 
   context.fillStyle = muted
   context.font = '19px system-ui, sans-serif'
-  context.fillText(unified.rationale, 104, 910)
+  rationale.forEach((line, index) => context.fillText(line, 104, footerY + index * 28))
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
   if (!blob) throw new Error('系列总览图编码失败')
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  anchor.href = url
-  anchor.download = `palette-lab-series-${unified.strategy}.png`
-  anchor.click()
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  downloadBlob(`palette-lab-series-${unified.strategy}.png`, blob)
 }

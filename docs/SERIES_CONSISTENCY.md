@@ -36,6 +36,8 @@ The required differentiators are cross-image role consistency, explainable evide
 - Three strategies: Follow Primary, Balanced and Preserve Accents
 - Editable unified roles with existing Web/Art previews and WCAG checks
 - CSS variables, versioned JSON tokens, series overview PNG and structured report export
+
+The overview PNG remains 1600px wide with at least 1000px height. It expands vertically to include every locked-image exception (up to all six images), complete wrapped filenames/role values and rationale. Text uses measured widths; no sixth record is silently omitted. Encoding/download failures preserve the edited series and permit retry.
 - Optional user-initiated AI interpretation after deterministic analysis; no AI dependency for local results
 
 ### Excluded from this phase
