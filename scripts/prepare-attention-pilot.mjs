@@ -23,9 +23,12 @@ fs.mkdirSync(path.join(out, 'images'), { recursive: true })
 for (const entry of entries) fs.copyFileSync(path.resolve(images, entry.file), path.join(out, 'images', entry.file))
 fs.writeFileSync(path.join(out, 'packet.json'), JSON.stringify(packet, null, 2))
 const template = fs.readFileSync(path.join(root, 'scripts/templates/attention-pilot.html'), 'utf8')
+// The same five starter images support a cheap paired wording review. Orders
+// differ, but the first five must overlap before either reviewer labels all 30.
+const starters = new Set([0, 5, 10, 15, 20].map(index => entries[index].id))
 for (const reviewer of ['A', 'B']) {
   // Distinct deterministic orders reduce discussion/order contamination, not dataset bias.
-  const order = [...entries].sort((a, b) => createHash('sha256').update(reviewer + a.id).digest('hex').localeCompare(createHash('sha256').update(reviewer + b.id).digest('hex')))
+  const order = [...entries].sort((a, b) => Number(starters.has(b.id)) - Number(starters.has(a.id)) || createHash('sha256').update(reviewer + a.id).digest('hex').localeCompare(createHash('sha256').update(reviewer + b.id).digest('hex')))
   const payload = JSON.stringify({ ...packet, reviewer, entries: order }).replaceAll('<', '\\u003c')
   fs.writeFileSync(path.join(out, `评审${reviewer}.html`), template.replace('/*__PACKET__*/null', payload))
 }

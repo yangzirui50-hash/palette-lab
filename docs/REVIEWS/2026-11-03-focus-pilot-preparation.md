@@ -20,6 +20,8 @@ Six synthetic Node tests and two synthetic browser workflows pass. The actual pa
 
 The human action is now specific: two people independently mark the images and return their JSON files. First review five images if the wording is unclear, revise the protocol if needed, and preserve protocol versions. After disagreement review, freeze definitions/algorithm, curate new actual-content strata and only then start independent qualification and the proposed 1000-image allocation. Do not turn four/six/eight-color reruns into independent image counts.
 
+The first five images are shared across A/B but independently ordered; the remaining images also have distinct orders. This makes the small first checkpoint comparable without requiring all 30 labels before discovering ambiguous instructions. The original retrieval buckets select starters for variety only, not a claim of semantic category balance.
+
 ## Dependency audit reflection
 
 The security job remains active and fails for the development minimatch chain. [The upstream advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249) lists versions below 11.0.1 affected and 11.0.1 patched. Current locked consumers include minimatch 3.1.5 and 9.0.9; legacy ESLint code imports the default function shape. A forced cross-major override is not demonstrated compatible and is not applied to make CI green. Dependency/toolchain migration requires its own compatibility review; no audit threshold is weakened and no new dependencies are added here.
