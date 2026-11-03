@@ -63,6 +63,7 @@ function HomeWorkspace() {
   const paletteClient = useRef(new ColorAnalysisClient())
   const latestFile = useRef<File | null>(null)
   const colorCountRef = useRef(sourceRecord?.analysis.requestedColorCount ?? 6)
+  const countRestoreEpoch = useRef(epoch)
   const sourceRef = useRef<ProjectSource | null>(sourceRecord)
   const uploadRequestRef = useRef(0)
   const { theme, toggleTheme } = useTheme()
@@ -132,10 +133,15 @@ function HomeWorkspace() {
   useEffect(() => {
     sourceRef.current = sourceRecord
     latestFile.current = sourceRecord?.file ?? null
-    const count = sourceRecord?.analysis.requestedColorCount ?? 6
-    colorCountRef.current = count
-    setColorCount(count)
-  }, [sourceRecord])
+    // Completed evidence can commit between newer count clicks. It must not
+    // overwrite the request cursor; project replacement/undo/redo restore it.
+    if (countRestoreEpoch.current !== epoch) {
+      countRestoreEpoch.current = epoch
+      const count = sourceRecord?.analysis.requestedColorCount ?? 6
+      colorCountRef.current = count
+      setColorCount(count)
+    }
+  }, [sourceRecord, epoch])
 
   useEffect(() => {
     uploadRequestRef.current++

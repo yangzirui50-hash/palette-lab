@@ -2,6 +2,29 @@ import { expect, test } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
 
+test('does not overwrite newer count intent when a completed palette commits between clicks', async ({ page }) => {
+  await page.goto('/'); await page.locator('.workspace input[type=file]').setInputFiles(path.resolve('tests/fixtures/neon-test.png'))
+  await expect(page.locator('.spatial-preview img')).toBeVisible()
+  await page.evaluate(() => {
+    const panel = document.querySelector('.palette-panel')!, list = panel.querySelector('.swatch-list')!
+    const decrease = () => document.querySelector<HTMLButtonElement>('[aria-label="减少颜色数量"]')!.click()
+    const observer = new MutationObserver(() => {
+      if (panel.getAttribute('aria-busy') !== 'false') return
+      observer.disconnect()
+      decrease()
+      requestAnimationFrame(decrease)
+    })
+    observer.observe(list, { childList: true, attributes: true, characterData: true, subtree: true })
+    decrease()
+  })
+  await expect(page.locator('.palette-panel')).toHaveAttribute('aria-busy', 'false')
+  await expect(page.locator('.count-control output')).toHaveText('3')
+  const event = page.waitForEvent('download'); await page.locator('.export-actions button').nth(1).click()
+  const tokens = JSON.parse(fs.readFileSync((await (await event).path())!, 'utf8'))
+  expect(tokens.analysis.requestedColorCount).toBe(3)
+  expect(tokens.palette.length).toBeLessThanOrEqual(3)
+})
+
 test('shows two separate whole-image focus candidates and abstains on a uniform image', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('.workspace')).toBeVisible()
