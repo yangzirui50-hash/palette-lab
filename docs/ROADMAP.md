@@ -69,3 +69,5 @@ The owner confirmed daily usability first, with portfolio value retained. The fo
 6. Portfolio case-study evidence and further platform/provider/visual expansion only after the daily workflow is reliable.
 
 Each delivery unit has its own regression evidence. The fourth passed 188 unit tests and 52 regular browser workflows; the fifth adds cross-stage editing/export/ROI/report-selection coverage. Image algorithms remain unchanged from the third unit's separate 50/30-image run. Review positive/negative failure classes and worst per-image deltas; averages and upload counts do not replace independent algorithm qualification. Human-focus qualification remains incomplete.
+
+Focus candidate 1.1.0 is the next review unit, separately from those five published repairs. It leaves raw heat unchanged while growing supported fragments, protecting strong targets and reporting uncertainty honestly. The complete workflow and 50/30 engineering checks run again for this algorithm candidate; a concrete before/after review precedes merging it into production. Existing type drafts and verbal feedback diagnose failure classes without becoming qualifying human boxes.

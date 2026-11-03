@@ -5,6 +5,11 @@
 Requested color count is an input cursor; completed source metadata is evidence. Ordinary completion effects update source references without resetting newer intent. Project replacement/undo/redo explicitly restores the cursor through the project epoch. Clipboard access/permission and legacy-command exceptions fall back safely, with temporary textarea cleanup and best-effort focus/selection restoration.
 
 Series PNG layout measures and wraps complete filenames, exception roles and rationale before sizing a 1600px-wide canvas. Height grows from a 1000px minimum, retaining all six records rather than slicing at five or clipping text. The shared blob downloader attaches a temporary hidden anchor and always removes it/schedules URL revocation in finally, preserving caller error handling and retry. These changes do not touch palette/focus algorithms or annotation data.
+## Candidate focus-region evidence 1.1.0
+
+`attention.ts` still computes the same palette-independent 64-cell contrast heat. `attentionRegions.ts` selects regions separately, using opaque-pixel weights, 50%-peak seeds and contiguous 35%-peak support. Original independently qualified strong components remain separate if weaker support connects them. The 8% total-energy, 30% leading-energy and three-marker limits remain. Each marker has measured support; ambiguous projections abstain. Broad response, fragmentation and ambiguous location have separate reasons, with explicit uncertainty rather than falsely asserting dispersed structure.
+
+AttentionEvidence carries model version, state/reason and support/qualification diagnostics through ColorAnalysisClient's structured Worker response. The new AttentionEstimate component uses those fields to distinguish evidence from semantics, render response bounds and expose omitted qualifying candidates. It does not alter source palettes, role assignments, AI request bodies or saved project/report formats. Candidate 1.1.0 is under review separately from the published application baseline.
 
 ## Working colors and delivery (November 3, fifth unit)
 
