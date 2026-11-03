@@ -20,6 +20,44 @@ const redPixel: RGBPixel = [255, 0, 0]
 const grayPixel: RGBPixel = [128, 128, 128]
 
 describe('spatial palette evidence', () => {
+  it.each([0, 60, 120, 180, 240, 300])('accepts a muted same-hue family around hue %s without treating it as neutral', hue => {
+    const fromLch = (lightness: number, chroma: number) => {
+      const rgb = new Color('oklch', [lightness, chroma, hue]).to('srgb').coords
+        .map(channel => Math.max(0, Math.min(255, Math.round((channel ?? 0) * 255)))) as unknown as RGBPixel
+      return swatch(`#${rgb.map(channel => channel.toString(16).padStart(2, '0')).join('')}`)
+    }
+    const pixel = fromLch(0.45, 0.06)
+    const family = fromLch(0.38, 0.025)
+    expect(buildSpatialAssignments([pixel.rgb], 1, 1, [family, swatch('#000000')], false).assignments[0]).toBe(0)
+  })
+
+  it('abstains on a dim cross-hue conflict even below the absolute-distance guard', () => {
+    const pixel: RGBPixel = [51, 34, 42]
+    const result = buildSpatialAssignments([pixel], 1, 1, [swatch('#1c2333'), gray], false)
+    expect(result.assignments[0]).toBe(65535)
+  })
+
+  it('uses a compatible dim hue family rather than a closer opposed hue', () => {
+    const pixel: RGBPixel = [51, 34, 42]
+    const result = buildSpatialAssignments([pixel], 1, 1, [swatch('#1c2333'), swatch('#6e2c2f')], true)
+    expect(result.assignments[0]).toBe(1)
+  })
+
+  it.each([0, 60, 120, 180, 240, 300])('keeps dim cross-hue conflicts separate around hue %s', hue => {
+    const fromLch = (lightness: number, chroma: number, angle: number) => {
+      const rgb = new Color('oklch', [lightness, chroma, angle]).to('srgb').coords
+        .map(channel => Math.max(0, Math.min(255, Math.round((channel ?? 0) * 255)))) as unknown as RGBPixel
+      return swatch(`#${rgb.map(channel => channel.toString(16).padStart(2, '0')).join('')}`)
+    }
+    const source = fromLch(0.28, 0.03, hue)
+    const opposed = fromLch(0.27, 0.032, (hue + 80) % 360)
+    const compatible = fromLch(0.38, 0.095, (hue + 15) % 360)
+    const pixels = Array.from({ length: 81 }, () => opposed.rgb)
+    pixels[40] = source.rgb
+    expect(buildSpatialAssignments(pixels, 9, 9, [opposed, compatible], false).assignments[40]).not.toBe(0)
+    expect(buildSpatialAssignments(pixels, 9, 9, [opposed, compatible], true).assignments[40]).not.toBe(0)
+  })
+
   it('measures center focus, edge background and connected regions', () => {
     const pixels = Array.from({ length: 16 }, (_, index) => [5, 6, 9, 10].includes(index) ? redPixel : grayPixel)
     const regions = analyzePaletteSpatial(pixels, 4, 4, [gray, red])

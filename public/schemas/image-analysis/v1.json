@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://palette-lab.3476554092.workers.dev/schemas/image-analysis/v1.json",
+  "title": "Palette Lab Image Analysis Provenance v1",
+  "type": "object",
+  "required": ["version", "maxEdge", "alphaCutoff", "maxSamples", "histogramStep", "requestedColorCount"],
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "maxEdge": { "type": "integer", "minimum": 1 },
+    "alphaCutoff": { "type": "integer", "minimum": 0, "maximum": 255 },
+    "maxSamples": { "type": "integer", "minimum": 1 },
+    "histogramStep": { "type": "integer", "minimum": 1 },
+    "requestedColorCount": { "type": "integer", "minimum": 2, "maximum": 8 }
+  }
+}

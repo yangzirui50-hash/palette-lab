@@ -72,8 +72,11 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
     const pixelHue = ((Math.atan2(lab[2], lab[1]) * 180 / Math.PI) + 360) % 360
     const hueDistanceTo = (candidate: RGBPixel) => Math.abs(((pixelHue - candidate[2] + 540) % 360) - 180)
     const candidate = palette[nearest].oklch
-    const chromaticConflict = pixelChroma >= 0.02 && nearestDistance > 0.045 &&
-      (candidate[1] < 0.035 || hueDistanceTo(candidate) > 55)
+    // Dim chromatic colors can have a small absolute distance despite opposing
+    // hue families. Do not waive that conflict just because both are dark.
+    const hueConflict = candidate[1] >= 0.02 && hueDistanceTo(candidate) > 75
+    const chromaticConflict = pixelChroma >= 0.02 && (hueConflict ||
+      (nearestDistance > 0.045 && (candidate[1] < 0.02 || hueDistanceTo(candidate) > 55)))
     let assigned = nearest
     let assignedDistance = nearestDistance
     let reliable = palette.length <= 1 || (nearestDistance <= 0.14 && !chromaticConflict)
@@ -83,7 +86,7 @@ export function buildSpatialAssignments(pixels: readonly (RGBPixel | null)[], wi
         distance: Math.sqrt(distances[candidateIndex]),
         hueDistance: hueDistanceTo(color.oklch),
         chroma: color.oklch[1],
-      })).filter((option) => option.chroma >= 0.035 && option.hueDistance <= 50 && option.distance <= 0.18)
+      })).filter((option) => option.chroma >= 0.02 && option.hueDistance <= 50 && option.distance <= 0.18)
         .sort((a, b) => (a.distance + a.hueDistance / 180 * 0.02) - (b.distance + b.hueDistance / 180 * 0.02))[0]
       if (compatible) {
         assigned = compatible.candidateIndex

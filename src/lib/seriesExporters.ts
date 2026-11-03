@@ -1,10 +1,14 @@
 import type { RoleAssignments } from '../domain/assign'
 import type { SeriesComparisonReport } from '../domain/series'
 import type { UnifiedSeriesPalette } from '../domain/unify'
+import type { ImageAnalysisMetadata } from './color/pipelineConfig'
+import { schemaUrl } from './schemaUrls'
 
-export function createSeriesTokens(unified: UnifiedSeriesPalette, assignments: RoleAssignments, comparison: SeriesComparisonReport) {
+export type SeriesSourceAnalysis = { id: string; label: string; analysis: ImageAnalysisMetadata }[]
+
+export function createSeriesTokens(unified: UnifiedSeriesPalette, assignments: RoleAssignments, comparison: SeriesComparisonReport, sourceAnalysis?: SeriesSourceAnalysis) {
   return JSON.stringify({
-    $schema: './schemas/series-tokens/v1.json',
+    $schema: schemaUrl('series-tokens'),
     schemaVersion: '1.0.0',
     generatedAt: new Date().toISOString(),
     domain: unified.domain,
@@ -18,12 +22,13 @@ export function createSeriesTokens(unified: UnifiedSeriesPalette, assignments: R
     })),
     exceptions: unified.exceptions,
     comparison,
+    sourceAnalysis,
   }, null, 2)
 }
 
-export function createSeriesReport(unified: UnifiedSeriesPalette, assignments: RoleAssignments, comparison: SeriesComparisonReport) {
+export function createSeriesReport(unified: UnifiedSeriesPalette, assignments: RoleAssignments, comparison: SeriesComparisonReport, sourceAnalysis?: SeriesSourceAnalysis) {
   return JSON.stringify({
-    $schema: './schemas/series-report/v1.json',
+    $schema: schemaUrl('series-report'),
     schemaVersion: '1.0.0',
     generatedAt: new Date().toISOString(),
     domain: unified.domain,
@@ -32,5 +37,6 @@ export function createSeriesReport(unified: UnifiedSeriesPalette, assignments: R
     unifiedRoles: assignments,
     exceptions: unified.exceptions,
     comparison,
+    sourceAnalysis,
   }, null, 2)
 }

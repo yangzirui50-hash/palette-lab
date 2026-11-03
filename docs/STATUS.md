@@ -4,7 +4,7 @@ _Last updated: 2026-11-03_
 
 ## Current phase
 
-Two daily-use repair units are implemented: truthful contrast/role selections and page-scoped manual drafts. Single-image re-extraction retains deliberate colors; unified-series drafts and last strategy are restored per domain, and effective roles, palette and locked-image exceptions agree. Type checking, lint, 159 unit tests, 37 regular browser workflows, environment safety and production build pass. See docs/REVIEWS/2026-11-03-contrast-role-trust.md and docs/REVIEWS/2026-11-03-manual-role-drafts.md. Source fidelity, a shared processing pipeline and persistent project recovery remain pending. Public release acceptance is recorded separately from local checks.
+Three daily-use repair units are implemented: truthful contrast/role selections, page-scoped manual drafts, and faithful sampled RGB with a shared single/series Worker pipeline. Batch import retains successful items around failures, and JSON records processing provenance with publicly resolvable schemas. Dim cross-hue conflicts and muted same-hue false rejection have complementary regressions. Type checking, lint, 178 unit tests, 41 regular browser workflows, environment safety and production build pass. The 50-image operational benchmark and licensed 30-image 4/6/8-color development matrix also pass; independent human focus qualification remains skipped. See docs/REVIEWS/2026-11-03-source-pipeline.md. Persistent project recovery is next. Public release acceptance is recorded separately from local checks.
 
 ## Production (historical checks; repair revision acceptance is separate)
 
@@ -23,8 +23,10 @@ Two daily-use repair units are implemented: truthful contrast/role selections an
 - Hono + Cloudflare Workers foundation is configured
 - Web/UI and Art/Poster profiles are defined
 - OKLCH palette clustering returns deterministic colors and normalized shares
-- HEX output is normalized to six digits
-- 159 unit tests and 37 regular browser workflows pass locally after the manual-draft unit. Three opt-in suites are skipped. The earlier 50/50 benchmark and 30/30 development-source results are historical; those opt-in suites were not rerun for these role-state changes.
+- HEX output is normalized to six digits; non-grid uniform sampled RGB and low-color source distinctions are preserved
+- Single and series palette extraction share versioned decoding/preprocessing/Worker execution and exported per-source provenance
+- A corrupt batch item no longer discards successful items or prevents following files from being attempted
+- 178 unit tests and 41 regular browser workflows pass locally after the source/pipeline unit. Its complete browser run passes 43 tests including the 50-image benchmark and 30-image development matrix, with independent human-focus qualification skipped. A final schema-link-only change also passes three targeted real-download workflows.
 - The 2026-10-27 systematic stage gate passes for the personal public-preview scope; see `docs/REVIEWS/2026-10-27-stage-gate.md`
 - Production native rate limiting returns 429 with `Retry-After: 60`; AI timeouts, bounded retry and stale-response protection are verified
 - Online inspiration and AI comparison are verified with attributed mock fixtures
@@ -80,4 +82,4 @@ Two daily-use repair units are implemented: truthful contrast/role selections an
 
 ## Next action
 
-Next repair source-color fidelity and unify the single/series analysis entry point. Follow with recoverable project state and task-oriented layout; the current manual drafts do not survive reload. Focus qualification remains a later independently labeled stage before the 1000-image scale run. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.
+Next implement validated local project records, recovery, backup round-trips and reversible editing; the current published manual drafts do not yet survive reload. Preserve report snapshots across browsing/ROI changes before improving task layout and local-color application. Inspect worst per-image quality changes alongside aggregate passes: a four-color portrait remains a human-review case (+3.5 percentage points unassigned versus the earlier pipeline). Independent focus qualification remains before the 1000-image scale run. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.

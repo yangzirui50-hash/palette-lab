@@ -14,18 +14,18 @@ const palette = extractPalette([
 describe('assignPaletteRoles', () => {
   it('assigns dark backgrounds and light text for Web/UI', () => {
     const roles = assignPaletteRoles(palette, 'web-ui')
-    expect(roles.background).toBe('#080808')
+    expect(roles.background).toBe('#0a0a0a')
     expect(roles.textPrimary).toBe('#f0f0f0')
-    expect(roles.accent).toBe('#e0ff50')
+    expect(roles.accent).toBe('#dfff4f')
     expect(roles.focus).toBe(roles.accent)
     expect(roles.textMuted).not.toBe(roles.surface)
   })
 
   it('assigns visual roles independently for Art/Poster', () => {
     const roles = assignPaletteRoles(palette, 'art-poster')
-    expect(roles.canvas).toBe('#080808')
-    expect(roles.primaryVisual).toBe('#080808')
-    expect(roles.secondaryVisual).toBe('#e0ff50')
+    expect(roles.canvas).toBe('#0a0a0a')
+    expect(roles.primaryVisual).toBe('#0a0a0a')
+    expect(roles.secondaryVisual).toBe('#dfff4f')
     expect(roles.displayText).toBe('#f0f0f0')
   })
 

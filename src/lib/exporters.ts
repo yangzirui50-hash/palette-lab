@@ -1,18 +1,21 @@
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { PaletteSwatch } from './color/extract'
+import type { ImageAnalysisMetadata } from './color/pipelineConfig'
+import { schemaUrl } from './schemaUrls'
 
 export function createCssVariables(domain: DomainId, assignments: RoleAssignments) {
   const lines = Object.entries(assignments).map(([role, hex]) => `  --color-${role}: ${hex};`)
   return `/* Palette Lab · ${domain} */\n:root {\n${lines.join('\n')}\n}\n`
 }
 
-export function createDesignTokens(domain: DomainId, assignments: RoleAssignments, palette: PaletteSwatch[]) {
+export function createDesignTokens(domain: DomainId, assignments: RoleAssignments, palette: PaletteSwatch[], analysis?: ImageAnalysisMetadata) {
   return JSON.stringify({
-    $schema: './schemas/design-tokens/v1.json',
+    $schema: schemaUrl('design-tokens'),
     schemaVersion: '1.0.0',
     generatedAt: new Date().toISOString(),
     domain,
+    analysis,
     roles: assignments,
     palette: palette.map((color) => ({
       hex: color.hex,

@@ -7,6 +7,7 @@ import { analyzePaletteDistribution } from './distribution'
 import { renderSpatialViews } from './spatialOverlay'
 import type { SpatialRenderCache } from './spatialOverlay'
 import type { ColorResponse, ColorTask, SpatialResult } from './analysisClient'
+import { analyzeImagePalette } from './palettePipeline'
 
 let cached: { key: string; result: SpatialResult; render: SpatialRenderCache } | null = null
 
@@ -44,10 +45,7 @@ worker.onmessage = async ({ data: { id, task } }) => {
   try {
     validateImageFile(task.file)
     if (task.kind === 'palette') {
-      const frame = await loadRaster(task.file)
-      const pixels = frame.pixels.filter(pixel => pixel !== null)
-      if (!pixels.length) throw new Error('图片没有可分析的不透明像素')
-      worker.postMessage({ id, result: { palette: extractPalette(pixels, task.count), width: frame.originalWidth, height: frame.originalHeight } })
+      worker.postMessage({ id, result: await analyzeImagePalette(task.file, task.count) })
     } else {
       const analysis = await scope(task)
       const result = task.kind === 'spatial' ? analysis.result : await renderSpatialViews(task.file, analysis.result.palette, task.hex, 512, task.mode, task.roi, task.view, analysis.render)

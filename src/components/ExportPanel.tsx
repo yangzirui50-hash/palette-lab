@@ -6,17 +6,19 @@ import ContrastAudit from './ContrastAudit'
 import type { RoleAssignments } from '../domain/assign'
 import type { DomainId } from '../domain/profiles'
 import type { PaletteSwatch } from '../lib/color/extract'
+import type { ImageAnalysisMetadata } from '../lib/color/pipelineConfig'
 import './ExportPanel.css'
 
 type ExportPanelProps = {
   domain: DomainId
   assignments: RoleAssignments
   palette: PaletteSwatch[]
+  analysis?: ImageAnalysisMetadata
   renderTarget: HTMLElement | null
   contrastReport: ContrastReport
 }
 
-export default function ExportPanel({ domain, assignments, palette, renderTarget, contrastReport }: ExportPanelProps) {
+export default function ExportPanel({ domain, assignments, palette, analysis, renderTarget, contrastReport }: ExportPanelProps) {
   const [exporting, setExporting] = useState('')
   const [error, setError] = useState('')
 
@@ -25,7 +27,7 @@ export default function ExportPanel({ domain, assignments, palette, renderTarget
   }
 
   const exportJson = () => {
-    downloadText(`palette-lab-${domain}.json`, createDesignTokens(domain, assignments, palette), 'application/json;charset=utf-8')
+    downloadText(`palette-lab-${domain}.json`, createDesignTokens(domain, assignments, palette, analysis), 'application/json;charset=utf-8')
   }
 
   const exportPng = async () => {

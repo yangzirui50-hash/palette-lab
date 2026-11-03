@@ -21,7 +21,7 @@ const comparison: SeriesComparisonReport = {
 describe('series export adapters', () => {
   it('exports edited roles, strategy and per-image exceptions as versioned tokens', () => {
     const payload = JSON.parse(createSeriesTokens(unified, { ...unified.roles, accent: '#ffffff' }, comparison))
-    expect(payload.$schema).toBe('./schemas/series-tokens/v1.json')
+    expect(payload.$schema).toBe('https://palette-lab.3476554092.workers.dev/schemas/series-tokens/v1.json')
     expect(payload.schemaVersion).toBe('1.0.0')
     expect(payload.roles.accent).toBe('#ffffff')
     expect(payload.exceptions.candidate.accent).toBe('#4890e0')
@@ -30,7 +30,7 @@ describe('series export adapters', () => {
 
   it('exports the diagnostic rationale separately from token output', () => {
     const payload = JSON.parse(createSeriesReport(unified, unified.roles, comparison))
-    expect(payload.$schema).toBe('./schemas/series-report/v1.json')
+    expect(payload.$schema).toBe('https://palette-lab.3476554092.workers.dev/schemas/series-report/v1.json')
     expect(payload.unifiedRoles).toEqual(unified.roles)
     expect(payload.rationale).toContain('保留自己的强调色')
     expect(payload.comparison.primaryId).toBe('primary')

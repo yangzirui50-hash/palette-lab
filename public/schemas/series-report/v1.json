@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "./schemas/series-report/v1.json",
+  "$id": "https://palette-lab.3476554092.workers.dev/schemas/series-report/v1.json",
   "title": "Palette Lab Series Report v1",
   "type": "object",
   "required": ["schemaVersion", "generatedAt", "domain", "strategy", "rationale", "unifiedRoles", "exceptions", "comparison"],
   "properties": {
     "schemaVersion": { "const": "1.0.0" },
     "generatedAt": { "type": "string", "format": "date-time" },
+    "sourceAnalysis": { "$ref": "../series-tokens/v1.json#/properties/sourceAnalysis" },
     "domain": { "enum": ["web-ui", "art-poster"] },
     "strategy": { "enum": ["follow-primary", "balanced", "preserve-accents"] },
     "rationale": { "type": "string" },

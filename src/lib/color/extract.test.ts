@@ -6,6 +6,28 @@ import type { RGBPixel } from './extract'
 const solid = (rgb: RGBPixel, count: number) => Array.from({ length: count }, () => rgb)
 
 describe('extractPalette', () => {
+  it.each(([ [100, 150, 200], [1, 127, 254], [17, 19, 23] ] as RGBPixel[]).map(rgb => ({ rgb })))('preserves a uniform original RGB value $rgb exactly', ({ rgb }) => {
+    const palette = extractPalette(solid(rgb, 300), 6)
+    expect(palette).toHaveLength(1)
+    expect(palette[0].rgb).toEqual(rgb)
+    expect(palette[0].hex).toBe(`#${rgb.map(channel => channel.toString(16).padStart(2, '0')).join('')}`)
+  })
+
+  it('does not merge distinct low-color source values just because they share a histogram bin', () => {
+    const palette = extractPalette([...solid([100, 150, 200], 75), ...solid([101, 151, 201], 25)], 2)
+    expect(palette.map(color => color.hex)).toEqual(['#6496c8', '#6597c9'])
+    expect(palette.map(color => color.share)).toEqual([0.75, 0.25])
+  })
+
+  it('computes clustered means from source values instead of quantized bin labels', () => {
+    const pixels: RGBPixel[] = []
+    for (let offset = -2; offset <= 2; offset++) {
+      pixels.push(...solid([100 + offset, 100 + offset, 100 + offset], 10))
+      pixels.push(...solid([200 + offset, 200 + offset, 200 + offset], 10))
+    }
+    expect(extractPalette(pixels, 2).map(color => color.hex).sort()).toEqual(['#646464', '#c8c8c8'])
+  })
+
   it('returns the dominant color and its approximate share', () => {
     const pixels = [...solid([0, 0, 0], 75), ...solid([255, 255, 255], 25)]
     const palette = extractPalette(pixels, 2)

@@ -7,6 +7,7 @@ import type { PaletteSwatch } from '../lib/color/extract'
 import type { SpatialRegionEvidence } from '../lib/color/spatial'
 import { ColorAnalysisClient } from '../lib/color/analysisClient'
 import type { PaletteResult } from '../lib/color/analysisClient'
+import type { ImageAnalysisMetadata } from '../lib/color/pipelineConfig'
 import { useTheme } from '../hooks/useTheme'
 import { copyText } from '../lib/clipboard'
 import { assignPaletteRoles } from '../domain/assign'
@@ -27,6 +28,7 @@ type SourceState = {
   width: number
   height: number
   file: File
+  analysis: ImageAnalysisMetadata
 }
 
 export default function Home() {
@@ -97,8 +99,8 @@ export default function Home() {
       // Clear drafts only when a replacement actually succeeds. Re-extraction
       // updates suggestions without overwriting deliberate choices.
       if (!sameSource) setRoleOverrides({})
-      const nextSource = sameSource ? sourceRef.current! : {
-        url: URL.createObjectURL(file), name: file.name, width: processed.width, height: processed.height, file,
+      const nextSource = sameSource ? { ...sourceRef.current!, analysis: processed.analysis } : {
+        url: URL.createObjectURL(file), name: file.name, width: processed.width, height: processed.height, file, analysis: processed.analysis,
       }
       sourceRef.current = nextSource
       setSource(nextSource)
@@ -273,7 +275,7 @@ export default function Home() {
             <DomainPreview domain={domain} assignments={assignments} spatial={spatialEvidence} renderRef={setPreviewTarget} contrastReport={contrastReport} />
             <AnalysisPanel domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} spatialEvidence={spatialEvidence} report={analysisReport} onReportChange={setAnalysisReport} />
             <InspirationPanel analysis={analysisReport} domain={domain} sourceFile={source.file} palette={palette} assignments={assignments} />
-            <ExportPanel domain={domain} assignments={assignments} palette={palette} renderTarget={previewTarget} contrastReport={contrastReport} />
+            <ExportPanel domain={domain} assignments={assignments} palette={palette} analysis={source.analysis} renderTarget={previewTarget} contrastReport={contrastReport} />
           </div>
         )}
 

@@ -156,3 +156,11 @@
 - **Decision:** Store explicit single-image overrides by domain and unified-series overrides by domain/strategy. Derive untouched roles from current suggestions; recompute unified palettes and lock exceptions from the effective edited roles. Provide an explicit scoped reset, clear on successful new source/all-images removal, and keep choices after failed replacement.
 - **Reason:** Analysis updates and view/strategy changes must not silently erase user decisions. Freezing an entire suggested role table after one edit would also stop untouched roles from updating and could produce stale export exceptions.
 - **Tradeoffs:** Drafts are page-scoped, not saved projects. Different strategies keep independent choices restored when revisited. Global manual edits can produce per-image exceptions for locked original roles, including the primary image; the UI and export describe those exceptions explicitly.
+
+## ADR-023 — Preserve sampled RGB evidence and share the image entry
+
+- **Status:** Accepted and implemented
+- **Date:** 2026-11-03
+- **Decision:** Retain weighted original channel sums inside histogram bins, bypass grouping for low-color sampled inputs, and route single/series extraction through the same Worker entry. Version the processing settings and include per-source metadata in JSON exports. Commit successful batch items despite individual failures.
+- **Reason:** A uniform source must not change because of a histogram grid, and a cross-image comparison must not measure two different preprocessing paths. Batch failures must identify failed files without silently discarding valid work.
+- **Tradeoffs:** Palette suggestions can change from historical quantized values; regression expectations now use decoded source colors. Large images are still resampled and at most 8000 nontransparent pixels sampled. Cluster means and protected accent representatives are not a literal pixel-picker guarantee, and area estimates remain approximate. Human attention qualification remains separate.

@@ -54,6 +54,8 @@ The domains share the color engine but use separate rules, previews, exports and
 8. Contrast audits distinguish passed, failed and unexamined pairs. Missing or invalid colors cannot count as passed checks; small text uses the normal-text threshold.
 9. Every assigned role color remains selectable, including fallback and current colors outside the extracted palette. The editor, preview and exported roles must agree.
 10. Re-extraction preserves manual role choices for the current image while refreshing untouched suggestions. Unified-series drafts are independent by domain and strategy; resetting one draft does not clear the others. These page-scoped drafts do not yet provide recovery after reload.
+11. Uniform decoded source colors retain their RGB values. Single/series analysis uses the same preprocessing contract and records its version in JSON exports. Palette shares from sampled/resized evidence remain estimates.
+12. A supported batch with corrupt items retains successful images, names each failed item and allows a later retry without clearing the current draft.
 
 ## Product north star
 

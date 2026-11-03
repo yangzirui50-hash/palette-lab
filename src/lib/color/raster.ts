@@ -1,5 +1,6 @@
 import type { RGBPixel } from './extract'
 import type { SpatialRoi } from './spatial'
+import { COLOR_PIPELINE } from './pipelineConfig'
 
 export type RasterCanvas = HTMLCanvasElement | OffscreenCanvas
 export type RasterFrame = {
@@ -33,7 +34,7 @@ export async function rasterDataUrl(canvas: RasterCanvas): Promise<string> {
   return `data:image/png;base64,${btoa(binary)}`
 }
 
-export async function loadRaster(file: File, maxEdge = 512, roi?: SpatialRoi): Promise<RasterFrame> {
+export async function loadRaster(file: File, maxEdge: number = COLOR_PIPELINE.maxEdge, roi?: SpatialRoi): Promise<RasterFrame> {
   let image: ImageBitmap
   try { image = await createImageBitmap(file) } catch { throw new Error('无法读取图片，请确认文件没有损坏') }
   try {
@@ -54,7 +55,7 @@ export async function loadRaster(file: File, maxEdge = 512, roi?: SpatialRoi): P
     context.drawImage(image, x, y, cropWidth, cropHeight, 0, 0, width, height)
     const rgba = context.getImageData(0, 0, width, height).data
     const pixels: Array<RGBPixel | null> = []
-    for (let offset = 0; offset < rgba.length; offset += 4) pixels.push(rgba[offset + 3] < 128 ? null : [rgba[offset], rgba[offset + 1], rgba[offset + 2]])
+    for (let offset = 0; offset < rgba.length; offset += 4) pixels.push(rgba[offset + 3] < COLOR_PIPELINE.alphaCutoff ? null : [rgba[offset], rgba[offset + 1], rgba[offset + 2]])
     return { canvas, pixels, width, height, originalWidth: image.width, originalHeight: image.height }
   } finally { image.close() }
 }

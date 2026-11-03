@@ -43,7 +43,7 @@ test('keeps fallback selectors, painted colors and exported roles consistent', a
   await expect(muted).toHaveValue('#a3a3a3')
   await expect(muted.locator('option:checked')).toContainText('#a3a3a3')
   await expect(page.locator('.preview-web')).toHaveCSS('--preview-muted', '#a3a3a3')
-  await muted.selectOption('#080808')
+  await muted.selectOption('#0a0a0a')
   await muted.selectOption('#a3a3a3')
   const mismatch = await page.locator('.role-field').evaluateAll(fields => fields.flatMap(field => {
     const select = field.querySelector('select')!, chip = field.querySelector<HTMLElement>('i')!

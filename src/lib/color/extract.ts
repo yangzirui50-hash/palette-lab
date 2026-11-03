@@ -1,5 +1,6 @@
 import Color from 'colorjs.io'
 import { buildSpatialAssignments } from './spatial'
+import { COLOR_PIPELINE } from './pipelineConfig'
 
 export type RGBPixel = readonly [number, number, number]
 
@@ -44,9 +45,12 @@ const distanceSquared = (a: RGBPixel, b: RGBPixel) => {
   return (labA[0] - labB[0]) ** 2 + (labA[1] - labB[1]) ** 2 + (labA[2] - labB[2]) ** 2
 }
 
-function buildSamples(pixels: readonly RGBPixel[], maxSamples = 8000): WeightedSample[] {
+function buildSamples(pixels: readonly RGBPixel[], exactLimit: number): WeightedSample[] {
+  const maxSamples = COLOR_PIPELINE.maxSamples
   const sampleCount = Math.min(pixels.length, maxSamples)
-  const histogram = new Map<string, { rgb: RGBPixel; weight: number }>()
+  const histogram = new Map<string, { sum: number[]; weight: number }>()
+  const exact = new Map<string, { rgb: RGBPixel; weight: number }>()
+  let fewColors = true
 
   for (let sample = 0; sample < sampleCount; sample += 1) {
     const start = Math.floor(sample * pixels.length / sampleCount)
@@ -54,15 +58,27 @@ function buildSamples(pixels: readonly RGBPixel[], maxSamples = 8000): WeightedS
     const phase = (Math.imul(sample + 1, 2654435761) >>> 0) / 4294967296
     const index = Math.min(pixels.length - 1, start + Math.floor(phase * (end - start)))
     const source = pixels[index]
-    const rgb = source.map((channel) => Math.round(channel / 8) * 8) as unknown as RGBPixel
-    const clamped = rgb.map((channel) => Math.min(255, channel)) as unknown as RGBPixel
-    const key = clamped.join(',')
+    if (fewColors) {
+      const exactKey = source.join(',')
+      const existing = exact.get(exactKey)
+      if (existing) existing.weight++
+      else exact.set(exactKey, { rgb: source, weight: 1 })
+      if (exact.size > exactLimit) { fewColors = false; exact.clear() }
+    }
+    // Quantization groups nearby samples; its key is never an output color.
+    const key = source.map(channel => Math.min(255, Math.round(channel / COLOR_PIPELINE.histogramStep) * COLOR_PIPELINE.histogramStep)).join(',')
     const existing = histogram.get(key)
-    if (existing) existing.weight += 1
-    else histogram.set(key, { rgb: clamped, weight: 1 })
+    if (existing) {
+      existing.weight++
+      source.forEach((channel, index) => { existing.sum[index] += channel })
+    } else histogram.set(key, { sum: [...source], weight: 1 })
   }
 
-  return [...histogram.values()].map((sample) => ({
+  const representatives = fewColors ? [...exact.values()] : [...histogram.values()].map(sample => ({
+    rgb: sample.sum.map(channel => channel / sample.weight) as unknown as RGBPixel,
+    weight: sample.weight,
+  }))
+  return representatives.map((sample) => ({
     ...sample,
     oklch: toOklch(sample.rgb),
   }))
@@ -122,12 +138,10 @@ function initialCenters(samples: WeightedSample[], count: number, accentBudget: 
 function directSwatches(samples: WeightedSample[]): PaletteSwatch[] {
   const total = samples.reduce((sum, sample) => sum + sample.weight, 0)
   return samples
-    .map((sample) => ({
-      hex: toHex(sample.rgb),
-      rgb: sample.rgb,
-      oklch: sample.oklch,
-      share: sample.weight / total,
-    }))
+    .map((sample) => {
+      const rgb = sample.rgb.map(Math.round) as unknown as RGBPixel
+      return { hex: toHex(rgb), rgb, oklch: toOklch(rgb), share: sample.weight / total }
+    })
     .sort((a, b) => b.share - a.share)
 }
 
@@ -200,7 +214,7 @@ function candidateQuality(samples: WeightedSample[], palette: PaletteSwatch[]) {
 export function extractPalette(pixels: readonly RGBPixel[], colorCount = 6): PaletteSwatch[] {
   if (pixels.length === 0) throw new Error('At least one pixel is required')
   if (!Number.isInteger(colorCount) || colorCount < 2 || colorCount > 8) throw new Error('colorCount must be an integer between 2 and 8')
-  const samples = buildSamples(pixels)
+  const samples = buildSamples(pixels, colorCount)
   if (samples.length <= colorCount) return directSwatches(samples)
   const coverageInitialization = initialCenters(samples, colorCount, colorCount <= 4 ? Math.floor(colorCount / 3) : colorCount - 3)
   const accentInitialization = initialCenters(samples, colorCount, colorCount - 1)

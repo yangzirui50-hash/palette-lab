@@ -2,6 +2,15 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-03 — Source fidelity and one palette-analysis entry
+
+- Preserved original RGB statistics inside histogram bins and exact sampled colors for low-color inputs, fixing uniform-source drift and avoidable low-color merging.
+- Routed single/series extraction through one versioned Worker pipeline; removed the old separate series decoder.
+- Added per-source analysis provenance to JSON tokens and series reports, refreshing it with count changes.
+- Retained successful batch files around corrupt items, with progress, named failures and later retry; existing edited drafts remain intact.
+- Closed an absolute-distance loophole that could assign a dim red pixel to a blue-gray family; added six rotated dim-hue challenges and compatible-family/abstention cases.
+- Updated fixture assertions to actual source colors and added original-RGB, resized cross-mode, export-metadata and partial-failure regressions.
+
 ## 2026-11-03 — Preserve manual choices during analysis and strategy changes
 
 - Separated single-image manual role overrides from automatic suggestions, preserving both-domain choices during count-driven re-extraction and failed imports.
