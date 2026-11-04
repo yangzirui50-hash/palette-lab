@@ -82,6 +82,7 @@ export async function readProjectBackup(file: File): Promise<Project> {
     }
     return restored
   } catch (error) {
+    // eslint-disable-next-line preserve-caught-error -- Keep raw imported data out of the public error boundary.
     if (error instanceof z.ZodError || error instanceof SyntaxError) throw new Error('项目备份的版本或内容无效，当前工作未被替换')
     throw error
   }

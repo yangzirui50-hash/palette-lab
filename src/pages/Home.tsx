@@ -152,6 +152,7 @@ function HomeWorkspace() {
   useEffect(() => {
     uploadRequestRef.current++
     paletteClient.current.cancel()
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Project epoch changes cancel external image work and clear its transient status once.
     setBusy(false)
     setError('')
     setCopied('')

@@ -40,7 +40,9 @@ export async function runStructuredImageTask<T>(env: WorkerEnv, request: FocusRe
           signal: AbortSignal.timeout(90_000),
         })
       } catch (error) {
+        // eslint-disable-next-line preserve-caught-error -- Do not attach upstream transport details to the sanitized provider error.
         if (error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)) throw Error('AI_PROVIDER_TIMEOUT')
+        // eslint-disable-next-line preserve-caught-error -- Do not attach upstream transport details to the sanitized provider error.
         throw Error('AI_NETWORK_ERROR')
       }
       if (!response.ok) throw Error(`AI_PROVIDER_${response.status}`)

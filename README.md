@@ -45,7 +45,7 @@ React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Wo
 
 ## Development
 
-Requires Node.js 20 or later.
+Requires Node.js ^20.19.0, ^22.13.0 or >=24. The lockfile is verified with npm 10 clean installation. See `docs/REVIEWS/2026-11-04-toolchain-security.md` for the ESLint/minimatch compatibility review.
 
 ```bash
 npm install

@@ -14,6 +14,7 @@ export default function ReadingAnalysis({ sourceFile, sourceId, sourceUrl, snaps
   const measured = useRef<{ file: File; value: FocusMeasurements } | null>(null)
   const snapshot = snapshots.find(record => record.id === selected) ?? snapshots.at(-1)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Source replacement cancels external work and clears its transient status once.
     requestId.current++; controller.current?.abort(); client.current.cancel(); measured.current = null; setLoading(false); setError('')
     const worker = client.current
     return () => { controller.current?.abort(); worker.cancel() }

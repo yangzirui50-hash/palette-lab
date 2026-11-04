@@ -10,7 +10,9 @@ The separate `/api/reading` task has runtime schema, prompt/input identity, sour
 
 Local verification on the existing dependency tree: 253 unit tests, 80 regular browser workflows (four opt-in suites skipped), lint/type/build/environment safety. Eight real source-handler tasks succeeded with nine upstream HTTP requests; a separate built-client browser workflow succeeded with one real DeepSeek request and verified phone layout, saved-result reuse and no browser errors. The handler probes and loopback built-client preview are not deployed Cloudflare acceptance or attention-accuracy measurements. See `REVIEWS/2026-11-04-whole-image-delivery.md`.
 
-The complete usable loopback workbench is available at http://127.0.0.1:7113/ while its local server runs. Feature publication and the independent pre-existing dependency audit gate are recorded separately; production main remains `ed7d32f` at this verification stage. The next engineering step is publication after reviewing the compatibility/security gate; the next product evaluation concerns usefulness for palette decisions, not another repeat focus annotation.
+The complete usable loopback workbench is available at http://127.0.0.1:7113/ while its local server runs. The independent minimatch repair now passes npm 10 clean installation, zero-vulnerability audit, 253 units, seven pilot checks, lint/build/environment safety and the complete 80-workflow regular browser suite on its isolated dependency tree. Direct and transitive runtime dependency versions are unchanged; four development tools and their lock graph are updated with a reviewed override. See `REVIEWS/2026-11-04-toolchain-security.md`. Publication is still separate; production main remains `ed7d32f` at this verification stage. The next engineering step is remote CI and publication; the next product evaluation concerns usefulness for palette decisions, not another repeat focus annotation.
+
+## Historical phase records
 
 Historical stages follow; their earlier pending presentation decisions and test counts do not supersede the current candidate record.
 
@@ -79,7 +81,7 @@ Five daily-use repair units are implemented. The latest connects native-ROI cand
 - Desktop and 390px mobile layouts pass without horizontal overflow
 - ESLint passes
 - Runtime dependencies reduced from 48 to 7
-- The November 3 security recheck found a moderate development-only minimatch advisory (GHSA-g3hv-75wg-m249); earlier zero-vulnerability reports are historical. The audit job remains active and fails while this is unresolved.
+- The November 3 security recheck found a moderate development-only minimatch advisory (GHSA-g3hv-75wg-m249); earlier zero-vulnerability reports are historical. This historical failure is resolved on the current candidate after the isolated compatibility review; the audit job remains active.
 - The last synchronized baseline a4376fd failed its npm audit step; historical green CI is not current acceptance. Security and functional verification now run as independent jobs without suppressing audit failures.
 
 ## Repository
@@ -102,6 +104,6 @@ Five daily-use repair units are implemented. The latest connects native-ROI cand
 - Clickable distribution hotspots that generate local palettes
 - Interactive semantic object masks and further region-edge refinement
 
-## Next action
+## Historical next action (superseded by Current phase)
 
 The owner will provide the 30-image focus feedback later; preserve the candidate branch, self-contained contact report and original human drafts, and accept sequential verbal feedback without requiring a new drawing/export session now. These development images cannot become held-out qualification data. Independent daily-operation fixes may continue without merging the candidate focus algorithm. Inspect worst per-image quality changes, freeze standards and obtain independent labels before the thousand-image stage. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.

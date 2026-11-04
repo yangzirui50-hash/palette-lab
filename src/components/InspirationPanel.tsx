@@ -35,6 +35,7 @@ export default function InspirationPanel({ analysis, domain, sourceFile, palette
     requestId.current += 1
     controller.current?.abort()
     controller.current = null
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- A changed external search basis invalidates its old result and status once.
     setResult(null)
     setLoading(false)
     setError('')

@@ -34,7 +34,9 @@ async function requestAnalysis(env: WorkerEnv, request: AnalysisRequest) {
       signal: AbortSignal.timeout(90_000),
     })
   } catch (error) {
+    // eslint-disable-next-line preserve-caught-error -- Do not attach upstream transport details to the sanitized provider error.
     if (error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)) throw new Error('AI_PROVIDER_TIMEOUT')
+    // eslint-disable-next-line preserve-caught-error -- Do not attach upstream transport details to the sanitized provider error.
     if (error instanceof TypeError) throw new Error('AI_NETWORK_ERROR')
     throw error
   }

@@ -2,6 +2,13 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-04 — Resolve the development-tool minimatch security gate
+
+- Upgraded ESLint, its JS preset, TypeScript ESLint and React Hooks lint plugin, then pinned the reviewed minimatch 11.0.4 override. Declared compatible Node engines and preserved every runtime dependency version.
+- Reviewed the clean lock graph in a separate dependency directory; npm 10 clean install and audit now pass with zero vulnerabilities. The original shared dependencies are retained.
+- Preserved sanitized errors and bounded external-state resets with twelve local, reasoned lint directives rather than changing runtime behavior or disabling global checks.
+- Repeated 253 units, seven pilot checks, lint/build/environment safety and the complete 80-workflow regular browser suite on the repaired tree. No audit suppression or forced peer resolution was used.
+
 ## 2026-11-04 — Deliver whole-image interpretation before optional local cues
 
 - Implemented the owner's selected default in the actual workbench, with clean imagery and optional local/relation/uncertainty disclosures.
