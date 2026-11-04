@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { spatialRegionSchema } from './analysis'
 
-export const FOCUS_PROMPT_VERSION = 'semantic-focus-2'
+export const FOCUS_PROMPT_VERSION = 'semantic-focus-2-schema-1'
 const id = z.string().regex(/^[a-zA-Z][a-zA-Z0-9_-]{0,31}$/)
 export const focusBoundsSchema = z.object({
   x:z.number().finite().min(0).max(1), y:z.number().finite().min(0).max(1),

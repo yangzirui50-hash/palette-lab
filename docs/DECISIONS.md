@@ -204,3 +204,11 @@
 - **Decision:** Retain the current bounded default and accepted presentation. Do not automatically add high-effort thinking, a self-review call or a local model. Preserve frozen failures and request four fresh judgments before another ranking selection.
 - **Reason:** Sixteen deeper attempts produced eleven strict-valid results at an observed 35.6-second median, with mixed semantic improvements/regressions. Fifteen valid reviews retained the same dominance and target-tier edges as their drafts. More calls did not demonstrate a stable ranking benefit.
 - **Tradeoffs:** This decision does not prove reasoning or review generally ineffective. The comparison is development evidence with four unannotated fresh-to-project images and no attention accuracy metric. Output-structure reliability and an unanchored competing-cue ranking task remain separate next investigations.
+
+## ADR-029 — Describe the exact result schema and return validation evidence to a bounded retry
+
+- **Status:** Implemented on review branch
+- **Date:** 2026-11-04
+- **Decision:** Serialize JSON Schema from the runtime validator on the server and pass bounded previous visible output/validation issues to the existing second attempt when structure is invalid. Keep the semantic guide, result shape, source cache and accepted UI unchanged; version the prompt metadata separately.
+- **Reason:** An invalid enum, object in a string field or contradictory primary graph should be explained to the provider rather than silently guessed by application code or retried without context.
+- **Tradeoffs:** The exact-schema arm still failed one of twenty-six first attempts and did not improve the strict-valid count on the reused sixteen subset. Contract precision and successful captured-error repairs do not prove semantic accuracy or a general success-rate gain. Repair can add input tokens, but does not add a third/default review attempt. Prototype whole-image readings remain a different, unaccepted output contract.

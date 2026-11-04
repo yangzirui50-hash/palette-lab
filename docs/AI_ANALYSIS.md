@@ -36,6 +36,10 @@ The default DeepSeek focus task disables thinking and caps output at 4096 tokens
 
 The presentation review accepted the text hierarchy, not the model's ranking or boxes. No automatic deeper-thinking or self-review call is enabled by the external comparison experiment. Semantic results currently advise the user; they do not automatically change role colors or repair the independent aesthetics report. See `REVIEWS/2026-11-03-semantic-focus.md` and the subsequent priority comparison record.
 
+The November 4 follow-up uses prompt version `semantic-focus-2-schema-1`. The provider appends JSON Schema generated from the runtime result validator on the server only. If an attempt fails JSON/schema validation, its visible answer (capped at 20,000 characters) and up to eight bounded issue messages guide the existing second attempt. The first valid result returns immediately. No dominance aliases are silently normalized and no primary target is chosen by application code. The result shape and old-cache compatibility are unchanged. This does not establish higher semantic accuracy or a globally higher format success rate.
+
+Relationship/composition extensions and a whole-image/unranked-local reading are external prototypes, not accepted focus schema fields. The latter changes the output question and has no total-rank prediction. Adopting it requires an explicit task/schema identity and cache boundary; old focus snapshots must not be relabeled as that reading. See `REVIEWS/2026-11-04-organization-and-schema.md`.
+
 ## Providers
 
 ### Mock

@@ -1,6 +1,10 @@
 # Palette Lab — Delivery Roadmap
 
-## Current semantic candidate gate (2026-11-03)
+## Current output-contract gate (2026-11-04)
+
+The additional four judgments are complete. Preserve the accepted text UI and implement only the tested schema/structural-retry clarification. General organization prompts still leave semantic disagreements. Review the concrete whole-image-first reading with optional unranked local cues before adopting a different product-output contract; do not call that shift improved attention accuracy. If selected, give the new task its own schema/cache identity, preserve old focus records, and then validate actual palette-decision usefulness. No further repeat annotation of the thirty plus four reviewed images is needed for this choice.
+
+## Previous semantic candidate gate (2026-11-03)
 
 The readable text hierarchy is accepted; individual ranks, approximate boxes and production merge are not. Preserve the local measurement/color-editing workflow and separate source-owned focus cache. A frozen comparison did not justify automatic deep thinking or automatic draft review, so neither is added by default. Repair the independently observed report-action alias, then obtain only the four fresh-image judgments already prepared. Strengthen output-structure guidance separately from ranking quality; require evidence on fresh images before adopting an unanchored ranking contender or targeted localization component. Existing thirty-image development opinions remain valid inputs and are not new qualifying annotations. See `REVIEWS/2026-11-03-priority-comparison.md`.
 

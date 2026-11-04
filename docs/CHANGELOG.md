@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-04 — Clarify focus output structure and preserve whole-image interpretation evidence
+
+- Sent server-generated JSON Schema alongside the original semantic guide, with versioned prompt metadata and unchanged client/result contracts.
+- Added bounded visible-answer/validation-issue context to the existing format retry, retaining the two-attempt limit and strict rank validation.
+- Verified exact captured dominance/primary failures can be repaired by the provider without application-side semantic guessing; no valid result triggers an extra review.
+- Received four additional verbal judgments and preserved them privately. Compared general organization variants across 26 development images; did not adopt unproven semantic changes or publish an accuracy percentage.
+- Prepared an eight-image whole-image/unranked-local output prototype for a concrete product judgment. It changes the question rather than correcting the old total ranks, and remains outside the product default.
+
 ## 2026-11-03 — Accept readable hierarchy and evaluate bounded priority alternatives
 
 - Recorded presentation acceptance separately from semantic-rank/region qualification and retained source-owned focus history and clean imagery.

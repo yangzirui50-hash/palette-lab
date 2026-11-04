@@ -8,6 +8,8 @@ The review candidate adds `focus.ts` domain validation and a dedicated `/api/foc
 
 `SemanticFocusPanel` keeps subjects and meaningful independent secondary targets readable, nests same-subject details, and displays at most one optional transparent estimated box. It never converts a model box into a center point or a validated segmentation boundary. Presentation acceptance is separate from semantic qualification. The existing local contrast reference and the independent aesthetics-report snapshots remain separate. No ranking alternative from an external experiment is automatically enabled, and no semantic report silently changes design roles.
 
+`semantic-focus-2-schema-1` serializes the result's JSON Schema in the server provider, not the client domain initializer. An invalid JSON/schema reply produces bounded structural-repair data for the existing second attempt; valid replies do not get a review pass. Source measurements/image remain the request evidence. The adapter validates the replacement and never manufactures a preferred rank. Experimental whole-image reading uses a different offline schema and is not stored in `focusSnapshots`.
+
 ## Structural evidence prototype 1.2.0
 
 Clean-view follow-up adds an unpainted `attentionSourceUrl` from the same raster used for analysis, including ROI cropping. Source and evidence PNG encoding share immutable canvases and run concurrently in the Worker. The component uses the source by default; the heat image and SVG support mask are only mounted after an explicit toggle. Reanalysis unmounts the result while loading, returning new source/ROI results to evidence-off. Neither attention math nor source palettes, saved projects or AI requests changes.

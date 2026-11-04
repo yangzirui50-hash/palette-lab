@@ -6,6 +6,8 @@ AI-assisted color-system workspace for turning image inspiration into editable, 
 
 The review branch includes source-owned semantic focus through the existing DeepSeek API, with independent history/cache and optional estimated bounds. Its text hierarchy has passed presentation review; primary/secondary accuracy and regions have not. The follow-up compatibility repair passes 244 unit tests and four relevant browser workflows; the preceding candidate passed the complete 74-workflow regular suite. Production main remains separate. See `docs/REVIEWS/2026-11-03-semantic-focus.md` and `docs/STATUS.md` for the current decision and experimental limits.
 
+The November 4 provider follow-up passes 245 unit tests and five relevant browser workflows with server-only exact schema guidance and a bounded structural retry. Four further verbal judgments are received. An external whole-image/unranked-local prototype awaits a product-output judgment; it has not replaced the ranker or established attention accuracy. See `docs/REVIEWS/2026-11-04-organization-and-schema.md`.
+
 The local workspace includes image import, role editing, Web/Art previews, exports, deterministic multi-image comparison/unification, independent local palettes and dual-mode spatial analysis. The color engine uses hue-safe clustering, confidence-aware assignment and 512-pixel analysis with eight-neighbor continuity.
 
 The November 1 baseline passed 72 unit tests, 25 browser workflows and the opt-in 50-image benchmark. See `docs/STATUS.md` for current verification and remaining work, and `docs/REVIEWS/2026-11-02-github-sync.md` for the conversation-to-commit reconciliation.

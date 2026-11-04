@@ -1,8 +1,12 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-11-03_
+_Last updated: 2026-11-04_
 
 ## Current phase
+
+The four additional verbal judgments have arrived and are archived as development criteria. Do not recollect them. On `fix/focus-organization-schema`, the accepted UI/result shape is retained while the provider sends precise server-generated output schema and validation feedback to its existing second attempt. Verification is 245 units, five relevant browser workflows, type/lint/build/environment safety, six fully real source-handler tasks and two invalid-reply replay/real-repair tasks. Production main is still `ed7d32f`.
+
+The 26-image schema/organization comparison, a 26-image reference-ranking prototype and an eight-image dual-reading prototype are complete and archived privately. None proves improved attention ranking. Expanded kinds and reference framing did not consistently resolve object-versus-whole-image disagreements, so neither replaces the ranker. The separate whole-image-first/unranked-local prototype is ready for a product-output judgment only. See `REVIEWS/2026-11-04-organization-and-schema.md`. The next owner input is its default presentation/meaning, not another set of per-image annotations.
 
 The semantic-focus candidate is backed up at `fix/semantic-focus-deepseek` (`fb77cb6`); its text hierarchy has passed presentation review only. Subject priorities and model boxes remain unaccepted. `fix/focus-priority-evaluation` now preserves this UI while comparing bounded ranking alternatives outside the repository. Production main remains `ed7d32f`.
 

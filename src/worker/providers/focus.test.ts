@@ -16,6 +16,10 @@ describe('dedicated semantic focus provider',()=>{
   expect(body.thinking).toEqual({type:'disabled'});expect(body.max_tokens).toBe(4096)
   expect(body.messages[1].content[1].image_url.detail).toBe('original')
   expect(body.messages[0].content).toContain('color-relation')
+  const schema=JSON.parse(body.messages[0].content.split('Return the answer JSON, not this schema.\n')[1])
+  expect(schema.properties.dominance.type).toBe('string')
+  expect(schema.properties.dominance.enum).toContain('distributed')
+  expect(JSON.parse(body.messages[1].content[0].text).structuralRepair).toBeUndefined()
   expect(JSON.stringify(result)+JSON.stringify(observe.mock.calls)).not.toContain('TEST_PRIVATE_KEY')
  })
  it('retries a structurally contradictory result once without inventing a ranking',async()=>{
@@ -26,6 +30,9 @@ describe('dedicated semantic focus provider',()=>{
   vi.stubGlobal('fetch',fetchMock)
   const result=await analyzeSemanticFocus(env,request)
   expect(result.run.attempts).toBe(2);expect(result.focus.dominance).toBe('ranked');expect(fetchMock).toHaveBeenCalledTimes(2)
+  const repair=JSON.parse(JSON.parse(fetchMock.mock.calls[1][1].body).messages[1].content[0].text).structuralRepair
+  expect(JSON.parse(repair.previousAnswer).dominance).toBe('shared')
+  expect(repair.issues.some((issue:{message:string})=>issue.message.includes('multiple primary'))).toBe(true)
  })
  it('rejects repeated invalid focus and does not expose schema internals or provider credentials',async()=>{
   vi.stubGlobal('fetch',vi.fn().mockImplementation(()=>Promise.resolve(new Response(JSON.stringify({choices:[{message:{content:'{"schemaVersion":1}'}}]})))))
@@ -45,5 +52,15 @@ describe('dedicated semantic focus provider',()=>{
   await analyzeSemanticFocus({...env,AI_PROVIDER:'openai',AI_MODEL:'test-vision-model'},request)
   const body=JSON.parse(fetchMock.mock.calls[0][1].body)
   expect(body.thinking).toBeUndefined();expect(body.messages[1].content[1].image_url.detail).toBeUndefined()
+ })
+ it('rejects an illegal dominance alias rather than guessing a preferred semantic rank',async()=>{
+  const {focus}=await analyzeSemanticFocus({AI_PROVIDER:'mock'},request)
+  const invalid={...focus,dominance:'primary'}
+  const fetchMock=vi.fn().mockImplementation(()=>Promise.resolve(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify(invalid),reasoning_content:'PRIVATE_REASONING_FIXTURE'}}]}))))
+  vi.stubGlobal('fetch',fetchMock)
+  await expect(analyzeSemanticFocus(env,request)).rejects.toThrow('AI_INVALID_SCHEMA')
+  expect(fetchMock).toHaveBeenCalledTimes(2)
+  const repairBody=fetchMock.mock.calls[1][1].body
+  expect(repairBody).toContain('structuralRepair');expect(repairBody).not.toContain('PRIVATE_REASONING_FIXTURE')
  })
 })
