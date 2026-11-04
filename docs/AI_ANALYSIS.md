@@ -4,6 +4,14 @@
 
 Deterministic palette computation, role assignment and WCAG checks remain outside the model. The multimodal provider interprets image content, composition and design direction. Model output is advisory and includes uncertainties.
 
+## Default whole-image reading
+
+`POST /api/reading` requires `task: "whole-image-reading"`, a maximum-1024px source JPEG and the fixed six-color/maximum-512px full-source measurements. It returns a validated `ImageReading` plus explicit task, provider/model and prompt/input receipt. Organization and visual character are the main output; typed relations, local cues without ranks and uncertainties are optional disclosures. The selected prototype prompt is preserved verbatim, with server-generated exact schema. No model boxes, score or primary winner is required.
+
+The current DeepSeek reading disables thinking and uses a 3072-token output ceiling. One explicit user action produces both levels; malformed structure or transient transport failures may use the existing second attempt. There is no automatic deeper review, detector call or aesthetics report. Up to ten source-owned records survive reload/backup/undo, while old focus-only backups default the new array to empty. Failed refresh retains the previous valid reading. Editing roles/count/domain or inspecting ROI does not invalidate the original-image reading. This behavior is operationally verified; semantic agreement and benefit to palette decisions remain separate evaluations.
+
+The deterministic mock is explicitly synthetic and cannot establish real-image quality. The eight genuine integrated-handler tasks and one genuine built-client task are bounded transport checks, not independent accuracy samples.
+
 ## Request
 
 `POST /api/analysis`
@@ -38,7 +46,7 @@ The presentation review accepted the text hierarchy, not the model's ranking or 
 
 The November 4 follow-up uses prompt version `semantic-focus-2-schema-1`. The provider appends JSON Schema generated from the runtime result validator on the server only. If an attempt fails JSON/schema validation, its visible answer (capped at 20,000 characters) and up to eight bounded issue messages guide the existing second attempt. The first valid result returns immediately. No dominance aliases are silently normalized and no primary target is chosen by application code. The result shape and old-cache compatibility are unchanged. This does not establish higher semantic accuracy or a globally higher format success rate.
 
-Relationship/composition extensions and a whole-image/unranked-local reading are external prototypes, not accepted focus schema fields. The latter changes the output question and has no total-rank prediction. Adopting it requires an explicit task/schema identity and cache boundary; old focus snapshots must not be relabeled as that reading. See `REVIEWS/2026-11-04-organization-and-schema.md`.
+Relationship/composition extensions to the old ranker remain experimental. The owner has now selected the separate whole-image/unranked-local reading as the workbench default. It changes the output question and has no total-rank prediction. Old focus snapshots remain separately labeled and available on demand. See `REVIEWS/2026-11-04-whole-image-delivery.md`.
 
 ## Providers
 

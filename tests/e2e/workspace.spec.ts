@@ -267,7 +267,7 @@ test('keeps the series workflow usable at a phone viewport', async ({ page }) =>
 test('highlights spatial color regions with explainable evidence', async ({ page }) => {
   await page.goto('/')
   await page.locator('.workspace input[type=file]').setInputFiles(fixture)
-  await expect(page.getByRole('heading', { name: '视觉重心与色彩地图' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '整体解读与色彩地图' })).toBeVisible()
   await expect(page.locator('.spatial-facts-core')).toBeVisible()
   await page.locator('.spatial-swatches button').nth(2).click()
   await expect(page.locator('.spatial-preview img')).toHaveAttribute('alt', /#4a90e2/)
@@ -309,7 +309,7 @@ test('highlights spatial color regions with explainable evidence', async ({ page
 test('shows multi-scale distribution evidence for scattered neon lights', async ({ page }) => {
   await page.goto('/')
   await page.locator('.workspace input[type=file]').setInputFiles(path.resolve('tests/fixtures/neon-test.png'))
-  await expect(page.getByRole('heading', { name: '视觉重心与色彩地图' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '整体解读与色彩地图' })).toBeVisible()
   await page.getByRole('button', { name: '散点分布', exact: true }).click()
   await expect(page.locator('.spatial-preview img')).toHaveAttribute('alt', /色彩密度热图/)
   await expect(page.locator('.spatial-facts')).toContainText('所选颜色热点位置')

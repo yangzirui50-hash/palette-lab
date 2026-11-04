@@ -9,7 +9,8 @@ import type { PaletteSwatch } from '../lib/color/extract'
 import './SpatialPanel.css'
 import AttentionEstimate from './AttentionEstimate'
 import FocusAnalysis from './FocusAnalysis'
-import type { FocusSnapshot } from '../lib/project/model'
+import type { FocusSnapshot, ReadingSnapshot } from '../lib/project/model'
+import ReadingAnalysis from './ReadingAnalysis'
 
 type SpatialPanelProps = {
   sourceFile: File
@@ -17,6 +18,8 @@ type SpatialPanelProps = {
   sourceId:string
   focusSnapshots:FocusSnapshot[]
   onFocusResult:(snapshot:FocusSnapshot)=>void
+  readingSnapshots: ReadingSnapshot[]
+  onReadingResult: (snapshot: ReadingSnapshot) => void
   palette: PaletteSwatch[]
   onEvidenceChange?: (evidence: SpatialRegionEvidence[]) => void
   roi?: SpatialRoi | null
@@ -25,7 +28,7 @@ type SpatialPanelProps = {
   onAddColor?: (color: PaletteSwatch, roi: SpatialRoi) => 'added' | 'exists' | 'full'
 }
 
-export default function SpatialPanel({ sourceFile, sourceUrl='', sourceId,focusSnapshots,onFocusResult, palette, onEvidenceChange, roi: controlledRoi, onRoiChange, retainedHexes = [], onAddColor }: SpatialPanelProps) {
+export default function SpatialPanel({ sourceFile, sourceUrl='', sourceId,focusSnapshots,onFocusResult,readingSnapshots,onReadingResult, palette, onEvidenceChange, roi: controlledRoi, onRoiChange, retainedHexes = [], onAddColor }: SpatialPanelProps) {
   const [evidence, setEvidence] = useState<SpatialRegionEvidence[]>([])
   const [distributions, setDistributions] = useState<PaletteDistribution[]>([])
   const [attentionResult, setAttentionResult] = useState<Pick<SpatialResult, 'attention' | 'attentionUrl' | 'attentionSourceUrl'> | null>(null)
@@ -160,9 +163,14 @@ export default function SpatialPanel({ sourceFile, sourceUrl='', sourceId,focusS
 
   return (
     <section className="spatial-panel" aria-labelledby="spatial-title">
-      <div className="panel-heading"><span>06</span><h2 id="spatial-title">视觉重心与色彩地图</h2><small>SPATIAL EVIDENCE</small></div>
-      <p className="spatial-intro">连续区域查看颜色边界，散点分布查看密度与显著中心；所有指标都是视觉证据，不是美观评分。</p>
-      <FocusAnalysis sourceFile={sourceFile} sourceId={sourceId} sourceUrl={sourceUrl} snapshots={focusSnapshots} onResult={onFocusResult}/>
+      <div className="panel-heading"><span>06</span><h2 id="spatial-title">整体解读与色彩地图</h2><small>IMAGE & COLOR</small></div>
+      <p className="spatial-intro">先读构图、动作与氛围，局部线索按需展开。下方色彩地图用于查看颜色分布。</p>
+      <ReadingAnalysis sourceFile={sourceFile} sourceId={sourceId} sourceUrl={sourceUrl} snapshots={readingSnapshots} onResult={onReadingResult}/>
+      <details className="optional-focus">
+        <summary>主次候选与旧记录{focusSnapshots.length ? `（${focusSnapshots.length}）` : ''}</summary>
+        <p className="spatial-intro">需要比较主次时再单独判断；已有记录保留在这里。</p>
+        <FocusAnalysis sourceFile={sourceFile} sourceId={sourceId} sourceUrl={sourceUrl} snapshots={focusSnapshots} onResult={onFocusResult}/>
+      </details>
       {!loading && !error && completedAnalysisKey === analysisKey && attentionResult && (
         <AttentionEstimate attention={attentionResult.attention} imageUrl={attentionResult.attentionUrl} sourceImageUrl={attentionResult.attentionSourceUrl} local={Boolean(roi)} />
       )}

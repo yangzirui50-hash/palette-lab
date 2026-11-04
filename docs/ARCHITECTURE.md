@@ -1,5 +1,15 @@
 # Palette Lab — Architecture
 
+## Whole-image reading and cache boundary
+
+`src/domain/reading.ts` defines `whole-image-reading`, prompt version `whole-image-reading-1` and input version `source-jpeg1024-colors6-spatial512-v1`. Its exact schema contains scene, whole-image organization/character/typed relations, unranked local cues and uncertainties. `POST /api/reading` requires that task identity and full-source measurements, sharing the existing size limit, limiter and sanitized error boundary. The selected prototype prompt is copied unchanged with server-only JSON Schema.
+
+`structuredImage.ts` shares transport and bounded structural retry between reading and focus. Each task has its own schema/prompt/token ceiling; reading uses 3072 output tokens. A valid first result returns immediately. Structural or transient transport failures may retry; at most two attempts are allowed, with bounded visible-answer/issue context only after invalid structure; 401 and 429 are not retried. No hidden reasoning is forwarded or persisted.
+
+`SingleDraft.readingSnapshots` is an optional/default-empty version-one extension with a maximum of ten unique, source-owned records. Each retains explicit task, prompt/input provenance and provider receipt. Input-version metadata accepts historical strings; task identity and schema guard the actual data boundary. Old focus records are neither converted nor deleted. Existing backup/undo support carries both histories. Request identity, abort state and a second source guard reject late results. Reading preparation remains independent of editable roles/count/domain/ROI. Canceling the client does not promise cancellation or zero billing for upstream work already sent.
+
+`ReadingAnalysis` and `WholeImageReadingPanel` present the clean original and overall paragraphs first, with native closed disclosures. The former focus component sits in a separate initially closed section. Neither output silently assigns design roles or triggers an aesthetics analysis. No runtime dependency or local detector is added by this feature.
+
 ## Source-owned semantic focus, separate from design reports
 
 The review candidate adds `focus.ts` domain validation and a dedicated `/api/focus` provider task. A separate color Worker client prepares immutable full-source facts using six-color extraction and a 512px raster, paired with a maximum-1024px JPEG. Domain, role, count and ROI changes cannot redefine this request as a different original-image judgment. The Hono route shares the existing rate limiter and sanitized error boundary; no additional model or dependency is installed.
@@ -8,7 +18,7 @@ The review candidate adds `focus.ts` domain validation and a dedicated `/api/foc
 
 `SemanticFocusPanel` keeps subjects and meaningful independent secondary targets readable, nests same-subject details, and displays at most one optional transparent estimated box. It never converts a model box into a center point or a validated segmentation boundary. Presentation acceptance is separate from semantic qualification. The existing local contrast reference and the independent aesthetics-report snapshots remain separate. No ranking alternative from an external experiment is automatically enabled, and no semantic report silently changes design roles.
 
-`semantic-focus-2-schema-1` serializes the result's JSON Schema in the server provider, not the client domain initializer. An invalid JSON/schema reply produces bounded structural-repair data for the existing second attempt; valid replies do not get a review pass. Source measurements/image remain the request evidence. The adapter validates the replacement and never manufactures a preferred rank. Experimental whole-image reading uses a different offline schema and is not stored in `focusSnapshots`.
+`semantic-focus-2-schema-1` serializes the result's JSON Schema in the server provider, not the client domain initializer. An invalid JSON/schema reply produces bounded structural-repair data for the existing second attempt; valid replies do not get a review pass. Source measurements/image remain the request evidence. The adapter validates the replacement and never manufactures a preferred rank. The adopted whole-image reading now has its own runtime schema and `readingSnapshots`; it is never stored in `focusSnapshots`.
 
 ## Structural evidence prototype 1.2.0
 

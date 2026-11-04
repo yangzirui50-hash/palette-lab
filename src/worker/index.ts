@@ -10,6 +10,8 @@ import { compareReferences } from './providers/referenceAnalysis'
 import { rateLimitExceeded } from './rateLimit'
 import { focusRequestSchema } from '../domain/focus'
 import { analyzeSemanticFocus } from './providers/focus'
+import { readingRequestSchema } from '../domain/reading'
+import { analyzeImageReading } from './providers/reading'
 
 const app = new Hono<{ Bindings: WorkerEnv }>()
 
@@ -32,6 +34,19 @@ app.get('/api/health', (c) => c.json({
   provider: c.env.AI_PROVIDER ?? 'unconfigured',
   configured: Boolean(c.env.AI_API_KEY && c.env.AI_MODEL),
 }))
+
+app.post('/api/reading', async (c) => {
+  if (Number(c.req.header('content-length') ?? 0) > 6_000_000) return c.json({ error: 'IMAGE_TOO_LARGE' }, 413)
+  let body: unknown
+  try { body = await c.req.json() } catch { return c.json({ error: 'INVALID_JSON' }, 400) }
+  const parsed = readingRequestSchema.safeParse(body)
+  if (!parsed.success) return c.json({ error: 'INVALID_READING_REQUEST' }, 400)
+  try { return c.json(await analyzeImageReading(c.env, parsed.data)) } catch (error) {
+    if (error instanceof Error && error.message === 'AI_NOT_CONFIGURED') return c.json({ error: 'AI_NOT_CONFIGURED', message: 'AI 服务尚未配置，取色与编辑不受影响。' }, 501)
+    const reason = error instanceof Error && /^AI_(?:PROVIDER_(?:\d{3}|TIMEOUT)|EMPTY_RESPONSE|INVALID_JSON|INVALID_SCHEMA|NETWORK_ERROR)$/.test(error.message) ? error.message : 'AI_ANALYSIS_FAILED'
+    return c.json({ error: 'AI_READING_FAILED', reason, message: '整体解读暂未完成，已有结果和本地工作不受影响。' }, 502)
+  }
+})
 
 app.post('/api/focus',async(c)=>{
  if(Number(c.req.header('content-length')??0)>6_000_000)return c.json({error:'IMAGE_TOO_LARGE'},413)

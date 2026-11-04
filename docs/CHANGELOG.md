@@ -2,6 +2,14 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-04 — Deliver whole-image interpretation before optional local cues
+
+- Implemented the owner's selected default in the actual workbench, with clean imagery and optional local/relation/uncertainty disclosures.
+- Added an explicit reading task/schema, full-source preparation, source-owned ten-record history and separate legacy-focus compatibility in backups and undo.
+- Shared bounded provider transport with the existing focus task without adding a model, runtime dependency, automatic extra review or semantic rank conversion.
+- Verified 253 units, 80 regular browser workflows, type/lint/build/environment safety, eight genuine handler tasks (nine HTTP requests) and a separate genuine built-client browser task. Preserved initial failed test logs and corrected shared test-user limiter identity without weakening production limits.
+- Kept the thirty plus four human judgments and raw model evidence outside Git. Default-output acceptance does not qualify attention ranking or regions.
+
 ## 2026-11-04 — Clarify focus output structure and preserve whole-image interpretation evidence
 
 - Sent server-generated JSON Schema alongside the original semantic guide, with versioned prompt metadata and unchanged client/result contracts.

@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { focusResultSchema } from '../../domain/focus'
 import type { FocusResult } from '../../domain/focus'
+import { readingResultSchema } from '../../domain/reading'
+import type { ReadingResult } from '../../domain/reading'
 import { analysisReportSchema, spatialRegionSchema } from '../../domain/analysis'
 import type { AnalysisReport } from '../../domain/analysis'
 import type { RoleAssignments } from '../../domain/assign'
@@ -24,13 +26,14 @@ export type ReportContext = {
 }
 export type ReportSnapshot = { id: string; createdAt: string; context: ReportContext; report: AnalysisReport }
 export type FocusSnapshot=FocusResult&{id:string;createdAt:string;sourceId:string}
+export type ReadingSnapshot = ReadingResult & { id: string; createdAt: string; sourceId: string }
 export type WorkingColor = {
   color: PaletteSwatch; origin: 'roi' | 'manual'; sourceId: string
   roi: SpatialRoi | null; localShare: number | null
 }
 export type SingleDraft = {
   source: ProjectSource | null; roleOverrides: RoleDrafts
-  snapshots: ReportSnapshot[]; roi: SpatialRoi | null; workingColors: WorkingColor[];focusSnapshots:FocusSnapshot[]
+  snapshots: ReportSnapshot[]; roi: SpatialRoi | null; workingColors: WorkingColor[];focusSnapshots:FocusSnapshot[];readingSnapshots:ReadingSnapshot[]
 }
 export type SeriesSource = ProjectSource & { rolesByDomain: Record<DomainId, RoleAssignments>; lockedRoles: string[] }
 export type SeriesDraft = {
@@ -89,6 +92,7 @@ const snapshotSchema: z.ZodType<ReportSnapshot> = z.object({
   id: idSchema, createdAt: z.iso.datetime(), context: reportContextSchema, report: analysisReportSchema,
 })
 const focusSnapshotSchema: z.ZodType<FocusSnapshot> = focusResultSchema.extend({id:idSchema,createdAt:z.iso.datetime(),sourceId:idSchema})
+const readingSnapshotSchema: z.ZodType<ReadingSnapshot> = readingResultSchema.extend({ id: idSchema, createdAt: z.iso.datetime(), sourceId: idSchema })
 const workingColorSchema: z.ZodType<WorkingColor> = z.object({
   color: swatchSchema.refine(color => color.share === 0, '候选色不能冒充整图占比'),
   origin: z.enum(['roi', 'manual']), sourceId: idSchema, roi: roiSchema.nullable(), localShare: z.number().min(0).max(1).nullable(),
@@ -98,8 +102,10 @@ const singleSchema: z.ZodType<SingleDraft> = z.object({
   snapshots: z.array(snapshotSchema).max(20), roi: roiSchema.nullable(),
   workingColors: z.array(workingColorSchema).max(24).default([]),
   focusSnapshots:z.array(focusSnapshotSchema).max(10).default([]),
+  readingSnapshots: z.array(readingSnapshotSchema).max(10).default([]),
 }).refine(single => single.workingColors.every(candidate => candidate.sourceId === single.source?.id), '候选色不属于当前图片')
   .refine(single=>single.focusSnapshots.every(snapshot=>snapshot.sourceId===single.source?.id)&&new Set(single.focusSnapshots.map(snapshot=>snapshot.id)).size===single.focusSnapshots.length,'主体判断不属于当前图片或记录重复')
+  .refine(single => single.readingSnapshots.every(snapshot => snapshot.sourceId === single.source?.id) && new Set(single.readingSnapshots.map(snapshot => snapshot.id)).size === single.readingSnapshots.length, '整体解读不属于当前图片或记录重复')
 const seriesSourceSchema: z.ZodType<SeriesSource> = z.object({
   ...sourceShape,
   rolesByDomain: z.object({ 'web-ui': roleSchema('web-ui'), 'art-poster': roleSchema('art-poster') }),
@@ -129,7 +135,7 @@ export function emptyProject(): Project {
   return {
     ui: { domain: 'web-ui', mode: 'single' },
     core: {
-      single: { source: null, roleOverrides: {}, snapshots: [], roi: null, workingColors: [],focusSnapshots:[] },
+      single: { source: null, roleOverrides: {}, snapshots: [], roi: null, workingColors: [],focusSnapshots:[],readingSnapshots:[] },
       series: { images: [], primaryId: '', selectedId: '', view: 'overview', strategiesByDomain: {}, unifiedDrafts: {} },
     },
   }

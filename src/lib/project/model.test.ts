@@ -14,6 +14,21 @@ describe('versioned project model', () => {
     const legacySingle = { source: null, roleOverrides: {}, snapshots: [], roi: null }
     expect(projectSchema.parse({ ...project, core: { ...project.core, single: legacySingle } }).core.single.workingColors).toEqual([])
     expect(projectSchema.parse({ ...project, core: { ...project.core, single: legacySingle } }).core.single.focusSnapshots).toEqual([])
+    expect(projectSchema.parse({ ...project, core: { ...project.core, single: legacySingle } }).core.single.readingSnapshots).toEqual([])
+  })
+  it('keeps reading task identity, ownership and history separate from legacy focus records', async () => {
+    const { analyzeImageReading } = await import('../../worker/providers/reading')
+    const result = await analyzeImageReading({ AI_PROVIDER: 'mock' }, { task: 'whole-image-reading', image: 'data:image/png;base64,AA==', measurements: { scope: 'source', palette: [], spatial: [], sampleWidth: 64, sampleHeight: 64, notes: '' } })
+    const project = emptyProject(); project.core.single.source = source()
+    const record = { ...result, id: 'reading', sourceId: 'source', createdAt: '2026-11-04T00:00:00.000Z' }
+    project.core.single.readingSnapshots = [record]
+    expect(projectSchema.parse(project).core.single.focusSnapshots).toEqual([])
+    expect(projectSchema.parse(project).core.single.readingSnapshots[0].task).toBe('whole-image-reading')
+    for (const invalid of [{ ...record, sourceId: 'other' }, { ...record, task: 'semantic-focus' }]) {
+      expect(projectSchema.safeParse({ ...project, core: { ...project.core, single: { ...project.core.single, readingSnapshots: [invalid] } } }).success).toBe(false)
+    }
+    project.core.single.readingSnapshots.push(record)
+    expect(projectSchema.safeParse(project).success).toBe(false)
   })
   it('ties cached semantic judgments to the source and rejects invalid target structure',()=>{
     const project=emptyProject();project.core.single.source=source()

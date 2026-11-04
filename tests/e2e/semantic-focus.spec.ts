@@ -7,7 +7,10 @@ async function importImage(page:Page,name='palette-test.png'){
  await expect(page.locator('.source-meta strong')).toHaveText(name)
  await expect(page.locator('.spatial-preview img')).toBeVisible()
 }
-const analyze=(page:Page)=>page.getByRole('button',{name:/^(分析|重新判断)主体与主次$/}).click()
+async function openFocus(page:Page){
+ if(await page.locator('.optional-focus').getAttribute('open')===null)await page.locator('.optional-focus>summary').click()
+}
+const analyze=async(page:Page)=>{await openFocus(page);await page.getByRole('button',{name:/^(分析|重新判断)主体与主次$/}).click()}
 const saved=(page:Page)=>expect(page.locator('.project-save-state')).toHaveAttribute('data-save-state','saved')
 
 test('explicit focus requests survive editing, ROI browsing, reload and backup with no extra calls',async({page,browser},info)=>{
@@ -27,7 +30,7 @@ test('explicit focus requests survive editing, ROI browsing, reload and backup w
  await page.mouse.move(box.x+box.width*.2,box.y+box.height*.2);await page.mouse.down()
  await page.mouse.move(box.x+box.width*.7,box.y+box.height*.7);await page.mouse.up()
  await expect(page.locator('.spatial-palette-heading')).toContainText('局部色板')
- await saved(page);await page.reload()
+ await saved(page);await page.reload();await openFocus(page)
  await expect(page.locator('.semantic-focus')).toContainText('高亮测试色块')
  expect(calls).toBe(1)
  const downloaded=page.waitForEvent('download');await page.getByRole('button',{name:'导出项目备份',exact:true}).click()
@@ -37,6 +40,7 @@ test('explicit focus requests survive editing, ROI browsing, reload and backup w
  try{
   const restored=await context.newPage();await restored.goto('http://127.0.0.1:7101/')
   await restored.getByLabel('打开本地项目备份',{exact:true}).setInputFiles(file)
+  await expect(restored.locator('.source-meta strong')).toHaveText('palette-test.png');await openFocus(restored)
   await expect(restored.locator('.semantic-focus')).toContainText('高亮测试色块')
   await expect(restored.locator('.semantic-focus-bound')).toHaveCount(0)
  }finally{await context.close()}
@@ -51,9 +55,9 @@ test('ignores a pending result when its source is replaced',async({page})=>{
  })
  await page.goto('/');await importImage(page)
  const requested=page.waitForRequest('**/api/focus');await analyze(page);await requested
- await importImage(page,'monochrome-test.png');release()
+ await importImage(page,'monochrome-test.png');release();await openFocus(page)
  await expect(page.locator('[data-semantic-status=not-analyzed]')).toBeVisible()
- await saved(page);await page.reload()
+ await saved(page);await page.reload();await expect(page.locator('.optional-focus')).toBeVisible();await openFocus(page)
  await expect(page.locator('[data-semantic-status=not-analyzed]')).toBeVisible()
  await expect(page.locator('.semantic-focus')).toHaveCount(0)
 })

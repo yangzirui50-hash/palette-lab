@@ -2,7 +2,7 @@
 
 ## Current output-contract gate (2026-11-04)
 
-The additional four judgments are complete. Preserve the accepted text UI and implement only the tested schema/structural-retry clarification. General organization prompts still leave semantic disagreements. Review the concrete whole-image-first reading with optional unranked local cues before adopting a different product-output contract; do not call that shift improved attention accuracy. If selected, give the new task its own schema/cache identity, preserve old focus records, and then validate actual palette-decision usefulness. No further repeat annotation of the thirty plus four reviewed images is needed for this choice.
+The owner selected whole-image interpretation first with local cues on demand. The actual workbench now implements its own task/schema/cache identity and preserves optional legacy focus records. Complete publication and the independent dependency compatibility/security gate, then assess whether the interpretation helps real palette choices. Keep extraction, measurable contrast and optional subject hypotheses distinct. Do not expand to a thousand-image accuracy claim before defining independent task-specific criteria. No repeat annotation of the thirty plus four reviewed images is required.
 
 ## Previous semantic candidate gate (2026-11-03)
 

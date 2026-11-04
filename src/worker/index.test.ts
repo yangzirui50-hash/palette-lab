@@ -22,6 +22,21 @@ const requestBody = {
 }
 
 describe('analysis API', () => {
+  it('validates and rate-limits the independent whole-image reading task', async () => {
+    const body = { task: 'whole-image-reading', image: requestBody.image, measurements: { scope: 'source', palette: [], spatial: [], sampleWidth: 64, sampleHeight: 64, notes: 'Synthetic route fixture.' } }
+    const options = (data: unknown) => ({ method: 'POST', headers: { 'Content-Type': 'application/json', 'cf-connecting-ip': '203.0.113.10' }, body: JSON.stringify(data) })
+    const valid = await app.request('/api/reading', options(body), { AI_PROVIDER: 'mock' })
+    expect(valid.status).toBe(200); expect((await valid.json()).task).toBe('whole-image-reading')
+    const legacy = await app.request('/api/reading', options({ ...body, task: undefined }), { AI_PROVIDER: 'mock' })
+    expect(legacy.status).toBe(400)
+    const roi = await app.request('/api/reading', options({ ...body, measurements: { ...body.measurements, scope: 'roi' } }), { AI_PROVIDER: 'mock' })
+    expect(roi.status).toBe(400)
+    const limit = vi.fn().mockResolvedValue({ success: false })
+    const limited = await app.request('/api/reading', options(body), { AI_PROVIDER: 'mock', AI_RATE_LIMITER: { limit } })
+    expect(limited.status).toBe(429); expect(limit).toHaveBeenCalledWith({ key: '/api/reading:203.0.113.10' })
+    const unconfigured = await app.request('/api/reading', options(body), {})
+    expect(unconfigured.status).toBe(501)
+  })
   it('validates and rate-limits the independent paid focus task',async()=>{
     const body={image:requestBody.image,measurements:{scope:'source',palette:[],spatial:[],sampleWidth:64,sampleHeight:64,notes:'Synthetic API contract.'}}
     const response=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{AI_PROVIDER:'mock'})

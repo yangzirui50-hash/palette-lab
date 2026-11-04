@@ -212,3 +212,12 @@
 - **Decision:** Serialize JSON Schema from the runtime validator on the server and pass bounded previous visible output/validation issues to the existing second attempt when structure is invalid. Keep the semantic guide, result shape, source cache and accepted UI unchanged; version the prompt metadata separately.
 - **Reason:** An invalid enum, object in a string field or contradictory primary graph should be explained to the provider rather than silently guessed by application code or retried without context.
 - **Tradeoffs:** The exact-schema arm still failed one of twenty-six first attempts and did not improve the strict-valid count on the reused sixteen subset. Contract precision and successful captured-error repairs do not prove semantic accuracy or a general success-rate gain. Repair can add input tokens, but does not add a third/default review attempt. Prototype whole-image readings remain a different, unaccepted output contract.
+
+
+## Whole-image reading is a separate default task
+
+- **Status:** Accepted product-output choice; implementation verified locally
+- **Date:** 2026-11-04
+- **Decision:** Present whole-image organization/character first, then optional unranked local cues, using the existing multimodal provider. Preserve the old ranker behind an optional disclosure with separate schema/history. Keep deterministic image/color computation local.
+- **Reason:** The owner's gesture-led and distributed-scene judgments exposed a mismatch in the question demanded by mandatory total ranking. A readable overall interpretation better matches the selected palette workflow; more reasoning did not consistently resolve the old rank disagreements.
+- **Tradeoffs:** This changes the output task rather than proving improved attention accuracy. Subject candidates remain available but unqualified. One ordinary request returns both scales; only structural or transient transport failure can use the existing second attempt. Task/prompt/input provenance and source-owned caches prevent old focus records being relabeled. Actual palette-decision usefulness remains to be evaluated in use.
