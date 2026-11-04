@@ -6,6 +6,12 @@ The daily workflow keeps extraction evidence separate from design choices. Nativ
 
 Palette Lab turns image color into editable, testable and exportable design decisions. It is a color-system workspace, not a generic image-captioning agent.
 
+## Whole-image interpretation default (2026-11-04)
+
+The owner selected an overall reading before local cues. Show clean source pixels, composition/organization and character/atmosphere first; keep explanatory relations, unranked local cues and uncertainties available through optional disclosures. This supports image-inspired color decisions, including gesture-led and distributed scenes without forcing a total subject ranking.
+
+One explicit action requests both scales in one task. Changing palette count, domain, roles or ROI, refreshing the page and opening local details reuse the source-owned record. A failed refresh keeps the prior reading. Old subject-priority analysis remains optional and separately labeled, with its history preserved. AI interpretation advises the designer; deterministic colors, shares and contrast checks remain independently computed. No attention percentage or human region is inferred from verbal feedback.
+
 ## Target users
 
 - Developers building visual interfaces
@@ -68,3 +74,7 @@ A user can turn visual inspiration into a usable, explainable design color syste
 ## Focus evidence acceptance (2026-11-03)
 
 The visual-center feature must distinguish selected-color location from whole-image focus. It must support multiple candidates, no-focus results, original-source ROI detail and palette-count invariance. Local processing and editable color roles remain core requirements. Human attention accuracy is gated on independent annotations; see `ATTENTION_EVALUATION.md`.
+
+The semantic-focus candidate's readable subject/part/priority presentation has passed owner review. This acceptance does not approve individual ranks, approximate regions, or production release. Keep the original image clear, preserve no-dominant/uncertain outcomes and existing human judgments, and make any new AI call explicit. Subject understanding should ultimately help a usable design decision; the current candidate still displays semantic advice separately and must not be described as already selecting better design roles from it.
+
+The four further development judgments motivate a concrete distinction between whole-image reference interpretation and optional locally conspicuous cues. An external dual-reading prototype presents these without a total rank. This is a proposed product-output change, not a corrected focus-accuracy result. The accepted product default has not changed; a choice about its purpose must preserve access to prior focus records and must not require the owner to re-annotate already reviewed images.

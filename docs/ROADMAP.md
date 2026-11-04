@@ -1,5 +1,13 @@
 # Palette Lab — Delivery Roadmap
 
+## Current output-contract gate (2026-11-04)
+
+The owner selected whole-image interpretation first with local cues on demand. The actual workbench now implements its own task/schema/cache identity and preserves optional legacy focus records. Complete publication and the independent dependency compatibility/security gate, then assess whether the interpretation helps real palette choices. Keep extraction, measurable contrast and optional subject hypotheses distinct. Do not expand to a thousand-image accuracy claim before defining independent task-specific criteria. No repeat annotation of the thirty plus four reviewed images is required.
+
+## Previous semantic candidate gate (2026-11-03)
+
+The readable text hierarchy is accepted; individual ranks, approximate boxes and production merge are not. Preserve the local measurement/color-editing workflow and separate source-owned focus cache. A frozen comparison did not justify automatic deep thinking or automatic draft review, so neither is added by default. Repair the independently observed report-action alias, then obtain only the four fresh-image judgments already prepared. Strengthen output-structure guidance separately from ranking quality; require evidence on fresh images before adopting an unanchored ranking contender or targeted localization component. Existing thirty-image development opinions remain valid inputs and are not new qualifying annotations. See `REVIEWS/2026-11-03-priority-comparison.md`.
+
 ## Phase 0 — Foundation
 
 - Freeze product and domain contracts
@@ -69,3 +77,5 @@ The owner confirmed daily usability first, with portfolio value retained. The fo
 6. Portfolio case-study evidence and further platform/provider/visual expansion only after the daily workflow is reliable.
 
 Each delivery unit has its own regression evidence. The fourth passed 188 unit tests and 52 regular browser workflows; the fifth adds cross-stage editing/export/ROI/report-selection coverage. Image algorithms remain unchanged from the third unit's separate 50/30-image run. Review positive/negative failure classes and worst per-image deltas; averages and upload counts do not replace independent algorithm qualification. Human-focus qualification remains incomplete.
+
+Focus candidate 1.1.0 is the next review unit, separately from those five published repairs. It leaves raw heat unchanged while growing supported fragments, protecting strong targets and reporting uncertainty honestly. The complete workflow and 50/30 engineering checks run again for this algorithm candidate; a concrete before/after review precedes merging it into production. Existing type drafts and verbal feedback diagnose failure classes without becoming qualifying human boxes.

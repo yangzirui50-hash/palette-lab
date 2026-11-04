@@ -3,7 +3,7 @@ import type { AnalysisRequest } from '../../domain/analysis'
 import type { AIAnalysisProvider, WorkerEnv } from './types'
 import { getProviderDefinition } from './registry'
 
-const systemPrompt = `You are a visual design analyst. Analyze the actual image and the supplied deterministic palette. Return only valid JSON with this exact shape: summary, subjects (max 6 strings), scene, composition, lighting, styleTags (max 6), suitableUseCases (max 4), paletteRoles (max 8 objects with role and rationale), recommendations (max 4 objects with title, rationale and actionable action), uncertainties (max 4), provider and model. Do not invent objects or certainty. Distinguish objective visual evidence from subjective design interpretation. Use concise Simplified Chinese for all user-facing values. Use supplied spatial evidence to distinguish edge-connected backgrounds, central subjects and small salient accents; area alone is not visual importance. Spatial centroids and bounds are normalized to the full source image. When spatialScope.area is roi, shares, center/edge and component metrics describe only that ROI, not full-image area. Counts and shares are sampled opaque-pixel evidence, not exact original area or human fixation probabilities.`
+const systemPrompt = `You are a visual design analyst. Analyze the actual image and the supplied deterministic palette. Return only valid JSON with this exact shape: summary, subjects (max 6 strings), scene, composition, lighting, styleTags (max 6), suitableUseCases (max 4), paletteRoles (max 8 objects with role and rationale), recommendations (max 4 objects with exactly three string fields: title, rationale, action; action describes a concrete edit), uncertainties (max 4), provider and model. Do not invent objects or certainty. Distinguish objective visual evidence from subjective design interpretation. Use concise Simplified Chinese for all user-facing values. Use supplied spatial evidence to distinguish edge-connected backgrounds, central subjects and small salient accents; area alone is not visual importance. Spatial centroids and bounds are normalized to the full source image. When spatialScope.area is roi, shares, center/edge and component metrics describe only that ROI, not full-image area. Counts and shares are sampled opaque-pixel evidence, not exact original area or human fixation probabilities.`
 
 function isRetryable(error: unknown) {
   return error instanceof Error && (
@@ -34,7 +34,9 @@ async function requestAnalysis(env: WorkerEnv, request: AnalysisRequest) {
       signal: AbortSignal.timeout(90_000),
     })
   } catch (error) {
+    // eslint-disable-next-line preserve-caught-error -- Do not attach upstream transport details to the sanitized provider error.
     if (error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)) throw new Error('AI_PROVIDER_TIMEOUT')
+    // eslint-disable-next-line preserve-caught-error -- Do not attach upstream transport details to the sanitized provider error.
     if (error instanceof TypeError) throw new Error('AI_NETWORK_ERROR')
     throw error
   }
@@ -48,7 +50,19 @@ async function requestAnalysis(env: WorkerEnv, request: AnalysisRequest) {
   } catch {
     throw new Error('AI_INVALID_JSON')
   }
-  const report = analysisReportSchema.safeParse({ ...parsed as Record<string, unknown>, provider: definition?.id ?? 'openai-compatible', model: env.AI_MODEL })
+  // Earlier compatible providers sometimes used "actionable" for the same text.
+  // Normalize only that unambiguous legacy alias; validate every value normally.
+  const candidate = parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : {}
+  const recommendations = Array.isArray(candidate.recommendations)
+    ? candidate.recommendations.map(item => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) return item
+      const recommendation = item as Record<string, unknown>
+      return !Object.hasOwn(recommendation, 'action') && typeof recommendation.actionable === 'string'
+        ? { ...recommendation, action: recommendation.actionable }
+        : recommendation
+    })
+    : candidate.recommendations
+  const report = analysisReportSchema.safeParse({ ...candidate, recommendations, provider: definition?.id ?? 'openai-compatible', model: env.AI_MODEL })
   if (!report.success) throw new Error('AI_INVALID_SCHEMA')
   return report.data
 }

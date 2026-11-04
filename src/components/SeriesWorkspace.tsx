@@ -52,6 +52,7 @@ export default function SeriesWorkspace({ domain }: SeriesWorkspaceProps) {
     importState.current.run++
     importState.current.busy = false
     paletteClient.current.cancel()
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Project replacement cancels the external import and clears its transient status once.
     setBusy(false)
     setProgress(null)
     setImportResults(null)

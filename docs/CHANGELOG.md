@@ -2,6 +2,61 @@
 
 All notable project changes are recorded here in reverse chronological order.
 
+## 2026-11-04 — Resolve the development-tool minimatch security gate
+
+- Upgraded ESLint, its JS preset, TypeScript ESLint and React Hooks lint plugin, then pinned the reviewed minimatch 11.0.4 override. Declared compatible Node engines and preserved every runtime dependency version.
+- Reviewed the clean lock graph in a separate dependency directory; npm 10 clean install and audit now pass with zero vulnerabilities. The original shared dependencies are retained.
+- Preserved sanitized errors and bounded external-state resets with twelve local, reasoned lint directives rather than changing runtime behavior or disabling global checks.
+- Repeated 253 units, seven pilot checks, lint/build/environment safety and the complete 80-workflow regular browser suite on the repaired tree. No audit suppression or forced peer resolution was used.
+
+## 2026-11-04 — Deliver whole-image interpretation before optional local cues
+
+- Implemented the owner's selected default in the actual workbench, with clean imagery and optional local/relation/uncertainty disclosures.
+- Added an explicit reading task/schema, full-source preparation, source-owned ten-record history and separate legacy-focus compatibility in backups and undo.
+- Shared bounded provider transport with the existing focus task without adding a model, runtime dependency, automatic extra review or semantic rank conversion.
+- Verified 253 units, 80 regular browser workflows, type/lint/build/environment safety, eight genuine handler tasks (nine HTTP requests) and a separate genuine built-client browser task. Preserved initial failed test logs and corrected shared test-user limiter identity without weakening production limits.
+- Kept the thirty plus four human judgments and raw model evidence outside Git. Default-output acceptance does not qualify attention ranking or regions.
+
+## 2026-11-04 — Clarify focus output structure and preserve whole-image interpretation evidence
+
+- Sent server-generated JSON Schema alongside the original semantic guide, with versioned prompt metadata and unchanged client/result contracts.
+- Added bounded visible-answer/validation-issue context to the existing format retry, retaining the two-attempt limit and strict rank validation.
+- Verified exact captured dominance/primary failures can be repaired by the provider without application-side semantic guessing; no valid result triggers an extra review.
+- Received four additional verbal judgments and preserved them privately. Compared general organization variants across 26 development images; did not adopt unproven semantic changes or publish an accuracy percentage.
+- Prepared an eight-image whole-image/unranked-local output prototype for a concrete product judgment. It changes the question rather than correcting the old total ranks, and remains outside the product default.
+
+## 2026-11-03 — Accept readable hierarchy and evaluate bounded priority alternatives
+
+- Recorded presentation acceptance separately from semantic-rank/region qualification and retained source-owned focus history and clean imagery.
+- Compared current prompts, a deeper single pass and one fallible-draft review on twelve reused development images plus four fresh licensed sources, preserving all six failed attempts and one skipped review externally.
+- Rejected automatic extra reasoning/review calls: deeper outputs were slower and less structurally reliable; all fifteen reviews retained the draft's dominance and target-tier edges.
+- Prepared four new original-image judgments with model answers initially collapsed; did not recollect the prior thirty-image preferences, invent human regions or claim attention accuracy.
+- Synchronized product, provider and architecture documentation to the actual candidate boundaries. Production main and the accepted presentation remain unchanged.
+
+## 2026-11-03 — Preserve valid recommendation text from legacy provider replies
+
+- Replaced ambiguous recommendation wording with the exact `title`, `rationale`, `action` string fields.
+- Normalized the observed string alias `actionable` only when `action` is absent, retaining complete schema validation and existing explicit values.
+- Verified the actual captured mixed-key failure reply recovers in one transport attempt, alongside two real DeepSeek report calls, unit regression and relevant browser workflows. No focus task is added to report generation.
+- Kept the compatibility repair on the isolated review branch; no production deployment or model-ranking acceptance is implied.
+
+## 2026-11-03 — Clean default for focus presentation (review branch)
+
+- Showed unpainted source/ROI pixels instead of default heat and filled grid cells after presentation review found the mosaic distracting.
+- Added an explicit evidence toggle with keyboard access, reversible source display and evidence-off reset on source replacement.
+- Kept supported compact positions and measured diagnostic support; did not restore unsupported projected dots or claim semantic accuracy from a display change.
+- Verified source-pixel fidelity, show/hide, replacement reset, mobile layout, the complete regular browser workflows, a 50-image operational run and built-Worker delivery. Private review comments remain outside Git.
+
+## 2026-11-03 — Structural response prototype 1.2.0 (local review)
+
+- Defined measured contrast, geometric presentation and perceived focus as separate layers, with explicit unsupported subject/priority/no-dominant claims.
+- Replaced projected unsupported centers with measured support regions and hollow outlines; retained compact edge targets and independent strong cores.
+- Rendered connected response parents once using SVG row runs; removed filled bounding boxes that could imply whole-object coverage.
+- Clarified that multiple markers are not multiple subjects, energy order is not human priority, and low contrast does not establish no semantic focus.
+- Added geometry/alpha/mirror/Worker/mobile regression and a hash-verified development probe that preserves heat, records all changed point counts and emits no human accuracy.
+- Used the active Node runtime directly to launch E2E Vite, avoiding an unnecessary npm executable requirement.
+- Kept human feedback and experimental face models outside Git; no semantic detector or algorithm candidate was released to production.
+
 ## 2026-11-03 — Independent daily-operation reliability
 
 - Prevented completed image analysis from overwriting newer color-count intent; project history/import still restores the processed count explicitly.
@@ -9,6 +64,13 @@ All notable project changes are recorded here in reverse chronological order.
 - Exported all six locked-image exception records in the series overview, wrapping long Unicode names/role descriptions/rationale and expanding canvas height to fit.
 - Removed temporary download anchors and scheduled object-URL cleanup even when triggering a download throws; a failed series export can be retried.
 - Clarified local color-workflow wording while retaining the AI panel's explicit compressed-image-on-click explanation. Focus candidate 1.1.0 remains on its separate review branch pending later feedback.
+## 2026-11-03 — Candidate focus-region model 1.1.0 (review branch)
+
+- Kept the contrast heat unchanged and added strong-seed/weak-support region growth with protected independent strong cores.
+- Distinguished broad response from fragmented/ambiguous evidence; unsupported or ambiguous positions abstain instead of marking a blank center.
+- Added explicit model version/reasons, response bounds and qualification limits in the UI.
+- Fixed completed source analysis resetting newer count intent between clicks; project undo/redo/import still restores the processed count explicitly.
+- Added geometry, bridge, transparency, uncertainty and actual Worker/browser regressions. This is a candidate branch, not a claim of human attention accuracy or a production release.
 
 ## 2026-11-03 — Repair blind-review image delivery
 

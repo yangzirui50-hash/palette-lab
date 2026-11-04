@@ -1,10 +1,27 @@
 # Palette Lab — Current Status
 
-_Last updated: 2026-11-03_
+_Last updated: 2026-11-04_
 
 ## Current phase
 
+The owner selected whole-image interpretation first, with local cues on demand. Branch `feat/whole-image-reading` implements that choice in the actual workbench: clean original imagery, composition/character paragraphs, initially closed relation/local/uncertainty disclosures, and optional legacy subject-priority analysis. The prior thirty plus four verbal image judgments remain archived privately; do not request them again. This is a changed output question, not a validated attention-ranking improvement.
+
+The separate `/api/reading` task has runtime schema, prompt/input identity, source-owned history (maximum ten), legacy-backup compatibility and stale-result guards. An explicit click requests both scales together; ordinary editing, ROI inspection, reload and detail disclosure reuse the saved reading. The old focus and aesthetics histories are retained separately. No extra detector, model, dependency, automatic reasoning review or role reassignment is introduced by this feature.
+
+Local verification on the existing dependency tree: 253 unit tests, 80 regular browser workflows (four opt-in suites skipped), lint/type/build/environment safety. Eight real source-handler tasks succeeded with nine upstream HTTP requests; a separate built-client browser workflow succeeded with one real DeepSeek request and verified phone layout, saved-result reuse and no browser errors. The handler probes and loopback built-client preview are not deployed Cloudflare acceptance or attention-accuracy measurements. See `REVIEWS/2026-11-04-whole-image-delivery.md`.
+
+The complete usable loopback workbench is available at http://127.0.0.1:7113/ while its local server runs. The independent minimatch repair now passes npm 10 clean installation, zero-vulnerability audit, 253 units, seven pilot checks, lint/build/environment safety and the complete 80-workflow regular browser suite on its isolated dependency tree. Direct and transitive runtime dependency versions are unchanged; four development tools and their lock graph are updated with a reviewed override. See `REVIEWS/2026-11-04-toolchain-security.md`. Publication is still separate; production main remains `ed7d32f` at this verification stage. The next engineering step is remote CI and publication; the next product evaluation concerns usefulness for palette decisions, not another repeat focus annotation.
+
+## Historical phase records
+
+Historical stages follow; their earlier pending presentation decisions and test counts do not supersede the current candidate record.
+
+Presentation follow-up: default image readability takes precedence over grid visualization. The prototype now shows unpainted source/ROI pixels with an optional contrast-evidence toggle, initially off and reset on source replacement. The filled-grid default was rejected in review; that is a presentation decision, not semantic focus acceptance. Follow-up verification passes 230 unit tests and 71 browser checks (70 regular plus 50-image benchmark), with three opt-in suites skipped. Production main is unchanged; the prototype remains isolated.
+
+Local review branch `fix/focus-structure-prototype` now carries `1.2.0-prototype`, based on published daily reliability plus the prior focus candidate. The full verbal review has been received and archived privately; it identified unresolved subject, ordering, missing-region and over-localization problems. The current unit removes nearest-supported-cell projection, preserves measured response masks, groups connected parent support and separates contrast evidence from perceived-focus claims. See `FOCUS_OUTPUT_CONTRACT.md`. No semantic focus acceptance or production merge is implied. The previous release and candidate records below are historical.
+
 Independent daily-operation follow-up: newer count intent survives interleaved analysis commits; clipboard denial is recoverable; all six series exceptions and long names fit the PNG; blocked downloads clean up and retry. Local verification is 212 unit tests, seven pilot CLI/server tests and 67 regular browser workflows, plus type/lint/environment safety and production-build checks recorded separately. The image/focus algorithm is unchanged. Candidate 1.1.0 remains on `fix/focus-region-evidence` awaiting the owner's later per-image feedback; it is not included in this release.
+Review candidate `fix/focus-region-evidence` implements focus model 1.1.0: measured-support region growth, protected strong targets, supported positions, explicit uncertainty/reasons and response bounds. It also repairs count intent being overwritten by interleaved analysis completion. See `REVIEWS/2026-11-03-focus-regions.md`. This algorithm candidate is separate from published main; no human focus-accuracy acceptance is claimed.
 
 Five daily-use repair units are implemented. The latest connects native-ROI candidates and validated manual HEX to recoverable role edits, adds a palette-card PNG and nearby desktop preview/export with phone navigation, and fixes report selection and ROI evidence scope. Validation code has a separate stable chunk; main client JS is about 446kB (147kB gzip), plus 98kB (28kB gzip) validation. This improves caching rather than removing first-load validation cost. See docs/REVIEWS/2026-11-03-workbench-delivery.md. Release checks are recorded separately from local regression. The preceding source-pipeline unit's 50/30 operational suites are not rerun for unchanged image algorithms; independent human focus qualification remains pending.
 
@@ -64,7 +81,7 @@ Five daily-use repair units are implemented. The latest connects native-ROI cand
 - Desktop and 390px mobile layouts pass without horizontal overflow
 - ESLint passes
 - Runtime dependencies reduced from 48 to 7
-- The November 3 security recheck found a moderate development-only minimatch advisory (GHSA-g3hv-75wg-m249); earlier zero-vulnerability reports are historical. The audit job remains active and fails while this is unresolved.
+- The November 3 security recheck found a moderate development-only minimatch advisory (GHSA-g3hv-75wg-m249); earlier zero-vulnerability reports are historical. This historical failure is resolved on the current candidate after the isolated compatibility review; the audit job remains active.
 - The last synchronized baseline a4376fd failed its npm audit step; historical green CI is not current acceptance. Security and functional verification now run as independent jobs without suppressing audit failures.
 
 ## Repository
@@ -87,6 +104,6 @@ Five daily-use repair units are implemented. The latest connects native-ROI cand
 - Clickable distribution hotspots that generate local palettes
 - Interactive semantic object masks and further region-edge refinement
 
-## Next action
+## Historical next action (superseded by Current phase)
 
 The owner will provide the 30-image focus feedback later; preserve the candidate branch, self-contained contact report and original human drafts, and accept sequential verbal feedback without requiring a new drawing/export session now. These development images cannot become held-out qualification data. Independent daily-operation fixes may continue without merging the candidate focus algorithm. Inspect worst per-image quality changes, freeze standards and obtain independent labels before the thousand-image stage. Keep the existing development-only minimatch audit issue visible until a compatible update is reviewed.

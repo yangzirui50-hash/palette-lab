@@ -22,6 +22,33 @@ const requestBody = {
 }
 
 describe('analysis API', () => {
+  it('validates and rate-limits the independent whole-image reading task', async () => {
+    const body = { task: 'whole-image-reading', image: requestBody.image, measurements: { scope: 'source', palette: [], spatial: [], sampleWidth: 64, sampleHeight: 64, notes: 'Synthetic route fixture.' } }
+    const options = (data: unknown) => ({ method: 'POST', headers: { 'Content-Type': 'application/json', 'cf-connecting-ip': '203.0.113.10' }, body: JSON.stringify(data) })
+    const valid = await app.request('/api/reading', options(body), { AI_PROVIDER: 'mock' })
+    expect(valid.status).toBe(200); expect((await valid.json()).task).toBe('whole-image-reading')
+    const legacy = await app.request('/api/reading', options({ ...body, task: undefined }), { AI_PROVIDER: 'mock' })
+    expect(legacy.status).toBe(400)
+    const roi = await app.request('/api/reading', options({ ...body, measurements: { ...body.measurements, scope: 'roi' } }), { AI_PROVIDER: 'mock' })
+    expect(roi.status).toBe(400)
+    const limit = vi.fn().mockResolvedValue({ success: false })
+    const limited = await app.request('/api/reading', options(body), { AI_PROVIDER: 'mock', AI_RATE_LIMITER: { limit } })
+    expect(limited.status).toBe(429); expect(limit).toHaveBeenCalledWith({ key: '/api/reading:203.0.113.10' })
+    const unconfigured = await app.request('/api/reading', options(body), {})
+    expect(unconfigured.status).toBe(501)
+  })
+  it('validates and rate-limits the independent paid focus task',async()=>{
+    const body={image:requestBody.image,measurements:{scope:'source',palette:[],spatial:[],sampleWidth:64,sampleHeight:64,notes:'Synthetic API contract.'}}
+    const response=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{AI_PROVIDER:'mock'})
+    expect(response.status).toBe(200);expect((await response.json()).focus.dominance).toBe('ranked')
+    const invalid=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,measurements:{...body.measurements,scope:'roi'}})},{AI_PROVIDER:'mock'})
+    expect(invalid.status).toBe(400)
+    const limit=vi.fn().mockResolvedValue({success:false})
+    const limited=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json','cf-connecting-ip':'203.0.113.10'},body:JSON.stringify(body)},{AI_PROVIDER:'mock',AI_RATE_LIMITER:{limit}})
+    expect(limited.status).toBe(429);expect(limit).toHaveBeenCalledWith({key:'/api/focus:203.0.113.10'})
+    const unavailable=await app.request('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{})
+    expect(unavailable.status).toBe(501)
+  })
   it('forwards ROI scope to the provider without relabeling local shares as full-image area', async () => {
     const { mockAnalysisProvider } = await import('./providers/mock')
     const report = await mockAnalysisProvider.analyze(requestBody)
@@ -47,6 +74,36 @@ describe('analysis API', () => {
     expect(report.provider).toBe('mock')
     expect(report.recommendations.length).toBeGreaterThan(0)
     expect(report.uncertainties.length).toBeGreaterThan(0)
+  })
+
+  it('accepts the observed legacy action-text alias without another paid request', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const report = await mockAnalysisProvider.analyze(requestBody)
+    const recommendations = report.recommendations.map(({ action, ...item }) => ({ ...item, actionable: action }))
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ ...report, recommendations }) } }] })))
+    vi.stubGlobal('fetch', fetchMock)
+    try {
+      const response = await app.request('/api/analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(200)
+      const payload = await response.json()
+      expect(payload.recommendations).toEqual(report.recommendations)
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    } finally { vi.unstubAllGlobals() }
+  })
+
+  it('rejects malformed action values and retains an explicit action over an extra alias', async () => {
+    const { mockAnalysisProvider } = await import('./providers/mock')
+    const report = await mockAnalysisProvider.analyze(requestBody)
+    const responseFor = (recommendations: unknown) => new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ ...report, recommendations }) } }] }))
+    const invalid = report.recommendations.map(item => ({ ...item, action: 42, actionable: 'A valid-looking alias must not hide an invalid explicit action.' }))
+    const fetchMock = vi.fn().mockResolvedValueOnce(responseFor(invalid)).mockResolvedValueOnce(responseFor(report.recommendations.map(item => ({ ...item, actionable: 'An extra key must not replace the explicit action.' }))))
+    vi.stubGlobal('fetch', fetchMock)
+    try {
+      const response = await app.request('/api/analysis', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }, { AI_PROVIDER: 'deepseek', AI_API_KEY: 'TEST_PLACEHOLDER', AI_MODEL: 'deepseek-flash' })
+      expect(response.status).toBe(200)
+      expect((await response.json()).recommendations).toEqual(report.recommendations)
+      expect(fetchMock).toHaveBeenCalledTimes(2)
+    } finally { vi.unstubAllGlobals() }
   })
 
   it('returns an honest unconfigured response without a key', async () => {

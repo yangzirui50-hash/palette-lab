@@ -32,7 +32,7 @@ test('runs independent development images through color counts and both spatial 
         await expect(page.locator('.palette-panel')).toHaveAttribute('aria-busy', 'false')
         await expect(page.locator('.spatial-preview img')).toBeVisible()
         await expect(page.locator('.attention-panel summary')).toBeAttached()
-        const signature = await page.locator('.attention-panel').evaluate(panel => JSON.stringify({ state: panel.querySelector('.attention-image')?.getAttribute('data-focus-state'), markers: [...panel.querySelectorAll('.attention-marker')].map(marker => marker.getAttribute('style')) }))
+        const signature = await page.locator('.attention-panel').evaluate(panel => JSON.stringify({ state: panel.querySelector('.attention-image')?.getAttribute('data-focus-state'), markers: [...panel.querySelectorAll('.attention-marker')].map(marker => marker.getAttribute('style')), regions:[...panel.querySelectorAll('.attention-region')].map(region=>({geometry:region.getAttribute('data-response-geometry'),path:region.getAttribute('d')})) }))
         if (focusSignature) expect(signature).toBe(focusSignature)
         focusSignature = signature
         const colors = await page.locator('.spatial-swatches button').count()

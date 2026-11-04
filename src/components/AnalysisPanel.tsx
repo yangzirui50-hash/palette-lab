@@ -30,6 +30,7 @@ export default function AnalysisPanel({ sourceFile, context, snapshots, selected
     requestId.current += 1
     controller.current?.abort()
     controller.current = null
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- A source/domain change aborts external work and clears its transient status once.
     setLoading(false)
     setError('')
     return () => controller.current?.abort()

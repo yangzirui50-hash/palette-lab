@@ -4,6 +4,10 @@ AI-assisted color-system workspace for turning image inspiration into editable, 
 
 ## Status
 
+The workbench now defaults to whole-image interpretation: composition, gesture and atmosphere first, with unranked local cues on demand. It uses the existing DeepSeek connection on an explicit click and preserves the separate optional subject-priority tool and its older records. The owner selected this presentation; it does not establish attention-ranking accuracy.
+
+The feature passes 253 unit tests and 80 regular browser workflows, plus lint/type/build/environment safety and bounded real-provider checks. See `docs/REVIEWS/2026-11-04-whole-image-delivery.md` and `docs/STATUS.md` for current verification, publication and limitations.
+
 The local workspace includes image import, role editing, Web/Art previews, exports, deterministic multi-image comparison/unification, independent local palettes and dual-mode spatial analysis. The color engine uses hue-safe clustering, confidence-aware assignment and 512-pixel analysis with eight-neighbor continuity.
 
 The November 1 baseline passed 72 unit tests, 25 browser workflows and the opt-in 50-image benchmark. See `docs/STATUS.md` for current verification and remaining work, and `docs/REVIEWS/2026-11-02-github-sync.md` for the conversation-to-commit reconciliation.
@@ -41,7 +45,7 @@ React · TypeScript · Vite · Canvas/Web Worker · Zod · Hono · Cloudflare Wo
 
 ## Development
 
-Requires Node.js 20 or later.
+Requires Node.js ^20.19.0, ^22.13.0 or >=24. The lockfile is verified with npm 10 clean installation. See `docs/REVIEWS/2026-11-04-toolchain-security.md` for the ESLint/minimatch compatibility review.
 
 ```bash
 npm install

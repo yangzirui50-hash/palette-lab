@@ -180,3 +180,52 @@
 - **Decision:** Retain source-scoped ROI/manual candidates separately from the measured palette, commit validated HEX through existing scoped role edits, and put preview/export near editing with phone task navigation. Share report selection with dependent requests and transmit explicit local-area/source-coordinate scope. Produce a local palette-card PNG and separately cache stable client validation code.
 - **Reason:** Local discoveries and manual choices must survive to the actual preview/download without becoming fabricated source-area evidence. Users need a short route from editing to a deliverable, and the displayed report must be the one used by dependent actions.
 - **Tradeoffs:** Working candidates are capped at 24; removing one leaves already assigned roles intact. Preview locations are measured color regions, not semantic object positions or human fixation. Cache separation reduces main-chunk size but not validation's first-load cost. Real-device usability and independently labeled focus accuracy remain separate acceptance tasks.
+
+## ADR-026 — Separate contrast heat from stable focus-region evidence
+
+- **Status:** Implemented as review candidate, pending human interpretation review
+- **Date:** 2026-11-03
+- **Decision:** Retain existing heat, grow strong seeds through weaker measured support, preserve independently qualified strong cores, and require supported positions or abstention. Expose uncertainty and reasons instead of calling every candidate failure distributed. Version the focus model separately from palette preprocessing.
+- **Reason:** Text-like strokes can be individually below the energy gate even when their combined local response is meaningful. Simply lowering candidate energy or joining every nearby fragment risks noise and merged subjects. Uncertainty in the model is not evidence of a dispersed real-world scene.
+- **Tradeoffs:** 35% support is a conservative development choice, not a learned optimum. Adjacent sub-threshold structures may still merge and semantically important content may remain undetected. Global prototypes that made every development image a localized target were not selected merely for higher coverage. Human drafts and verbal feedback are diagnosis inputs, not qualifying spatial ground truth; review precedes merging this algorithm candidate into production.
+
+## ADR-027 — Separate cached semantic focus from application design reports
+
+- **Status:** Implemented as review candidate; text presentation accepted, semantic qualification pending
+- **Date:** 2026-11-03
+- **Decision:** Keep full-source subject/part/priority analysis as an explicit bounded task through the existing DeepSeek connection. Preserve at most ten source-owned records, independent of edited colors, use case and ROI browsing. Keep local color evidence separate, display approximate bounds only on request, and reject stale source completions.
+- **Reason:** A combined aesthetics/focus request introduced schema conflicts and latency. Reinterpreting every palette edit as a new original-image task wastes calls and can mix unrelated states. Readable hierarchy can help without pretending a model rectangle is a verified focus point.
+- **Tradeoffs:** Model ranking remains fallible and source-owned cache does not establish a fixed underlying model revision. Semantic advice currently does not change role assignments. Source cancellation cannot guarantee upstream billing cancellation. A string-only legacy recommendation alias is normalized before the complete independent report validation; other malformed values remain invalid.
+
+## ADR-028 — Do not enable extra reasoning or draft review from this experiment
+
+- **Status:** Accepted implementation boundary; future alternatives remain open
+- **Date:** 2026-11-03
+- **Decision:** Retain the current bounded default and accepted presentation. Do not automatically add high-effort thinking, a self-review call or a local model. Preserve frozen failures and request four fresh judgments before another ranking selection.
+- **Reason:** Sixteen deeper attempts produced eleven strict-valid results at an observed 35.6-second median, with mixed semantic improvements/regressions. Fifteen valid reviews retained the same dominance and target-tier edges as their drafts. More calls did not demonstrate a stable ranking benefit.
+- **Tradeoffs:** This decision does not prove reasoning or review generally ineffective. The comparison is development evidence with four unannotated fresh-to-project images and no attention accuracy metric. Output-structure reliability and an unanchored competing-cue ranking task remain separate next investigations.
+
+## ADR-029 — Describe the exact result schema and return validation evidence to a bounded retry
+
+- **Status:** Implemented on review branch
+- **Date:** 2026-11-04
+- **Decision:** Serialize JSON Schema from the runtime validator on the server and pass bounded previous visible output/validation issues to the existing second attempt when structure is invalid. Keep the semantic guide, result shape, source cache and accepted UI unchanged; version the prompt metadata separately.
+- **Reason:** An invalid enum, object in a string field or contradictory primary graph should be explained to the provider rather than silently guessed by application code or retried without context.
+- **Tradeoffs:** The exact-schema arm still failed one of twenty-six first attempts and did not improve the strict-valid count on the reused sixteen subset. Contract precision and successful captured-error repairs do not prove semantic accuracy or a general success-rate gain. Repair can add input tokens, but does not add a third/default review attempt. Prototype whole-image readings remain a different, unaccepted output contract.
+
+
+## Whole-image reading is a separate default task
+
+- **Status:** Accepted product-output choice; implementation verified locally
+- **Date:** 2026-11-04
+- **Decision:** Present whole-image organization/character first, then optional unranked local cues, using the existing multimodal provider. Preserve the old ranker behind an optional disclosure with separate schema/history. Keep deterministic image/color computation local.
+- **Reason:** The owner's gesture-led and distributed-scene judgments exposed a mismatch in the question demanded by mandatory total ranking. A readable overall interpretation better matches the selected palette workflow; more reasoning did not consistently resolve the old rank disagreements.
+- **Tradeoffs:** This changes the output task rather than proving improved attention accuracy. Subject candidates remain available but unqualified. One ordinary request returns both scales; only structural or transient transport failure can use the existing second attempt. Task/prompt/input provenance and source-owned caches prevent old focus records being relabeled. Actual palette-decision usefulness remains to be evaluated in use.
+
+## Upgrade the lint consumer before overriding minimatch
+
+- **Status:** Compatibility reviewed and verified locally
+- **Date:** 2026-11-04
+- **Decision:** Upgrade four development lint packages and use minimatch 11.0.4 only after their modern API compatibility is verified; declare Node ^20.19.0 || ^22.13.0 || >=24. Preserve all runtime package versions and keep npm audit active.
+- **Reason:** The pre-existing moderate advisory affects the old graph, while ESLint 9's callable minimatch API prevents a blind patched-major override.
+- **Tradeoffs:** The clean development lock graph changes beyond the four direct upgrades. Twelve local lint exceptions preserve finite external-state resets and sanitized error boundaries without runtime changes or global rule suppression. npm 10 clean install/audit and the complete browser suite pass in an isolated dependency directory; the original shared directory is retained. See `REVIEWS/2026-11-04-toolchain-security.md` for exact scope and removal criteria for the override.

@@ -1,10 +1,45 @@
 # Palette Lab — Architecture
 
+## Whole-image reading and cache boundary
+
+`src/domain/reading.ts` defines `whole-image-reading`, prompt version `whole-image-reading-1` and input version `source-jpeg1024-colors6-spatial512-v1`. Its exact schema contains scene, whole-image organization/character/typed relations, unranked local cues and uncertainties. `POST /api/reading` requires that task identity and full-source measurements, sharing the existing size limit, limiter and sanitized error boundary. The selected prototype prompt is copied unchanged with server-only JSON Schema.
+
+`structuredImage.ts` shares transport and bounded structural retry between reading and focus. Each task has its own schema/prompt/token ceiling; reading uses 3072 output tokens. A valid first result returns immediately. Structural or transient transport failures may retry; at most two attempts are allowed, with bounded visible-answer/issue context only after invalid structure; 401 and 429 are not retried. No hidden reasoning is forwarded or persisted.
+
+`SingleDraft.readingSnapshots` is an optional/default-empty version-one extension with a maximum of ten unique, source-owned records. Each retains explicit task, prompt/input provenance and provider receipt. Input-version metadata accepts historical strings; task identity and schema guard the actual data boundary. Old focus records are neither converted nor deleted. Existing backup/undo support carries both histories. Request identity, abort state and a second source guard reject late results. Reading preparation remains independent of editable roles/count/domain/ROI. Canceling the client does not promise cancellation or zero billing for upstream work already sent.
+
+`ReadingAnalysis` and `WholeImageReadingPanel` present the clean original and overall paragraphs first, with native closed disclosures. The former focus component sits in a separate initially closed section. Neither output silently assigns design roles or triggers an aesthetics analysis. No runtime dependency or local detector is added by this feature.
+
+## Source-owned semantic focus, separate from design reports
+
+The review candidate adds `focus.ts` domain validation and a dedicated `/api/focus` provider task. A separate color Worker client prepares immutable full-source facts using six-color extraction and a 512px raster, paired with a maximum-1024px JPEG. Domain, role, count and ROI changes cannot redefine this request as a different original-image judgment. The Hono route shares the existing rate limiter and sanitized error boundary; no additional model or dependency is installed.
+
+`SingleDraft.focusSnapshots` defaults to an empty array in version-one records, validates ownership against the active source and retains at most ten unique records. Records carry prompt version, model alias/returned model metadata, scope, duration, attempts and successful-response token counts. `FocusAnalysis` guards asynchronous completions with request identity, abort state and a second source-ownership check at save time. Cancellation prevents stale client application, without promising cancellation or zero billing for work already dispatched upstream.
+
+`SemanticFocusPanel` keeps subjects and meaningful independent secondary targets readable, nests same-subject details, and displays at most one optional transparent estimated box. It never converts a model box into a center point or a validated segmentation boundary. Presentation acceptance is separate from semantic qualification. The existing local contrast reference and the independent aesthetics-report snapshots remain separate. No ranking alternative from an external experiment is automatically enabled, and no semantic report silently changes design roles.
+
+`semantic-focus-2-schema-1` serializes the result's JSON Schema in the server provider, not the client domain initializer. An invalid JSON/schema reply produces bounded structural-repair data for the existing second attempt; valid replies do not get a review pass. Source measurements/image remain the request evidence. The adapter validates the replacement and never manufactures a preferred rank. The adopted whole-image reading now has its own runtime schema and `readingSnapshots`; it is never stored in `focusSnapshots`.
+
+## Structural evidence prototype 1.2.0
+
+Clean-view follow-up adds an unpainted `attentionSourceUrl` from the same raster used for analysis, including ROI cropping. Source and evidence PNG encoding share immutable canvases and run concurrently in the Worker. The component uses the source by default; the heat image and SVG support mask are only mounted after an explicit toggle. Reanalysis unmounts the result while loading, returning new source/ROI results to evidence-off. Neither attention math nor source palettes, saved projects or AI requests changes.
+
+The contrast heat and energy/seed/growth gates remain unchanged. `attentionRegions.ts` now retains measured connected-parent cells and reports compact, extended, unsupported-center outline, or frame-like geometry. A weighted center outside measured support is no longer projected onto a nearby pixel. Eligible compact centers stay as positions; extended support can remain without a dot. Connected parent masks are shown once, with qualified independent cores still distinguished. This is evidence grouping, not semantic deduplication.
+
+The Worker transports sorted grid cells to `AttentionEstimate`; SVG row runs preserve measured holes/alpha gaps and replace misleading full bounding-rectangle fills. UI labels call low contrast unresolved focus, not semantic no-focus. Marker count and energy order are explicitly distinct from subject count and perceived priority. No project format, AI request, source-palette or role-assignment change is introduced. See `FOCUS_OUTPUT_CONTRACT.md` for geometry rules, unsupported claims and staged acceptance.
+
+An external local face-location feasibility probe tested official short/full-range models at fixed rotations/crops. Its resources, images, human comments and output stay outside Git. It is not a production dependency and cannot set attention priority. Extra detections came with non-face false positives and subject omissions; model confidence was not repurposed as attention weight. Browser requests outside the loopback probe were blocked, including attempted runtime telemetry. No automatic detector integration was accepted in this unit.
+
 ## Daily-operation failure recovery
 
 Requested color count is an input cursor; completed source metadata is evidence. Ordinary completion effects update source references without resetting newer intent. Project replacement/undo/redo explicitly restores the cursor through the project epoch. Clipboard access/permission and legacy-command exceptions fall back safely, with temporary textarea cleanup and best-effort focus/selection restoration.
 
 Series PNG layout measures and wraps complete filenames, exception roles and rationale before sizing a 1600px-wide canvas. Height grows from a 1000px minimum, retaining all six records rather than slicing at five or clipping text. The shared blob downloader attaches a temporary hidden anchor and always removes it/schedules URL revocation in finally, preserving caller error handling and retry. These changes do not touch palette/focus algorithms or annotation data.
+## Candidate focus-region evidence 1.1.0
+
+`attention.ts` still computes the same palette-independent 64-cell contrast heat. `attentionRegions.ts` selects regions separately, using opaque-pixel weights, 50%-peak seeds and contiguous 35%-peak support. Original independently qualified strong components remain separate if weaker support connects them. The 8% total-energy, 30% leading-energy and three-marker limits remain. Each marker has measured support; ambiguous projections abstain. Broad response, fragmentation and ambiguous location have separate reasons, with explicit uncertainty rather than falsely asserting dispersed structure.
+
+AttentionEvidence carries model version, state/reason and support/qualification diagnostics through ColorAnalysisClient's structured Worker response. The new AttentionEstimate component uses those fields to distinguish evidence from semantics, render response bounds and expose omitted qualifying candidates. It does not alter source palettes, role assignments, AI request bodies or saved project/report formats. Candidate 1.1.0 is under review separately from the published application baseline.
 
 ## Working colors and delivery (November 3, fifth unit)
 
